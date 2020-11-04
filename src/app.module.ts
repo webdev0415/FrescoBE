@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BoardModule } from './modules/board/board.module';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
@@ -34,6 +35,7 @@ import { SharedModule } from './shared/shared.module';
         MailModule,
         InvitationModule,
         OrganizationModule,
+        BoardModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

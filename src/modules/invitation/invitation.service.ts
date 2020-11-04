@@ -25,7 +25,6 @@ export class InvitationService {
         public readonly invitationRepository: InvitationRepository,
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly authService: AuthService,
-
         public readonly mailService: MailService, // public readonly userToOrgRepository: UserToOrgRepository
     ) {}
 

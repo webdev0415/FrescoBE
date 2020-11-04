@@ -10,7 +10,7 @@ export class BoardDto extends AbstractDto {
     @ApiPropertyOptional()
     name: string;
 
-    @ApiPropertyOptional({ enum: RoleType })
+    @ApiPropertyOptional()
     orgId: string;
 
     @ApiPropertyOptional()
