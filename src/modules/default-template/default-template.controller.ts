@@ -76,11 +76,9 @@ export class DefaultTemplateController {
         type: DefaultTemplateDto,
         description: 'delete default_template',
     })
-    async delete(
-        @Body() deleteDefaultTemplateDto: DeleteDefaultTemplateDto,
-        @Param('id') id: string,
-    ): Promise<void> {
-        deleteDefaultTemplateDto.defaultTemplateId = id;
-        await this.defaultTemplateService.delete(deleteDefaultTemplateDto);
+    async delete(@Param('id') id: string): Promise<void> {
+        const defaultTemplateDto = new DeleteDefaultTemplateDto();
+        defaultTemplateDto.defaultTemplateId = id;
+        await this.defaultTemplateService.delete(defaultTemplateDto);
     }
 }
