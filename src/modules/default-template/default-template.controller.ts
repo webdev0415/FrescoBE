@@ -9,7 +9,6 @@ import {
     Put,
     UseGuards,
     UseInterceptors,
-    ValidationPipe,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
@@ -33,7 +32,6 @@ export class DefaultTemplateController {
     ) {}
 
     @Get('')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: DefaultTemplateDto,
         description: 'get list default_template',
@@ -44,14 +42,12 @@ export class DefaultTemplateController {
     }
 
     @Post('')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: DefaultTemplateDto,
         description: 'create default_template',
     })
     async create(
-        @Body(new ValidationPipe({ transform: true }))
-        createDefaultTemplateDto: CreateDefaultTemplateDto,
+        @Body() createDefaultTemplateDto: CreateDefaultTemplateDto,
     ): Promise<DefaultTemplateDto> {
         const defaultTemplate = await this.defaultTemplateService.create(
             createDefaultTemplateDto,
@@ -60,15 +56,13 @@ export class DefaultTemplateController {
     }
 
     @Put(':id')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: DefaultTemplateDto,
         description: 'update default_template',
     })
     async update(
         @Param('id') id: string,
-        @Body(new ValidationPipe({ transform: true }))
-        defaultTemplateDto: UpdateDefaultTemplateDto,
+        @Body() defaultTemplateDto: UpdateDefaultTemplateDto,
     ): Promise<DefaultTemplateDto> {
         defaultTemplateDto.id = id;
         const defaultTemplate = await this.defaultTemplateService.update(
@@ -78,7 +72,6 @@ export class DefaultTemplateController {
     }
 
     @Delete(':id')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: DefaultTemplateDto,
         description: 'delete default_template',

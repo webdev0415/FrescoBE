@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { DefaultTemplateEntity } from './default-template.entity';
 import { DefaultTemplateRepository } from './default-template.repository';
 import { CreateDefaultTemplateDto } from './dto/CreateDefaultTemplateDto';
-import { DefaultTemplateDto } from './dto/DefaultTemplateDto';
 import { DeleteDefaultTemplateDto } from './dto/DeleteDefaultTemplateDto';
 import { UpdateDefaultTemplateDto } from './dto/UpdateDefaultTemplateDto';
 
