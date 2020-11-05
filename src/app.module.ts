@@ -11,10 +11,11 @@ import {
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { BoardModule } from './modules/board/board.module';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
+import { BoardModule } from './modules/board/board.module';
+import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
 import { OrganizationModule } from './modules/organization/organization.module';
@@ -36,6 +37,7 @@ import { SharedModule } from './shared/shared.module';
         InvitationModule,
         OrganizationModule,
         BoardModule,
+        DefaultTemplateModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
