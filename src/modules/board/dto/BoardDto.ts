@@ -2,7 +2,6 @@
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
-import { RoleType } from '../../../common/constants/role-type';
 import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { BoardEntity } from '../board.entity';
 

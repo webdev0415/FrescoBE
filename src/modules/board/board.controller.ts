@@ -20,6 +20,8 @@ import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.se
 import { BoardService } from './board.service';
 import { BoardDto } from './dto/BoardDto';
 import { DeleteBoardDto } from './dto/DeleteBoardDto';
+import { CreateBoardDto } from './dto/CreateBoardDto';
+import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Controller('board')
 @ApiTags('board')
@@ -30,7 +32,6 @@ export class BoardController {
     constructor(public readonly boardService: BoardService) {}
 
     @Get(':orgId/organization')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: BoardDto,
         description: 'get list board by orgId',
@@ -41,21 +42,21 @@ export class BoardController {
     }
 
     @Post('')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: BoardDto,
         description: 'create board',
     })
     async create(
         @AuthUser() user: UserEntity,
-        @Body() boardDto: BoardDto,
+        @Body() createBoardDto: CreateBoardDto,
     ): Promise<BoardDto> {
-        const board = await this.boardService.create(user.id, boardDto);
+        // console.log('user');
+        // return null
+        const board = await this.boardService.create(user.id, createBoardDto);
         return board.toDto();
     }
 
     @Put(':id')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: BoardDto,
         description: 'update board',
@@ -63,15 +64,14 @@ export class BoardController {
     async update(
         @AuthUser() user: UserEntity,
         @Param('id') id: string,
-        @Body() boardDto: BoardDto,
+        @Body() updateBoardDto: UpdateBoardDto,
     ): Promise<BoardDto> {
-        boardDto.id = id;
-        const board = await this.boardService.update(user.id, boardDto);
+        updateBoardDto.id = id;
+        const board = await this.boardService.update(user.id, updateBoardDto);
         return board.toDto();
     }
 
     @Delete(':id')
-    @ApiBearerAuth()
     @ApiOkResponse({
         type: BoardDto,
         description: 'delete board',

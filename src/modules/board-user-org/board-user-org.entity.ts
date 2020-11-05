@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { BoardUserOrgDto } from './dto/BoardUserOrgDto';
 
-@Entity({ name: 'board-user-org' })
+@Entity({ name: 'board_user_org' })
 export class BoardUserOrgEntity extends AbstractEntity<BoardUserOrgDto> {
     @Column({name: 'boardId'})
     boardId: string;

@@ -5,13 +5,13 @@ import { BoardDto } from './dto/BoardDto';
 
 @Entity({ name: 'board' })
 export class BoardEntity extends AbstractEntity<BoardDto> {
-    @Column({ name: 'orgId' })
+    @Column({ name: 'name' })
     name: string;
 
-    @Column({})
+    @Column({ name: 'orgId' })
     orgId: string;
 
-    @Column({})
+    @Column({ name: 'createdUserId' })
     createdUserId: string;
 
     @Column({})

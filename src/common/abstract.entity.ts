@@ -13,17 +13,17 @@ export abstract class AbstractEntity<T extends AbstractDto = AbstractDto> {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @CreateDateColumn({
-        type: 'timestamp',
-        name: 'createdAt',
-    })
-    createdAt: Date;
+    // @CreateDateColumn({
+    //     type: 'timestamp',
+    //     name: 'createdAt',
+    // })
+    // createdAt: Date;
 
-    @UpdateDateColumn({
-        type: 'timestamp',
-        name: 'updated_at',
-    })
-    updatedAt: Date;
+    // @UpdateDateColumn({
+    //     type: 'timestamp',
+    //     name: 'updatedAt',
+    // })
+    // updatedAt: Date;
 
     abstract dtoClass: new (entity: AbstractEntity, options?: any) => T;
 
