@@ -8,10 +8,10 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     @Column({})
     name: string;
 
-    @Column({})
+    @Column({ name: 'orgId' })
     orgId: string;
 
-    @Column({})
+    @Column({ name: 'createdUserId' })
     createdUserId: string;
 
     @Column({})
@@ -20,14 +20,14 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     @CreateDateColumn({
         type: 'timestamp',
         name: 'createdAt',
-        default: () => 'CURRENT_TIMESTAMP'
+        default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date;
 
     @UpdateDateColumn({
         type: 'timestamp',
         name: 'updatedAt',
-        default: () => 'CURRENT_TIMESTAMP' 
+        default: () => 'CURRENT_TIMESTAMP',
     })
     updatedAt: Date;
 
