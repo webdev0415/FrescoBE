@@ -14,9 +14,5 @@ export class CreateCanvasDto {
 
     @ApiPropertyOptional()
     @IsString()
-    createdUserId: string;
-
-    @ApiPropertyOptional()
-    @IsString()
     data: string;
 }

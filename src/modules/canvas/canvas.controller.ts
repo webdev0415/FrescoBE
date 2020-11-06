@@ -41,7 +41,7 @@ export class CanvasController {
         return canvases.toDto();
     }
 
-    @Get(':orgId/organization')
+    @Get('organization/:id/canvas')
     @ApiOkResponse({
         type: CanvasDto,
         description: 'get list canvas by orgId',

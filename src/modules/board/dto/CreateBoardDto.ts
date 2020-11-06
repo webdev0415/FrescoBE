@@ -14,9 +14,5 @@ export class CreateBoardDto {
 
     @ApiPropertyOptional()
     @IsString()
-    createdUserId: string;
-
-    @ApiPropertyOptional()
-    @IsString()
     data: string;
 }
