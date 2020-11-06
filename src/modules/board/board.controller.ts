@@ -41,7 +41,7 @@ export class BoardController {
         return boards.toDto();
     }
 
-    @Get(':orgId/organization')
+    @Get('organization/:orgId')
     @ApiOkResponse({
         type: BoardDto,
         description: 'get list board by orgId',
