@@ -3,7 +3,7 @@
 import {
     CreateDateColumn,
     PrimaryGeneratedColumn,
-    // UpdateDateColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 
 import { UtilsService } from '../providers/utils.service';
@@ -13,15 +13,15 @@ export abstract class AbstractEntity<T extends AbstractDto = AbstractDto> {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @CreateDateColumn({
-        type: 'timestamp',
-        name: 'createdAt',
-    })
-    createdAt: Date;
+    // @CreateDateColumn({
+    //     type: 'timestamp',
+    //     name: 'createdAt',
+    // })
+    // createdAt: Date;
 
     // @UpdateDateColumn({
     //     type: 'timestamp',
-    //     name: 'updated_at',
+    //     name: 'updatedAt',
     // })
     // updatedAt: Date;
 
