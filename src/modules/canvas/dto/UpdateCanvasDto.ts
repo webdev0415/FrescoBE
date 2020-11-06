@@ -1,7 +1,7 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateCanvasDto {
     id: string;
@@ -15,5 +15,6 @@ export class UpdateCanvasDto {
     orgId: string;
 
     @ApiPropertyOptional()
+    @IsString()
     data: string;
 }
