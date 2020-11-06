@@ -18,10 +18,14 @@ export class BoardService {
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
-        const userToOrg = await this.userToOrgRepository.createQueryBuilder('userToOrg')
-            .where('userToOrg.userId = :userId', {userId})
-            .andWhere('userToOrg.orgId = :orgId', {orgId})
-            .andWhere('userToOrg.permission = :admin Or userToOrg.permission = :editor', {admin: PermissionEnum.ADMIN, editor: PermissionEnum.EDITOR})
+        const userToOrg = await this.userToOrgRepository
+            .createQueryBuilder('userToOrg')
+            .where('userToOrg.userId = :userId', { userId })
+            .andWhere('userToOrg.orgId = :orgId', { orgId })
+            .andWhere(
+                'userToOrg.permission = :admin Or userToOrg.permission = :editor',
+                { admin: PermissionEnum.ADMIN, editor: PermissionEnum.EDITOR },
+            )
             .getOne();
         // const userToOrg = await this.userToOrgRepository.find({
         //     where: {
@@ -40,15 +44,26 @@ export class BoardService {
         return userToOrg;
     }
 
-    async get(orgId: string): Promise<BoardEntity []> {
-        return this.boardRepository.find({
+    async getById(id: string): Promise<BoardEntity> {
+        return this.boardRepository.findOne({
             where: {
-                orgId,
-            }
+                id,
+            },
         });
     }
 
-    async create(userId: string, createBoardDto: CreateBoardDto): Promise<BoardEntity> {
+    async getByOrgId(orgId: string): Promise<BoardEntity[]> {
+        return this.boardRepository.find({
+            where: {
+                orgId,
+            },
+        });
+    }
+
+    async create(
+        userId: string,
+        createBoardDto: CreateBoardDto,
+    ): Promise<BoardEntity> {
         await this.isAdminOrEditor(userId, createBoardDto.orgId);
 
         const boardModel = new BoardEntity();
@@ -68,7 +83,10 @@ export class BoardService {
         return board;
     }
 
-    async update(userId: string, updateBoardDto: UpdateBoardDto): Promise<BoardEntity> {
+    async update(
+        userId: string,
+        updateBoardDto: UpdateBoardDto,
+    ): Promise<BoardEntity> {
         await this.isAdminOrEditor(userId, updateBoardDto.orgId);
         const board = await this.boardRepository.findOne(updateBoardDto.id);
         board.name = updateBoardDto.name;
@@ -76,13 +94,13 @@ export class BoardService {
         return this.boardRepository.save(board);
     }
 
-    async delete({boardId, userId, orgId}: DeleteBoardDto): Promise<void> {
+    async delete({ boardId, userId, orgId }: DeleteBoardDto): Promise<void> {
         await this.isAdminOrEditor(userId, orgId);
         await this.boardUserOrgRepository.delete({
             userId,
             boardId,
-            orgId
-        })
+            orgId,
+        });
         await this.boardRepository.delete(boardId);
     }
 }

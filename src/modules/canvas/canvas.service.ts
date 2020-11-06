@@ -31,7 +31,15 @@ export class CanvasService {
         return userToOrg;
     }
 
-    async get(orgId: string): Promise<CanvasEntity[]> {
+    async getById(id: string): Promise<CanvasEntity> {
+        return this.canvasRepository.findOne({
+            where: {
+                id,
+            },
+        });
+    }
+
+    async getByOrgId(orgId: string): Promise<CanvasEntity[]> {
         return this.canvasRepository.find({
             where: {
                 orgId,

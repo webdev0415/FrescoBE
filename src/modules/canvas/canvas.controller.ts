@@ -31,13 +31,23 @@ import { UpdateCanvasDto } from './dto/UpdateCanvasDto';
 export class CanvasController {
     constructor(public readonly canvasService: CanvasService) {}
 
+    @Get(':id')
+    @ApiOkResponse({
+        type: CanvasDto,
+        description: 'get detail canvas',
+    })
+    async getCanvas(@Param('id') id: string): Promise<CanvasDto> {
+        const canvases = await this.canvasService.getById(id);
+        return canvases.toDto();
+    }
+
     @Get(':orgId/organization')
     @ApiOkResponse({
         type: CanvasDto,
         description: 'get list canvas by orgId',
     })
     async get(@Param('orgId') orgId: string): Promise<CanvasDto[]> {
-        const canvases = await this.canvasService.get(orgId);
+        const canvases = await this.canvasService.getByOrgId(orgId);
         return canvases.map((item) => item.toDto());
     }
 

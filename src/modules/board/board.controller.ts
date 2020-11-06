@@ -31,13 +31,23 @@ import { UpdateBoardDto } from './dto/UpdateBoardDto';
 export class BoardController {
     constructor(public readonly boardService: BoardService) {}
 
+    @Get(':id')
+    @ApiOkResponse({
+        type: BoardDto,
+        description: 'get list board by orgId',
+    })
+    async getById(@Param('id') id: string): Promise<BoardDto> {
+        const boards = await this.boardService.getById(id);
+        return boards.toDto();
+    }
+
     @Get(':orgId/organization')
     @ApiOkResponse({
         type: BoardDto,
         description: 'get list board by orgId',
     })
-    async get(@Param('orgId') orgId: string): Promise<BoardDto[]> {
-        const boards = await this.boardService.get(orgId);
+    async getByOrgId(@Param('orgId') orgId: string): Promise<BoardDto[]> {
+        const boards = await this.boardService.getByOrgId(orgId);
         return boards.map((item) => item.toDto());
     }
 
