@@ -1,6 +1,7 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 
 export class DeleteBoardDto {
@@ -8,6 +9,7 @@ export class DeleteBoardDto {
     boardId: string;
 
     @ApiPropertyOptional()
+    @IsString()
     orgId: string;
 
     @ApiPropertyOptional()
