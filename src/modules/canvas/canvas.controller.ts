@@ -85,16 +85,17 @@ export class CanvasController {
         return canvas.toDto();
     }
 
-    @Delete('')
+    @Delete(':id')
     @ApiOkResponse({
         type: CanvasDto,
         description: 'delete canvas',
     })
     async delete(
         @AuthUser() user: UserEntity,
+        @Param('id') id: string,
         @Body() deleteCanvasDto: DeleteCanvasDto,
     ): Promise<void> {
-        const userId = user.id;
-        await this.canvasService.delete(userId, deleteCanvasDto);
+        deleteCanvasDto.canvasId = id;
+        await this.canvasService.delete(user.id, deleteCanvasDto);
     }
 }
