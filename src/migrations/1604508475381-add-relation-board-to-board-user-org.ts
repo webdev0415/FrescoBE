@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableForeignKey } from 'typeorm';
 
-export class addRelationBoardToBoardUserOrg1604508475381
+export class AddRelationBoardToBoardUserOrg1604508475381
     implements MigrationInterface {
     private _orgIdToOrganizations123ForeignKey = new TableForeignKey({
         name: 'fk_boardUserOrg_org',

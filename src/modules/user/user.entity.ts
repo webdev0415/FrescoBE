@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
@@ -24,6 +24,13 @@ export class UserEntity extends AbstractEntity<UserDto> {
 
     @Column({ nullable: true, name: 'googleId' })
     googleId: string;
+
+    @CreateDateColumn({
+        type: 'timestamp',
+        name: 'createdAt',
+        default: () => 'CURRENT_TIMESTAMP',
+    })
+    createdAt: Date;
 
     @OneToMany(
         (type) => UserToOrgEntity,

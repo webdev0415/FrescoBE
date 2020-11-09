@@ -35,20 +35,20 @@ export class BoardTable1604508123365 implements MigrationInterface {
                     type: 'longtext',
                     isNullable: false,
                 },
-                {
-                    name: 'createdAt',
-                    type: 'datetime',
-                    isPrimary: false,
-                    isNullable: true,
-                    default: 'CURRENT_TIMESTAMP',
-                },
-                {
-                    name: 'updatedAt',
-                    type: 'datetime',
-                    isPrimary: false,
-                    isNullable: true,
-                    default: 'CURRENT_TIMESTAMP',
-                },
+                // {
+                //     name: 'createdAt',
+                //     type: 'datetime',
+                //     isPrimary: false,
+                //     isNullable: true,
+                //     default: 'CURRENT_TIMESTAMP',
+                // },
+                // {
+                //     name: 'updatedAt',
+                //     type: 'datetime',
+                //     isPrimary: false,
+                //     isNullable: true,
+                //     default: 'CURRENT_TIMESTAMP',
+                // },
             ],
         });
         await queryRunner.createTable(table);
