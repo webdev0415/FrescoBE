@@ -14,7 +14,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
-import { BoardModule } from './modules/board/board.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
@@ -23,7 +22,7 @@ import { OrganizationModule } from './modules/organization/organization.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
-import { SocketModule } from './socket/socket.module';
+import { BoardModule } from './gateway/board/board.module';
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -40,7 +39,6 @@ import { SocketModule } from './socket/socket.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
-        SocketModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
