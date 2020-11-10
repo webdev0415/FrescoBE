@@ -23,7 +23,7 @@ import { OrganizationModule } from './modules/organization/organization.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
-
+import { SocketModule } from './socket/socket.module';
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -40,6 +40,7 @@ import { SharedModule } from './shared/shared.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
+        SocketModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
