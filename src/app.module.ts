@@ -20,6 +20,7 @@ import { DefaultTemplateModule } from './modules/default-template/default-templa
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
 import { OrganizationModule } from './modules/organization/organization.module';
+import { UploadImageModule } from './modules/upload/upload-image.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
@@ -40,6 +41,7 @@ import { SharedModule } from './shared/shared.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
+        UploadImageModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

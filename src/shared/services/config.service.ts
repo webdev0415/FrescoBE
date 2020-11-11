@@ -93,4 +93,12 @@ export class ConfigService {
             defaultFrom: this.get('SMTP_DEFAULT_FROM'),
         };
     }
+
+    get awsS3Config(): IAwsConfig {
+        return {
+            accessKeyId: this.get('AWS_S3_ACCESS_KEY_ID'),
+            secretAccessKey: this.get('AWS_S3_SECRET_ACCESS_KEY'),
+            bucketName: this.get('S3_BUCKET_NAME'),
+        };
+    }
 }
