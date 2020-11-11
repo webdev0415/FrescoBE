@@ -7,66 +7,71 @@ import {
     WebSocketGateway,
     WebSocketServer,
     WsResponse,
+    ConnectedSocket
 } from '@nestjs/websockets';
-import { BoardEventEnum } from '../../common/constants/board-event';
 import { Server, Socket } from 'socket.io';
-
+import { BoardEventEnum } from '../../common/constants/board-event';
 import { WsExceptionFilter } from '../../common/filters/ws-exception.filter';
 import { SocketGuard } from '../../guards/socket.guard';
-
-@UseGuards(SocketGuard)
+import { BoardEventDto } from './dto/board-event.dto';
+// @UseGuards(SocketGuard)
 @UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ namespace: '/board' })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
 
-    @SubscribeMessage('create')
-    create(@MessageBody() _data: any): WsResponse<any> {
-        return null;
-        // return this.boardcast(BoardEventEnum.CREATE, _data);
-        // return from([1, 2, 3]).pipe(
-        //     map((item) => ({ event: 'events', data: item })),
-        // );
+    @SubscribeMessage(BoardEventEnum.CREATE)
+    create(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+        this.boardcastToBoardId(client, BoardEventEnum.CREATE, data);
     }
 
-    @SubscribeMessage('joinBoard')
-    joinBoard(client: Socket, boardId: string): void {
+    @SubscribeMessage(BoardEventEnum.JOIN_BOARD)
+    joinBoard(@ConnectedSocket() client: Socket, @MessageBody() boardId: string): void {
         client.join(boardId);
-        client.emit('joinedBoard', boardId)
+        client.emit(BoardEventEnum.JOIN_BOARD, boardId);
     }
 
-    @SubscribeMessage('leaveBoard')
-    leaveBoard(client: Socket, boardId: string): void {
+    @SubscribeMessage(BoardEventEnum.LEAVE_BOARD)
+    leaveBoard(@ConnectedSocket() client: Socket, @MessageBody() boardId: string): void {
         client.leave(boardId);
-        client.emit('leftBoard', boardId)
+        client.emit(BoardEventEnum.LEAVE_BOARD, boardId);
     }
 
-    @SubscribeMessage('update')
-    update(@MessageBody() data: any): any {
-        console.log('1111');
-        return { event: 'events', data };
+    @SubscribeMessage(BoardEventEnum.UPDATE)
+    update(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+        this.boardcastToBoardId(client, BoardEventEnum.UPDATE, data);
     }
 
-    @SubscribeMessage('move')
-    move(@MessageBody() data: number): any {
-        return data;
+    @SubscribeMessage(BoardEventEnum.MOVE)
+    move(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+        this.boardcastToBoardId(client, BoardEventEnum.MOVE, data);
     }
 
-    @SubscribeMessage('delete')
-    delete(@MessageBody() data: number): any {
-        return data;
+    @SubscribeMessage(BoardEventEnum.DELETE)
+    delete(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+        this.boardcastToBoardId(client, BoardEventEnum.DELETE, data);
     }
 
-    async handleConnection() {
+    @SubscribeMessage(BoardEventEnum.UNLOCK)
+    unlock(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+        this.boardcastToBoardId(client, BoardEventEnum.UNLOCK, data);
+    }
+
+    @SubscribeMessage(BoardEventEnum.LOCK)
+    lock(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+        this.boardcastToBoardId(client, BoardEventEnum.LOCK, data);
+    }
+
+    handleConnection() {
         console.log('connected');
     }
 
-    async handleDisconnect() {
+    handleDisconnect() {
         console.log('disconnect');
     }
 
-    boardcast(eventName: string, boardId: string, data: any) {
-        return this.server.to(boardId).emit(eventName, data);
+    boardcastToBoardId(socket: Socket, eventName: string, data: BoardEventDto) {
+        socket.broadcast.to(data.boardId).emit(eventName, data.data);
     }
 }

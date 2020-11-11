@@ -10,7 +10,6 @@ export class WsExceptionFilter extends BaseWsExceptionFilter {
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     catch(exception: any, host: ArgumentsHost) {
-        console.log('222323232323232')
         const client: Socket = host.switchToWs().getClient();
         client.emit(this.event, exception);
 
