@@ -3,7 +3,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CreateCanvasDto {
+import { CategoryEntity } from '../../../modules/category/category.entity';
+
+export class CanvasInfoDto {
     @ApiPropertyOptional()
     @IsNotEmpty()
     name: string;
@@ -17,6 +19,5 @@ export class CreateCanvasDto {
     data: string;
 
     @ApiPropertyOptional()
-    @IsString()
-    categoryId: string;
+    category: CategoryEntity;
 }

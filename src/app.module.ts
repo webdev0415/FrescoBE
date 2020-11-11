@@ -15,6 +15,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
+import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
@@ -39,6 +40,7 @@ import { BoardModule } from './gateway/board/board.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
+        CategoryModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

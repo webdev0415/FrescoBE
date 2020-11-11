@@ -25,6 +25,12 @@ export class CanvasTable1604508401202 implements MigrationInterface {
                     isNullable: false,
                 },
                 {
+                    name: 'categoryId',
+                    type: 'varchar',
+                    isNullable: false,
+                    length: '36',
+                },
+                {
                     name: 'createdUserId',
                     type: 'varchar',
                     length: '36',

@@ -1,24 +1,12 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
-import { CanvasDto } from './dto/CanvasDto';
+import { CategoryDto } from './dto/CategoryDto';
 
-@Entity({ name: 'canvas' })
-export class CanvasEntity extends AbstractEntity<CanvasDto> {
+@Entity({ name: 'category' })
+export class CategoryEntity extends AbstractEntity<CategoryDto> {
     @Column({})
     name: string;
-
-    @Column({ name: 'orgId' })
-    orgId: string;
-
-    @Column({ name: 'createdUserId' })
-    createdUserId: string;
-
-    @Column({})
-    data: string;
-
-    @Column({ name: 'categoryId' })
-    categoryId: string;
 
     @CreateDateColumn({
         type: 'timestamp',
@@ -34,5 +22,5 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     })
     updatedAt: Date;
 
-    dtoClass = CanvasDto;
+    dtoClass = CategoryDto;
 }
