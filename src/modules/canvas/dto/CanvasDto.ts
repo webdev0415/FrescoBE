@@ -18,11 +18,15 @@ export class CanvasDto extends AbstractDto {
     @ApiPropertyOptional()
     data: string;
 
+    @ApiPropertyOptional()
+    categoryId: string;
+
     constructor(canvasEntity: CanvasEntity) {
         super(canvasEntity);
         this.name = canvasEntity.name;
         this.createdUserId = canvasEntity.createdUserId;
         this.orgId = canvasEntity.orgId;
         this.data = canvasEntity.data;
+        this.categoryId = canvasEntity.categoryId;
     }
 }

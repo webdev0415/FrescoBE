@@ -17,6 +17,9 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     @Column({})
     data: string;
 
+    @Column({ name: 'categoryId' })
+    categoryId: string;
+
     @CreateDateColumn({
         type: 'timestamp',
         name: 'createdAt',
