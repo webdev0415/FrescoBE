@@ -16,6 +16,7 @@ import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { BoardModule } from './modules/board/board.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
+import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
@@ -40,6 +41,7 @@ import { SharedModule } from './shared/shared.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
+        CategoryModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
