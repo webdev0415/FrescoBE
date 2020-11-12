@@ -36,9 +36,7 @@ export class AuthService {
 
     // eslint-disable-next-line complexity
     async validateUser(userLoginDto: UserLoginDto): Promise<UserEntity> {
-        const user = await this.userService.findOne({
-            email: userLoginDto.email,
-        });
+        const user = await this.getUserByEmail(userLoginDto.email);
         const isPasswordValid = await UtilsService.validateHash(
             userLoginDto.password,
             user && user.password,
@@ -47,6 +45,12 @@ export class AuthService {
             throw new UserNotFoundException();
         }
         return user;
+    }
+
+     async getUserByEmail(email: string) {
+        return await this.userService.findOne({
+            email: email,
+        });
     }
 
     static setAuthUser(user: UserEntity) {

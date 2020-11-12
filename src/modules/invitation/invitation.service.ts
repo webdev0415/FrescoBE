@@ -56,6 +56,7 @@ export class InvitationService {
             throw new UnauthorizedException();
         }
 
+
         const isExisted = await this.invitationRepository.find({
             where: {
                 orgId: invitationDto.orgId,
@@ -67,10 +68,12 @@ export class InvitationService {
             throw new ConflictException();
         }
 
+        let existingUser=await this.authService.getUserByEmail(invitationDto.toEmail);
+
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId = invitationDto.toUserId;
+        invitationModel.toUserId =existingUser? existingUser.id: invitationDto.toUserId;
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
         invitationModel.token = invitationDto.token;
@@ -141,11 +144,11 @@ export class InvitationService {
         return invitation;
     }
 
-    async checkValidToken(token: string): Promise<InvitationEntity> {
+    async checkValidToken(token: string,): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
-                token,
-                verified: false,
+                token
+               // verified: false,
             },
             relations: ['userInvite'],
         });
