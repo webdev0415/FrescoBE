@@ -77,7 +77,7 @@ export class CanvasService {
         canvasModel.createdUserId = userId;
         canvasModel.data = createCanvasDto.data || '';
         canvasModel.categoryId = createCanvasDto.categoryId;
-        canvasModel.image = createCanvasDto.image;
+        canvasModel.imageId = createCanvasDto.imageId;
 
         return this.canvasRepository.save(canvasModel);
     }

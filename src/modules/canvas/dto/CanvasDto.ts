@@ -19,7 +19,7 @@ export class CanvasDto extends AbstractDto {
     data: string;
 
     @ApiPropertyOptional()
-    image: string;
+    imageId: string;
 
     @ApiPropertyOptional()
     categoryId: string;
@@ -31,6 +31,6 @@ export class CanvasDto extends AbstractDto {
         this.orgId = canvasEntity.orgId;
         this.data = canvasEntity.data;
         this.categoryId = canvasEntity.categoryId;
-        this.image = canvasEntity.image;
+        this.imageId = canvasEntity.imageId;
     }
 }

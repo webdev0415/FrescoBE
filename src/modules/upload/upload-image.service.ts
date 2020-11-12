@@ -56,7 +56,7 @@ export class UploadImageService {
             });
             const image = await this.uploadImageRepository.findOne({
                 where: {
-                    id: canvas.image,
+                    id: canvas.imageId,
                 },
             });
 
@@ -68,9 +68,17 @@ export class UploadImageService {
                 path = await this.awsS3Service.uploadImage(file);
             }
 
-            image.updatedAt = new Date();
-            image.path = path;
-            return this.uploadImageRepository.save(image);
+            if (image) {
+                image.updatedAt = new Date();
+                image.path = path;
+                return this.uploadImageRepository.save(image);
+            }
+            const uploadImageModel = new UploadImageEntity();
+            uploadImageModel.type = uploadImageDto.type;
+            uploadImageModel.createdAt = new Date();
+            uploadImageModel.updatedAt = new Date();
+            uploadImageModel.path = path;
+            return this.uploadImageRepository.save(uploadImageModel);
         }
     }
 }

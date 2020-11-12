@@ -18,7 +18,7 @@ export class CreateCanvasDto {
 
     @ApiPropertyOptional()
     @IsString()
-    image: string;
+    imageId: string;
 
     @ApiPropertyOptional()
     @IsString()
