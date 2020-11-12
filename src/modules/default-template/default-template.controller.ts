@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
@@ -18,6 +19,7 @@ import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.se
 import { DefaultTemplateService } from './default-template.service';
 import { CreateDefaultTemplateDto } from './dto/CreateDefaultTemplateDto';
 import { DefaultTemplateDto } from './dto/DefaultTemplateDto';
+import { DefaultTemplateInfoDto } from './dto/DefaultTemplateInfoDto';
 import { DeleteDefaultTemplateDto } from './dto/DeleteDefaultTemplateDto';
 import { UpdateDefaultTemplateDto } from './dto/UpdateDefaultTemplateDto';
 
@@ -36,9 +38,9 @@ export class DefaultTemplateController {
         type: DefaultTemplateDto,
         description: 'get list default_template',
     })
-    async get(): Promise<DefaultTemplateDto[]> {
+    async get(): Promise<DefaultTemplateInfoDto[]> {
         const defaultTemplate = await this.defaultTemplateService.get();
-        return defaultTemplate.map((item) => item.toDto());
+        return defaultTemplate;
     }
 
     @Post('')

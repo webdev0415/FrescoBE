@@ -1,11 +1,11 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-export class UpdateDefaultTemplateDto {
-    id: string;
+import { CategoryEntity } from '../../../modules/category/category.entity';
 
+export class DefaultTemplateInfoDto {
     @ApiPropertyOptional()
     @IsNotEmpty()
     name: string;
@@ -15,6 +15,5 @@ export class UpdateDefaultTemplateDto {
     data: string;
 
     @ApiPropertyOptional()
-    @IsString()
-    categoryId: string;
+    category: CategoryEntity;
 }
