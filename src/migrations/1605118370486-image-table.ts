@@ -20,7 +20,8 @@ export class ImageTable1605118370486 implements MigrationInterface {
                 },
                 {
                     name: 'path',
-                    type: 'longtext',
+                    type: 'varchar',
+                    length: '225',
                     isNullable: false,
                 },
                 {
@@ -33,14 +34,12 @@ export class ImageTable1605118370486 implements MigrationInterface {
                     type: 'datetime',
                     isPrimary: false,
                     isNullable: true,
-                    default: 'CURRENT_TIMESTAMP',
                 },
                 {
                     name: 'updatedAt',
                     type: 'datetime',
                     isPrimary: false,
                     isNullable: true,
-                    default: 'CURRENT_TIMESTAMP',
                 },
             ],
         });
