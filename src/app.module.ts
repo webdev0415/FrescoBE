@@ -12,10 +12,12 @@ import {
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { BoardGatewayModule } from './gateway/board/board.gateway.module';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { BoardModule } from './modules/board/board.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
+import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
@@ -24,7 +26,6 @@ import { UploadImageModule } from './modules/upload/upload-image.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
-
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -38,10 +39,12 @@ import { SharedModule } from './shared/shared.module';
         MailModule,
         InvitationModule,
         OrganizationModule,
+        BoardGatewayModule,
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
         UploadImageModule,
+        CategoryModule,
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>

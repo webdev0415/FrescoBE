@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
@@ -19,6 +20,7 @@ import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.se
 import { UserEntity } from '../user/user.entity';
 import { CanvasService } from './canvas.service';
 import { CanvasDto } from './dto/CanvasDto';
+import { CanvasInfoDto } from './dto/CanvasInfoDto';
 import { CreateCanvasDto } from './dto/CreateCanvasDto';
 import { DeleteCanvasDto } from './dto/DeleteCanvasDto';
 import { UpdateCanvasDto } from './dto/UpdateCanvasDto';
@@ -36,9 +38,9 @@ export class CanvasController {
         type: CanvasDto,
         description: 'get detail canvas',
     })
-    async getCanvas(@Param('id') id: string): Promise<CanvasDto> {
-        const canvases = await this.canvasService.getById(id);
-        return canvases.toDto();
+    async getCanvas(@Param('id') id: string): Promise<CanvasInfoDto> {
+        const canvas = await this.canvasService.getById(id);
+        return canvas;
     }
 
     @Get('organization/:orgId')
@@ -46,9 +48,10 @@ export class CanvasController {
         type: CanvasDto,
         description: 'get list canvas by orgId',
     })
-    async get(@Param('orgId') orgId: string): Promise<CanvasDto[]> {
+    async get(@Param('orgId') orgId: string): Promise<CanvasInfoDto[]> {
+        console.log('SDSDSDSDSD');
         const canvases = await this.canvasService.getByOrgId(orgId);
-        return canvases.map((item) => item.toDto());
+        return canvases;
     }
 
     @Post('')
