@@ -1,24 +1,19 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
-export class UpdateCanvasDto {
-    id: string;
+import { CategoryEntity } from '../../../modules/category/category.entity';
 
+export class DefaultTemplateInfoDto {
     @ApiPropertyOptional()
     @IsNotEmpty()
     name: string;
 
     @ApiPropertyOptional()
     @IsNotEmpty()
-    orgId: string;
-
-    @ApiPropertyOptional()
-    @IsString()
     data: string;
 
     @ApiPropertyOptional()
-    @IsString()
-    imageId: string;
+    category: CategoryEntity;
 }
