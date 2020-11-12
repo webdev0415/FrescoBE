@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { UserToOrgRepository } from '../user-org/user-org.repository';
 import { CanvasController } from './canvas.controller';
 import { CanvasRepository } from './canvas.repository';
@@ -13,6 +14,7 @@ import { CanvasService } from './canvas.service';
             UserToOrgRepository,
             CanvasRepository,
             CategoryRepository,
+            UploadImageRepository,
         ]),
     ],
     controllers: [CanvasController],

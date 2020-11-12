@@ -4,6 +4,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 import { CategoryEntity } from '../../../modules/category/category.entity';
+import { UploadImageEntity } from '../../../modules/upload/upload-image.entity';
 
 export class CanvasInfoDto {
     @ApiPropertyOptional()
@@ -24,4 +25,7 @@ export class CanvasInfoDto {
 
     @ApiPropertyOptional()
     category: CategoryEntity;
+
+    @ApiPropertyOptional()
+    image: UploadImageEntity;
 }

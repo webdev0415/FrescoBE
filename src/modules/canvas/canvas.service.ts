@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
 import { CanvasEntity } from './canvas.entity';
 import { CanvasRepository } from './canvas.repository';
@@ -16,6 +17,7 @@ export class CanvasService {
         public readonly canvasRepository: CanvasRepository,
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly categoryRepository: CategoryRepository,
+        public readonly uploadImageRepository: UploadImageRepository,
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -45,7 +47,12 @@ export class CanvasService {
                 id: canvas.categoryId,
             },
         });
-        return { ...canvas, category };
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: canvas.imageId,
+            },
+        });
+        return { ...canvas, category, image };
     }
 
     async getByOrgId(orgId: string): Promise<CanvasInfoDto[]> {
@@ -61,7 +68,12 @@ export class CanvasService {
                     id: canvas.categoryId,
                 },
             });
-            listCanvasInfo.push({ ...canvas, category });
+            const image = await this.uploadImageRepository.findOne({
+                where: {
+                    id: canvas.imageId,
+                },
+            });
+            listCanvasInfo.push({ ...canvas, category, image });
         }
         return listCanvasInfo;
     }
