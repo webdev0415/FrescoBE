@@ -19,5 +19,9 @@ export class CanvasInfoDto {
     data: string;
 
     @ApiPropertyOptional()
+    @IsString()
+    image: string;
+
+    @ApiPropertyOptional()
     category: CategoryEntity;
 }

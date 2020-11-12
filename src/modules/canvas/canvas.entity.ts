@@ -17,6 +17,9 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     @Column({})
     data: string;
 
+    @Column({})
+    image: string;
+
     @Column({ name: 'categoryId' })
     categoryId: string;
 
