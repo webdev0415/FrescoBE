@@ -1,12 +1,15 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
     Controller,
     Param,
     Post,
+    UploadedFile,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthGuard } from '../../guards/auth.guard';
@@ -16,27 +19,29 @@ import { IFile } from '../../interfaces/IFile';
 import { UploadImageDto } from './dto/UploadImageDto';
 import { UploadImageService } from './upload-image.service';
 
-@Controller('upload-image')
-@ApiTags('upload-image')
+@Controller('upload')
+@ApiTags('upload')
 @UseGuards(AuthGuard, RolesGuard)
 @UseInterceptors(AuthUserInterceptor)
 @ApiBearerAuth()
 export class UploadImageController {
-    constructor(public readonly defaultTemplateService: UploadImageService) {}
+    constructor(public readonly uploadImageService: UploadImageService) {}
 
     @Post('/image/:type')
     @ApiOkResponse({
         type: UploadImageDto,
         description: 'create upload image',
     })
-    async create(
+    @UseInterceptors(FileInterceptor('file'))
+    async uploadFile(
         @Param('type') typeUpload: string,
-        @Body() file: IFile,
+        @UploadedFile() file: IFile,
     ): Promise<UploadImageDto> {
-        const defaultTemplate = await this.defaultTemplateService.create(
+        // console.log('file', file);
+        const uploadImage = await this.uploadImageService.create(
             { type: typeUpload },
             file,
         );
-        return defaultTemplate.toDto();
+        return uploadImage;
     }
 }

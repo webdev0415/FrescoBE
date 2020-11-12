@@ -12,9 +12,9 @@ export class UploadImageDto extends AbstractDto {
     @ApiPropertyOptional()
     path: string;
 
-    constructor(defaultTemplateEntity: UploadImageEntity) {
-        super(defaultTemplateEntity);
-        this.type = defaultTemplateEntity.type;
-        this.path = defaultTemplateEntity.path;
+    constructor(uploadImageEntity: UploadImageEntity) {
+        super(uploadImageEntity);
+        this.type = uploadImageEntity.type;
+        this.path = uploadImageEntity.path;
     }
 }

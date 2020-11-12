@@ -11,18 +11,21 @@ import { UploadImageRepository } from './upload-image.repository';
 @Injectable()
 export class UploadImageService {
     constructor(
-        public readonly defaultTemplateRepository: UploadImageRepository,
+        public readonly uploadImageRepository: UploadImageRepository,
         public readonly validatorService: ValidatorService,
         public readonly awsS3Service: AwsS3Service,
     ) {}
 
     // eslint-disable-next-line complexity
     async create(
-        defaultTemplateDto: CreateUploadImageDto,
+        uploadImageDto: CreateUploadImageDto,
         file: IFile,
     ): Promise<UploadImageEntity> {
-        const defaultTemplateModel = new UploadImageEntity();
-        defaultTemplateModel.type = defaultTemplateDto.type;
+        // console.log(file);
+        const uploadImageModel = new UploadImageEntity();
+        uploadImageModel.type = uploadImageDto.type;
+        uploadImageModel.createdAt = new Date();
+        uploadImageModel.updatedAt = new Date();
         let path: string;
         if (file && !this.validatorService.isImage(file.mimetype)) {
             throw new FileNotImageException();
@@ -31,8 +34,8 @@ export class UploadImageService {
         if (file) {
             path = await this.awsS3Service.uploadImage(file);
         }
-        return this.defaultTemplateRepository.save({
-            ...defaultTemplateModel,
+        return this.uploadImageRepository.save({
+            ...uploadImageModel,
             path,
         });
     }

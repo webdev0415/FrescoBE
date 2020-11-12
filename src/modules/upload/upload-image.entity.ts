@@ -3,7 +3,7 @@ import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 import { AbstractEntity } from '../../common/abstract.entity';
 import { UploadImageDto } from './dto/UploadImageDto';
 
-@Entity({ name: 'default_template' })
+@Entity({ name: 'image' })
 export class UploadImageEntity extends AbstractEntity<UploadImageDto> {
     @Column({})
     type: string;

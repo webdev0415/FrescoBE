@@ -10,6 +10,7 @@ import {
     NestModule,
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BoardGatewayModule } from './gateway/board/board.gateway.module';
@@ -45,6 +46,9 @@ import { SharedModule } from './shared/shared.module';
         CanvasModule,
         UploadImageModule,
         CategoryModule,
+        MulterModule.register({
+            dest: './upload',
+        }),
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
