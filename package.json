@@ -10,7 +10,7 @@
         "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
         "start:dev": "ts-node src/main.ts",
         "start:prod": "node dist/main.js",
-        "heroku-postbuild": "npm run build:prod",
+        "heroku-postbuild": "npm run build:prod && npm run migration:run",
         "start": "node dist/main.js",
         "typeorm": "ts-node node_modules/typeorm/cli.js  -f ormconfig",
         "migration:generate": "yarn run typeorm migration:generate -d src/migrations -n",
