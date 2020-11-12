@@ -31,16 +31,15 @@ export class AwsS3Service {
         const fileName = this.generatorService.fileName(
             <string>mime.extension(file.mimetype),
         );
-        const key = 'images/' + fileName;
         await this._s3
             .putObject({
                 Bucket: this.configService.awsS3Config.bucketName,
                 Body: file.buffer,
                 ACL: 'public-read',
-                Key: key,
+                Key: fileName,
             })
             .promise();
 
-        return key;
+        return fileName;
     }
 }
