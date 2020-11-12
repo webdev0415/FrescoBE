@@ -36,6 +36,6 @@ export class AwsS3Service {
                 ContentType: 'image/jpeg',
             })
             .promise();
-        return key;
+        return `${this.configService.baseLink}${key}`;
     }
 }

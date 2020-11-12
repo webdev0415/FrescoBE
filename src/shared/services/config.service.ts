@@ -101,4 +101,8 @@ export class ConfigService {
             bucketName: this.get('S3_BUCKET_NAME'),
         };
     }
+
+    get baseLink(): string {
+        return this.get('S3_BASELINK');
+    }
 }
