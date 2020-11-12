@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
-    Body,
     Controller,
     Param,
     Post,
+    Put,
     UploadedFile,
     UseGuards,
     UseInterceptors,
@@ -43,5 +43,25 @@ export class UploadImageController {
             file,
         );
         return uploadImage;
+    }
+
+    @Put('/image/:type/:id')
+    @ApiOkResponse({
+        type: UploadImageDto,
+        description: 'create upload image',
+    })
+    @UseInterceptors(FileInterceptor('file'))
+    async updateImage(
+        @Param('type') typeUpload: string,
+        @Param('id') id: string,
+        @UploadedFile() file: IFile,
+    ): Promise<UploadImageDto> {
+        // console.log('file', file);
+        const uploadImage = await this.uploadImageService.update(
+            { type: typeUpload },
+            id,
+            file,
+        );
+        return uploadImage.toDto();
     }
 }
