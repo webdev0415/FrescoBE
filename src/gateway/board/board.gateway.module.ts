@@ -8,4 +8,4 @@ import { BoardGateway } from './board.gateway';
     imports: [forwardRef(() => UserModule)],
     providers: [BoardGateway],
 })
-export class BoardModule {}
+export class BoardGatewayModule {}

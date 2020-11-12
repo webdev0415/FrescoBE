@@ -23,7 +23,8 @@ import { OrganizationModule } from './modules/organization/organization.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
-import { BoardModule } from './gateway/board/board.module';
+import { BoardGatewayModule } from './gateway/board/board.gateway.module';
+import { BoardModule } from './modules/board/board.module';
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -37,6 +38,7 @@ import { BoardModule } from './gateway/board/board.module';
         MailModule,
         InvitationModule,
         OrganizationModule,
+        BoardGatewayModule,
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,

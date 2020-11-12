@@ -49,6 +49,7 @@ export class CanvasController {
         description: 'get list canvas by orgId',
     })
     async get(@Param('orgId') orgId: string): Promise<CanvasInfoDto[]> {
+        console.log('SDSDSDSDSD');
         const canvases = await this.canvasService.getByOrgId(orgId);
         return canvases;
     }
