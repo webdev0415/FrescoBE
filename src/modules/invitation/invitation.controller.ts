@@ -60,7 +60,7 @@ export class InvitationController {
         @Param('id') token: string,
         @Body() invitationDto: InvitationDto,
     ): Promise<InvitationDto> {
-        return this.invitationService.resendInvitation(token, invitationDto);
+        return this.invitationService.resendInvitation(token);
     }
 
     @Get('check/:token')

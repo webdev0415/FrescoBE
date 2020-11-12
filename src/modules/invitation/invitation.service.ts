@@ -57,15 +57,19 @@ export class InvitationService {
         }
 
 
-        const isExisted = await this.invitationRepository.find({
+        const isExisted = await this.invitationRepository.findOne({
             where: {
                 orgId: invitationDto.orgId,
-                toEmail: invitationDto.toEmail,
+                toEmail: invitationDto.toEmail
             },
         });
 
-        if (isExisted && isExisted.length > 0) {
-            throw new ConflictException();
+        if (isExisted) {
+
+            await this.resendInvitation(isExisted.id)
+
+           // throw new ConflictException();
+            return  isExisted;
         }
 
         let existingUser=await this.authService.getUserByEmail(invitationDto.toEmail);
@@ -104,22 +108,16 @@ export class InvitationService {
     }
 
     async resendInvitation(
-        id: string,
-        invitationDto: InvitationDto,
+        id: string
     ): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
                 id,
-                token: invitationDto.token,
                 verified: false,
             },
         });
 
-        invitation.orgId = invitation.orgId;
-        invitation.fromUserId = invitation.fromUserId;
-        invitation.toEmail = invitation.toEmail;
-        invitation.permission = invitation.permission;
-        invitation.token = invitation.token;
+
         invitation.verified = false;
 
         await this.invitationRepository.save(invitation);
@@ -139,7 +137,7 @@ export class InvitationService {
                 email: invitationOrg.toEmail,
                 organizationName: invitationOrg.organization?.name,
             },
-            invitationDto.token,
+            invitation.token,
         );
         return invitation;
     }
