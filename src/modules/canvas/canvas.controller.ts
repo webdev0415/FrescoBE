@@ -61,12 +61,12 @@ export class CanvasController {
     async create(
         @AuthUser() user: UserEntity,
         @Body() createCanvasDto: CreateCanvasDto,
-    ): Promise<CanvasDto> {
+    ): Promise<CreateCanvasDto> {
         const canvas = await this.canvasService.create(
             user.id,
             createCanvasDto,
         );
-        return canvas.toDto();
+        return canvas;
     }
 
     @Put(':id')

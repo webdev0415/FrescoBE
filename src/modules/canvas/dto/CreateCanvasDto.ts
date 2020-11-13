@@ -1,7 +1,9 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+import { UploadImageEntity } from '../../../modules/upload/upload-image.entity';
 
 export class CreateCanvasDto {
     @ApiPropertyOptional()
@@ -23,4 +25,8 @@ export class CreateCanvasDto {
     @ApiPropertyOptional()
     @IsString()
     categoryId: string;
+
+    @ApiPropertyOptional()
+    @IsOptional()
+    image: UploadImageEntity;
 }
