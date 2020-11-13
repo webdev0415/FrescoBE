@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -42,6 +46,9 @@ export class CanvasService {
                 id,
             },
         });
+        if (!canvas) {
+            throw new NotFoundException();
+        }
         const category = await this.categoryRepository.findOne({
             where: {
                 id: canvas.categoryId,
