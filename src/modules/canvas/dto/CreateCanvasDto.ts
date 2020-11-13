@@ -26,7 +26,6 @@ export class CreateCanvasDto {
     @IsString()
     categoryId: string;
 
-    @ApiPropertyOptional()
     @IsOptional()
     image: UploadImageEntity;
 }

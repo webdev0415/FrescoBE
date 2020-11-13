@@ -106,7 +106,9 @@ export class CanvasService {
 
         const canvasCreated = await this.canvasRepository.save(canvasModel);
 
-        return { ...canvasCreated, image };
+        const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
+        canvasCreatedDto.image = image.toDto();
+        return canvasCreatedDto;
     }
 
     async update(
