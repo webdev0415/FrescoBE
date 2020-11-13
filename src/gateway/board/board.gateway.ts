@@ -16,7 +16,7 @@ import { SocketGuard } from '../../guards/socket.guard';
 import { BoardEventDto } from './dto/board-event.dto';
 // @UseGuards(SocketGuard)
 @UseFilters(new WsExceptionFilter())
-@WebSocketGateway({ namespace: '/board' })
+@WebSocketGateway({ namespace: '/board', transports: ['websocket'] })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server;
@@ -72,6 +72,9 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     boardcastToBoardId(socket: Socket, eventName: string, data: BoardEventDto) {
-        socket.broadcast.to(data.boardId).emit(eventName, data.data);
+        socket.broadcast.to(data.boardId).emit(eventName, {
+          data,
+          socketId: socket.id
+        });
     }
 }
