@@ -16,6 +16,7 @@ export class UpdateCanvasDto {
 
     @ApiPropertyOptional()
     @IsString()
+    @IsOptional()
     data: string;
 
     @ApiPropertyOptional()
