@@ -60,7 +60,7 @@ export class InvitationService {
         const isExisted = await this.invitationRepository.findOne({
             where: {
                 orgId: invitationDto.orgId,
-                toEmail: invitationDto.toEmail
+                toEmail: invitationDto.toEmail,verified:false
             },
         });
 
