@@ -1,27 +1,15 @@
 import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
-import { CanvasDto } from './dto/CanvasDto';
+import { UploadImageDto } from './dto/UploadImageDto';
 
-@Entity({ name: 'canvas' })
-export class CanvasEntity extends AbstractEntity<CanvasDto> {
+@Entity({ name: 'image' })
+export class UploadImageEntity extends AbstractEntity<UploadImageDto> {
     @Column({})
-    name: string;
-
-    @Column({ name: 'orgId' })
-    orgId: string;
-
-    @Column({ name: 'createdUserId' })
-    createdUserId: string;
+    type: string;
 
     @Column({})
-    data: string;
-
-    @Column({ name: 'imageId' })
-    imageId: string;
-
-    @Column({ name: 'categoryId' })
-    categoryId: string;
+    path: string;
 
     @CreateDateColumn({
         type: 'timestamp',
@@ -37,5 +25,5 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
     })
     updatedAt: Date;
 
-    dtoClass = CanvasDto;
+    dtoClass = UploadImageDto;
 }

@@ -10,21 +10,23 @@ import {
     NestModule,
 } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { BoardGatewayModule } from './gateway/board/board.gateway.module';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
+import { BoardModule } from './modules/board/board.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
 import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
 import { OrganizationModule } from './modules/organization/organization.module';
+import { UploadImageModule } from './modules/upload/upload-image.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
-import { BoardGatewayModule } from './gateway/board/board.gateway.module';
-import { BoardModule } from './modules/board/board.module';
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -42,7 +44,11 @@ import { BoardModule } from './modules/board/board.module';
         BoardModule,
         DefaultTemplateModule,
         CanvasModule,
+        UploadImageModule,
         CategoryModule,
+        MulterModule.register({
+            dest: './upload',
+        }),
         TypeOrmModule.forRootAsync({
             imports: [SharedModule],
             useFactory: (configService: ConfigService) =>
