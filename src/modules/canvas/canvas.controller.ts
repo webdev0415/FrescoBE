@@ -49,7 +49,6 @@ export class CanvasController {
         description: 'get list canvas by orgId',
     })
     async get(@Param('orgId') orgId: string): Promise<CanvasInfoDto[]> {
-        console.log('SDSDSDSDSD');
         const canvases = await this.canvasService.getByOrgId(orgId);
         return canvases;
     }
@@ -62,12 +61,12 @@ export class CanvasController {
     async create(
         @AuthUser() user: UserEntity,
         @Body() createCanvasDto: CreateCanvasDto,
-    ): Promise<CanvasDto> {
+    ): Promise<CreateCanvasDto> {
         const canvas = await this.canvasService.create(
             user.id,
             createCanvasDto,
         );
-        return canvas.toDto();
+        return canvas;
     }
 
     @Put(':id')

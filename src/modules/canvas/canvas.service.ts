@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -42,6 +46,9 @@ export class CanvasService {
                 id,
             },
         });
+        if (!canvas) {
+            throw new NotFoundException();
+        }
         const category = await this.categoryRepository.findOne({
             where: {
                 id: canvas.categoryId,
@@ -81,7 +88,7 @@ export class CanvasService {
     async create(
         userId: string,
         createCanvasDto: CreateCanvasDto,
-    ): Promise<CanvasEntity> {
+    ): Promise<CreateCanvasDto> {
         await this.isAdminOrEditor(userId, createCanvasDto.orgId);
         const canvasModel = new CanvasEntity();
         canvasModel.name = createCanvasDto.name;
@@ -91,7 +98,17 @@ export class CanvasService {
         canvasModel.categoryId = createCanvasDto.categoryId;
         canvasModel.imageId = createCanvasDto.imageId;
 
-        return this.canvasRepository.save(canvasModel);
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: createCanvasDto.imageId,
+            },
+        });
+
+        const canvasCreated = await this.canvasRepository.save(canvasModel);
+
+        const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
+        canvasCreatedDto.image = image.toDto();
+        return canvasCreatedDto;
     }
 
     async update(
