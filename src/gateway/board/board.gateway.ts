@@ -72,9 +72,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     boardcastToBoardId(socket: Socket, eventName: string, data: BoardEventDto) {
-        socket.broadcast.to(data.boardId).emit(eventName, {
-          data,
-          socketId: socket.id
-        });
+        socket.broadcast.to(data.boardId).emit(eventName, data.data);
     }
 }
