@@ -56,21 +56,28 @@ export class InvitationService {
             throw new UnauthorizedException();
         }
 
-        const isExisted = await this.invitationRepository.find({
+
+        const isExisted = await this.invitationRepository.findOne({
             where: {
                 orgId: invitationDto.orgId,
-                toEmail: invitationDto.toEmail,
+                toEmail: invitationDto.toEmail,verified:false
             },
         });
 
-        if (isExisted && isExisted.length > 0) {
-            throw new ConflictException();
+        if (isExisted) {
+
+            await this.resendInvitation(isExisted.id)
+
+           // throw new ConflictException();
+            return  isExisted;
         }
+
+        let existingUser=await this.authService.getUserByEmail(invitationDto.toEmail);
 
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId = invitationDto.toUserId;
+        invitationModel.toUserId =existingUser? existingUser.id: invitationDto.toUserId;
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
         invitationModel.token = invitationDto.token;
@@ -101,22 +108,16 @@ export class InvitationService {
     }
 
     async resendInvitation(
-        id: string,
-        invitationDto: InvitationDto,
+        id: string
     ): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
                 id,
-                token: invitationDto.token,
                 verified: false,
             },
         });
 
-        invitation.orgId = invitation.orgId;
-        invitation.fromUserId = invitation.fromUserId;
-        invitation.toEmail = invitation.toEmail;
-        invitation.permission = invitation.permission;
-        invitation.token = invitation.token;
+
         invitation.verified = false;
 
         await this.invitationRepository.save(invitation);
@@ -133,19 +134,19 @@ export class InvitationService {
         // send mail
         await this.mailService.sendInvitationEmail(
             {
-                email: invitationOrg.toEmail,
+                email: invitation.toEmail,
                 organizationName: invitationOrg.organization?.name,
             },
-            invitationDto.token,
+            invitation.token,
         );
         return invitation;
     }
 
-    async checkValidToken(token: string): Promise<InvitationEntity> {
+    async checkValidToken(token: string,): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
-                token,
-                verified: false,
+                token
+               // verified: false,
             },
             relations: ['userInvite'],
         });

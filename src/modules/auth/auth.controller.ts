@@ -36,6 +36,7 @@ import { LoginPayloadDto } from './dto/LoginPayloadDto';
 import { TokenPayloadDto } from './dto/TokenPayloadDto';
 import { UserLoginDto } from './dto/UserLoginDto';
 import { UserRegisterDto } from './dto/UserRegisterDto';
+import {ResendConfirmationEmail} from "./dto/ResendConfirmationEmail";
 
 @Controller('auth')
 @ApiTags('auth')
@@ -131,6 +132,33 @@ export class AuthController {
 
         return createdUser.toDto();
     }
+
+
+    @Post('resendConfirmationEmail')
+    @HttpCode(HttpStatus.OK)
+    async resendConfirmationEmail(
+        @Body() userRegisterDto: ResendConfirmationEmail,
+        // @UploadedFile() file: IFile,
+    ): Promise<UserDto> {
+        console.log(userRegisterDto)
+        const isExists = await this.authService.getUserByEmail(
+            userRegisterDto.email,
+        );
+        console.log(isExists)
+        if (!isExists) {
+            throw new NotFoundException();
+        }
+
+
+
+        const code = v4();
+        await this._cacheManager.set(code, isExists.id, { ttl: 3600 });
+
+        await this.mailService.sendConfirmationEmail(isExists, code);
+
+        return isExists.toDto();
+    }
+
 
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     @Get('me')
