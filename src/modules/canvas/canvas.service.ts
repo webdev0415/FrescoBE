@@ -131,6 +131,7 @@ export class CanvasService {
         }
         canvas.name = updateCanvasDto.name;
         canvas.data = updateCanvasDto.data;
+        canvas.categoryId = updateCanvasDto.categoryId;
         canvas.imageId = updateCanvasDto.imageId;
 
         const image = await this.uploadImageRepository.findOne({
