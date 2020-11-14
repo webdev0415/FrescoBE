@@ -1,7 +1,7 @@
 'use strict';
 
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateBoardDto {
     id: string;
@@ -19,10 +19,10 @@ export class UpdateBoardDto {
     data: string;
 
     @ApiPropertyOptional()
-    @IsOptional()
+    @IsString()
     categoryId: string;
 
     @ApiPropertyOptional()
-    @IsOptional()
+    @IsString()
     imageId: string;
 }
