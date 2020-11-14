@@ -1,11 +1,18 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
 import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
+import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
 import { BoardEntity } from './board.entity';
 import { BoardRepository } from './board.repository';
+import { BoardInfoDto } from './dto/BoardInfoDto';
 import { CreateBoardDto } from './dto/CreateBoardDto';
 import { DeleteBoardDto } from './dto/DeleteBoardDto';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
@@ -16,6 +23,8 @@ export class BoardService {
         public readonly boardRepository: BoardRepository,
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
+        public readonly uploadImageRepository: UploadImageRepository,
+        public readonly categoryRepository: CategoryRepository,
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -45,26 +54,62 @@ export class BoardService {
         return userToOrg;
     }
 
-    async getById(id: string): Promise<BoardEntity> {
-        return this.boardRepository.findOne({
+    async getById(id: string): Promise<BoardInfoDto> {
+        const board = await this.boardRepository.findOne({
             where: {
                 id,
             },
         });
+
+        const category = await this.categoryRepository.findOne({
+            where: {
+                id: board.categoryId,
+            },
+        });
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: board.imageId,
+            },
+        });
+
+        const boardDto = board.toDto() as BoardInfoDto;
+        boardDto.category = category.toDto();
+        boardDto.path = image?.path || '';
+        return boardDto;
     }
 
     async getByOrgId(orgId: string): Promise<BoardEntity[]> {
-        return this.boardRepository.find({
+        const listBoardInfo = [];
+        const boards = await this.boardRepository.find({
             where: {
                 orgId,
             },
         });
+
+        for (const board of boards) {
+            const category = await this.categoryRepository.findOne({
+                where: {
+                    id: board.categoryId,
+                },
+            });
+            const image = await this.uploadImageRepository.findOne({
+                where: {
+                    id: board.imageId,
+                },
+            });
+
+            const boardDto = board.toDto() as BoardInfoDto;
+            boardDto.category = category.toDto();
+            boardDto.path = image?.path || '';
+            listBoardInfo.push(boardDto);
+        }
+        return listBoardInfo;
     }
 
     async create(
         userId: string,
         createBoardDto: CreateBoardDto,
-    ): Promise<BoardEntity> {
+    ): Promise<CreateBoardDto> {
         await this.isAdminOrEditor(userId, createBoardDto.orgId);
 
         const boardModel = new BoardEntity();
@@ -72,6 +117,8 @@ export class BoardService {
         boardModel.orgId = createBoardDto.orgId;
         boardModel.data = createBoardDto.data || '';
         boardModel.createdUserId = userId;
+        boardModel.categoryId = createBoardDto.categoryId;
+        boardModel.imageId = createBoardDto.imageId;
 
         const board = await this.boardRepository.save(boardModel);
 
@@ -81,7 +128,23 @@ export class BoardService {
         boardUserOrgModel.userId = board.createdUserId;
         await this.boardUserOrgRepository.save(boardUserOrgModel);
 
-        return board;
+        const category = await this.categoryRepository.findOne({
+            where: {
+                id: board.categoryId,
+            },
+        });
+
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: createBoardDto.imageId,
+            },
+        });
+
+        const boardDto = board.toDto();
+        boardDto.category = category.toDto();
+        boardDto.path = image?.path || '';
+
+        return boardDto;
     }
 
     async update(
@@ -90,9 +153,33 @@ export class BoardService {
     ): Promise<BoardEntity> {
         await this.isAdminOrEditor(userId, updateBoardDto.orgId);
         const board = await this.boardRepository.findOne(updateBoardDto.id);
+        if (!board) {
+            throw new NotFoundException();
+        }
         board.name = updateBoardDto.name;
         board.data = updateBoardDto.data;
-        return this.boardRepository.save(board);
+        board.categoryId = updateBoardDto.categoryId;
+        board.imageId = updateBoardDto.imageId;
+
+        const boardUpdated = await this.boardRepository.save(board);
+
+        const category = await this.categoryRepository.findOne({
+            where: {
+                id: board.categoryId,
+            },
+        });
+
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: board.imageId,
+            },
+        });
+
+        const boardDto = boardUpdated.toDto();
+        boardDto.category = category.toDto();
+        boardDto.path = image?.path || '';
+
+        return boardDto;
     }
 
     async delete({ boardId, userId, orgId }: DeleteBoardDto): Promise<void> {

@@ -14,6 +14,12 @@ export class BoardEntity extends AbstractEntity<BoardDto> {
     @Column({ name: 'createdUserId' })
     createdUserId: string;
 
+    @Column({ name: 'categoryId' })
+    categoryId: string;
+
+    @Column({ name: 'imageId' })
+    imageId: string;
+
     @Column({})
     data: string;
 

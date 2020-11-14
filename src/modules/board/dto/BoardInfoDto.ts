@@ -3,9 +3,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class UpdateBoardDto {
-    id: string;
+import { CategoryEntity } from '../../../modules/category/category.entity';
 
+export class BoardInfoDto {
     @ApiPropertyOptional()
     @IsNotEmpty()
     name: string;
@@ -25,4 +25,7 @@ export class UpdateBoardDto {
     @ApiPropertyOptional()
     @IsOptional()
     imageId: string;
+
+    path: string;
+    category: CategoryEntity;
 }
