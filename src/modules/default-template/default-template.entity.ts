@@ -14,5 +14,8 @@ export class DefaultTemplateEntity extends AbstractEntity<DefaultTemplateDto> {
     @Column({ name: 'categoryId' })
     categoryId: string;
 
+    @Column({ name: 'imageId' })
+    imageId: string;
+
     dtoClass = DefaultTemplateDto;
 }

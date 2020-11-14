@@ -15,10 +15,14 @@ export class DefaultTemplateDto extends AbstractDto {
     @ApiPropertyOptional()
     categoryId: string;
 
+    @ApiPropertyOptional()
+    imageId: string;
+
     constructor(defaultTemplateEntity: DefaultTemplateEntity) {
         super(defaultTemplateEntity);
         this.name = defaultTemplateEntity.name;
         this.data = defaultTemplateEntity.data;
         this.categoryId = defaultTemplateEntity.categoryId;
+        this.imageId = defaultTemplateEntity.imageId;
     }
 }

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { DefaultTemplateController } from './default-template.controller';
 import { DefaultTemplateRepository } from './default-template.repository';
 import { DefaultTemplateService } from './default-template.service';
@@ -11,6 +12,7 @@ import { DefaultTemplateService } from './default-template.service';
         TypeOrmModule.forFeature([
             DefaultTemplateRepository,
             CategoryRepository,
+            UploadImageRepository,
         ]),
     ],
     controllers: [DefaultTemplateController],
