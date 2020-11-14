@@ -23,4 +23,6 @@ export class UpdateCanvasDto {
     @IsString()
     @IsOptional()
     imageId: string;
+
+    path: string;
 }
