@@ -11,16 +11,16 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { RolesGuard } from '../../guards/roles.guard';
-import { UserEntity } from '../../modules/user/user.entity';
 
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
+import { UserEntity } from '../../modules/user/user.entity';
 import { BoardService } from './board.service';
 import { BoardDto } from './dto/BoardDto';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
 import { CreateBoardDto } from './dto/CreateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Controller('board')

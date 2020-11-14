@@ -1,12 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
+
 import { PermissionEnum } from '../../common/constants/permission';
+import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
 import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
 import { BoardEntity } from './board.entity';
 import { BoardRepository } from './board.repository';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
-import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
 import { CreateBoardDto } from './dto/CreateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Injectable()
