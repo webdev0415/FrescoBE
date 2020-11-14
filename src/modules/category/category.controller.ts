@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
@@ -17,6 +18,7 @@ import { RolesGuard } from '../../guards/roles.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
 import { CategoryService } from './category.service';
 import { CategoryDto } from './dto/CategoryDto';
+import { CategoryInfoDto } from './dto/CategoryInfoDto';
 import { CreateCategoryDto } from './dto/CreateCategoryDto';
 import { DeleteCategoryDto } from './dto/DeleteCategoryDto';
 import { UpdateCategoryDto } from './dto/UpdateCategoryDto';
@@ -34,9 +36,9 @@ export class CategoryController {
         type: CategoryDto,
         description: 'get detail category',
     })
-    async getById(@Param('id') id: string): Promise<CategoryDto> {
+    async getById(@Param('id') id: string): Promise<CategoryInfoDto> {
         const category = await this.categoryService.getById(id);
-        return category.toDto();
+        return category;
     }
 
     @Get('')
@@ -46,7 +48,7 @@ export class CategoryController {
     })
     async getAll(): Promise<CategoryDto[]> {
         const categories = await this.categoryService.getAll();
-        return categories.map((item) => item.toDto());
+        return categories;
     }
 
     @Post('')
@@ -56,9 +58,9 @@ export class CategoryController {
     })
     async create(
         @Body() createCategoryDto: CreateCategoryDto,
-    ): Promise<CategoryDto> {
+    ): Promise<CreateCategoryDto> {
         const category = await this.categoryService.create(createCategoryDto);
-        return category.toDto();
+        return category;
     }
 
     @Put(':id')
@@ -72,7 +74,7 @@ export class CategoryController {
     ): Promise<CategoryDto> {
         updateCategoryDto.id = id;
         const category = await this.categoryService.update(updateCategoryDto);
-        return category.toDto();
+        return category;
     }
 
     @Delete(':id')
