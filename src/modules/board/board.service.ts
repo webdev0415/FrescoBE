@@ -61,6 +61,10 @@ export class BoardService {
             },
         });
 
+        if (!board) {
+            throw new NotFoundException();
+        }
+
         const category = await this.categoryRepository.findOne({
             where: {
                 id: board.categoryId,

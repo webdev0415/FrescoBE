@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { FileNotImageException } from '../../exceptions/file-not-image.exception';
 import { IFile } from '../../interfaces/IFile';
@@ -54,6 +54,9 @@ export class UploadImageService {
                     id,
                 },
             });
+            if (!canvas) {
+                throw new NotFoundException();
+            }
             const image = await this.uploadImageRepository.findOne({
                 where: {
                     id: canvas.imageId,
