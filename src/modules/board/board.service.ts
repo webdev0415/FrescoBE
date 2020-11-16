@@ -168,17 +168,13 @@ export class BoardService {
         board.categoryId = updateBoardDto.categoryId;
         board.imageId = updateBoardDto.imageId;
 
+        const image = await this.uploadImageService.getImageById(board.imageId);
+
         const boardUpdated = await this.boardRepository.save(board);
 
         const category = await this.categoryRepository.findOne({
             where: {
                 id: board.categoryId,
-            },
-        });
-
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: board.imageId,
             },
         });
 
