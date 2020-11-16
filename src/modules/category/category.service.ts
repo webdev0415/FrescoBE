@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
+import { UploadImageService } from '../../modules/upload/upload-image.service';
 import { UserToOrgRepository } from '../user-org/user-org.repository';
 import { CategoryEntity } from './category.entity';
 import { CategoryRepository } from './category.repository';
@@ -15,6 +16,7 @@ export class CategoryService {
         public readonly categoryRepository: CategoryRepository,
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly uploadImageRepository: UploadImageRepository,
+        public readonly uploadImageService: UploadImageService,
     ) {}
 
     async getById(id: string): Promise<CategoryInfoDto> {
@@ -64,13 +66,11 @@ export class CategoryService {
         categoryModel.name = createCategoryDto.name;
         categoryModel.imageId = createCategoryDto.imageId;
 
-        const category = await this.categoryRepository.save(categoryModel);
+        const image = await this.uploadImageService.getImageById(
+            createCategoryDto.imageId,
+        );
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: createCategoryDto.imageId,
-            },
-        });
+        const category = await this.categoryRepository.save(categoryModel);
 
         const categoryCreatedDto = category.toDto() as CreateCategoryDto;
         categoryCreatedDto.path = image?.path || '';
@@ -91,13 +91,11 @@ export class CategoryService {
         category.name = updateCategoryDto.name;
         category.imageId = updateCategoryDto.imageId;
 
-        const categoryUpdated = await this.categoryRepository.save(category);
+        const image = await this.uploadImageService.getImageById(
+            updateCategoryDto.imageId,
+        );
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: updateCategoryDto.imageId,
-            },
-        });
+        const categoryUpdated = await this.categoryRepository.save(category);
 
         const categoryUpdatedDto = categoryUpdated.toDto() as UpdateCategoryDto;
         categoryUpdatedDto.path = image?.path || '';

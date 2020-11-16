@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { UploadImageModule } from '../../modules/upload/upload-image.module';
 import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { UserToOrgRepository } from '../user-org/user-org.repository';
 import { CategoryController } from './category.controller';
@@ -14,6 +15,7 @@ import { CategoryService } from './category.service';
             CategoryRepository,
             UploadImageRepository,
         ]),
+        UploadImageModule,
     ],
     controllers: [CategoryController],
     providers: [CategoryService],
