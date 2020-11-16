@@ -1,7 +1,7 @@
 'use strict';
 
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 // import { UploadImageEntity } from '../../../modules/upload/upload-image.entity';
 
@@ -19,7 +19,7 @@ export class CreateCanvasDto {
     data: string;
 
     @ApiPropertyOptional()
-    @IsString()
+    @IsOptional()
     imageId: string;
 
     @ApiPropertyOptional()

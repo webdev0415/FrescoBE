@@ -148,6 +148,8 @@ export class BoardService {
         const boardDto = board.toDto();
         boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
+        boardDto.categoryId = createBoardDto.categoryId || '';
+        boardDto.imageId = createBoardDto.imageId || '';
 
         return boardDto;
     }

@@ -74,6 +74,7 @@ export class CategoryService {
 
         const categoryCreatedDto = category.toDto() as CreateCategoryDto;
         categoryCreatedDto.path = image?.path || '';
+        categoryCreatedDto.imageId = createCategoryDto.imageId || '';
 
         return categoryCreatedDto;
     }

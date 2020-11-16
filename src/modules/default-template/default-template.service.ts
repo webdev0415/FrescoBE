@@ -61,6 +61,9 @@ export class DefaultTemplateService {
 
         const defaultTemplateCreatedDto = defaultTemplateCreated.toDto() as CreateDefaultTemplateDto;
         defaultTemplateCreatedDto.path = image?.path || '';
+        defaultTemplateCreatedDto.categoryId =
+            defaultTemplateDto.categoryId || '';
+        defaultTemplateCreatedDto.imageId = defaultTemplateDto.imageId || '';
 
         return defaultTemplateCreatedDto;
     }

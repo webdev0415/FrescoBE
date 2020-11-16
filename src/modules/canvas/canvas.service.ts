@@ -118,6 +118,8 @@ export class CanvasService {
         const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
         // canvasCreatedDto.image = image.toDto();
         canvasCreatedDto.path = image?.path || '';
+        canvasCreatedDto.categoryId = createCanvasDto.categoryId || '';
+        canvasCreatedDto.imageId = createCanvasDto.imageId || '';
         return canvasCreatedDto;
     }
 
