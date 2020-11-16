@@ -10,6 +10,7 @@ import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.
 import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
 import { CategoryRepository } from '../../modules/category/category.repository';
 import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
+import { UploadImageService } from '../../modules/upload/upload-image.service';
 import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
 import { BoardEntity } from './board.entity';
 import { BoardRepository } from './board.repository';
@@ -26,6 +27,7 @@ export class BoardService {
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
         public readonly uploadImageRepository: UploadImageRepository,
         public readonly categoryRepository: CategoryRepository,
+        public readonly uploadImageService: UploadImageService,
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -125,6 +127,10 @@ export class BoardService {
         boardModel.categoryId = createBoardDto.categoryId;
         boardModel.imageId = createBoardDto.imageId;
 
+        const image = await this.uploadImageService.getImageById(
+            createBoardDto.imageId,
+        );
+
         const board = await this.boardRepository.save(boardModel);
 
         const boardUserOrgModel = new BoardUserOrgEntity();
@@ -135,13 +141,7 @@ export class BoardService {
 
         const category = await this.categoryRepository.findOne({
             where: {
-                id: board.categoryId,
-            },
-        });
-
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: createBoardDto.imageId,
+                id: createBoardDto.categoryId,
             },
         });
 
@@ -168,17 +168,13 @@ export class BoardService {
         board.categoryId = updateBoardDto.categoryId;
         board.imageId = updateBoardDto.imageId;
 
+        const image = await this.uploadImageService.getImageById(board.imageId);
+
         const boardUpdated = await this.boardRepository.save(board);
 
         const category = await this.categoryRepository.findOne({
             where: {
                 id: board.categoryId,
-            },
-        });
-
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: board.imageId,
             },
         });
 

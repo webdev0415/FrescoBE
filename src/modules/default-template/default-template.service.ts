@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
 import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
+import { UploadImageService } from '../../modules/upload/upload-image.service';
 import { DefaultTemplateEntity } from './default-template.entity';
 import { DefaultTemplateRepository } from './default-template.repository';
 import { CreateDefaultTemplateDto } from './dto/CreateDefaultTemplateDto';
@@ -16,6 +17,7 @@ export class DefaultTemplateService {
         public readonly defaultTemplateRepository: DefaultTemplateRepository,
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageRepository: UploadImageRepository,
+        public readonly uploadImageService: UploadImageService,
     ) {}
 
     async get(): Promise<DefaultTemplateInfoDto[]> {
@@ -49,15 +51,9 @@ export class DefaultTemplateService {
         defaultTemplateModel.categoryId = defaultTemplateDto.categoryId;
         defaultTemplateModel.imageId = defaultTemplateDto.imageId;
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: defaultTemplateDto.imageId,
-            },
-        });
-
-        if (!image) {
-            throw new NotFoundException('Image Id is not valid');
-        }
+        const image = await this.uploadImageService.getImageById(
+            defaultTemplateDto.imageId,
+        );
 
         const defaultTemplateCreated = await this.defaultTemplateRepository.save(
             defaultTemplateModel,
@@ -86,15 +82,9 @@ export class DefaultTemplateService {
         defaultTemplate.categoryId = defaultTemplateDto.categoryId;
         defaultTemplate.imageId = defaultTemplateDto.imageId;
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: defaultTemplateDto.imageId,
-            },
-        });
-
-        if (!image) {
-            throw new NotFoundException('Image Id is not valid');
-        }
+        const image = await this.uploadImageService.getImageById(
+            defaultTemplateDto.imageId,
+        );
 
         const defaultTemplateUpdated = await this.defaultTemplateRepository.save(
             defaultTemplate,

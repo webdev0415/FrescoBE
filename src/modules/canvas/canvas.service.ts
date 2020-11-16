@@ -8,6 +8,7 @@ import {
 import { PermissionEnum } from '../../common/constants/permission';
 import { CategoryRepository } from '../../modules/category/category.repository';
 import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
+import { UploadImageService } from '../../modules/upload/upload-image.service';
 import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
 import { CanvasEntity } from './canvas.entity';
 import { CanvasRepository } from './canvas.repository';
@@ -23,6 +24,7 @@ export class CanvasService {
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageRepository: UploadImageRepository,
+        public readonly uploadImageService: UploadImageService,
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -107,15 +109,9 @@ export class CanvasService {
         canvasModel.categoryId = createCanvasDto.categoryId;
         canvasModel.imageId = createCanvasDto.imageId;
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: createCanvasDto.imageId,
-            },
-        });
-
-        if (!image) {
-            throw new NotFoundException('ImageId is not valid');
-        }
+        const image = await this.uploadImageService.getImageById(
+            createCanvasDto.imageId,
+        );
 
         const canvasCreated = await this.canvasRepository.save(canvasModel);
 
@@ -141,15 +137,9 @@ export class CanvasService {
         canvas.categoryId = updateCanvasDto.categoryId;
         canvas.imageId = updateCanvasDto.imageId;
 
-        const image = await this.uploadImageRepository.findOne({
-            where: {
-                id: updateCanvasDto.imageId,
-            },
-        });
-
-        if (!image) {
-            throw new NotFoundException('ImageId is not valid');
-        }
+        const image = await this.uploadImageService.getImageById(
+            updateCanvasDto.imageId,
+        );
 
         const canvasUpdated = await this.canvasRepository.save(canvas);
         const canvasUpdatedDto = canvasUpdated.toDto() as UpdateCanvasDto;
