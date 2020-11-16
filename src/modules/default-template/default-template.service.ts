@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -32,7 +33,7 @@ export class DefaultTemplateService {
                 },
             });
             const defaultTemplateDto = defaultTemplate.toDto() as DefaultTemplateInfoDto;
-            defaultTemplateDto.category = category.toDto();
+            defaultTemplateDto.category = category?.toDto() || null;
             defaultTemplateDto.path = image?.path || '';
             listDefaultInfo.push(defaultTemplateDto);
         }

@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
     Injectable,
     NotFoundException,
@@ -61,7 +62,7 @@ export class CanvasService {
         });
 
         const canvasDto = canvas.toDto() as CanvasInfoDto;
-        canvasDto.category = category.toDto();
+        canvasDto.category = category?.toDto() || null;
         canvasDto.path = image?.path || '';
         return canvasDto;
     }
@@ -86,7 +87,7 @@ export class CanvasService {
             });
 
             const canvasDto = canvas.toDto() as CanvasInfoDto;
-            canvasDto.category = category.toDto();
+            canvasDto.category = category?.toDto() || null;
             canvasDto.path = image?.path || '';
             listCanvasInfo.push(canvasDto);
         }

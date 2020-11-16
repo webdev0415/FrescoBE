@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
     Injectable,
     NotFoundException,
@@ -77,7 +78,7 @@ export class BoardService {
         });
 
         const boardDto = board.toDto() as BoardInfoDto;
-        boardDto.category = category.toDto();
+        boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
         return boardDto;
     }
@@ -103,7 +104,7 @@ export class BoardService {
             });
 
             const boardDto = board.toDto() as BoardInfoDto;
-            boardDto.category = category.toDto();
+            boardDto.category = category?.toDto() || null;
             boardDto.path = image?.path || '';
             listBoardInfo.push(boardDto);
         }
@@ -145,7 +146,7 @@ export class BoardService {
         });
 
         const boardDto = board.toDto();
-        boardDto.category = category.toDto();
+        boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
 
         return boardDto;
@@ -180,7 +181,7 @@ export class BoardService {
         });
 
         const boardDto = boardUpdated.toDto();
-        boardDto.category = category.toDto();
+        boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
 
         return boardDto;
