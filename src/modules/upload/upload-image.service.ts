@@ -86,6 +86,9 @@ export class UploadImageService {
     }
 
     async getImageById(id: string): Promise<UploadImageEntity> {
+        if (!id) {
+            return null;
+        }
         const image = await this.uploadImageRepository.findOne({
             where: {
                 id,
