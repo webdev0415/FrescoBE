@@ -15,14 +15,17 @@ export class CreateCanvasDto {
     orgId: string;
 
     @ApiPropertyOptional()
+    @IsOptional()
     @IsString()
     data: string;
 
     @ApiPropertyOptional()
     @IsOptional()
+    @IsString()
     imageId: string;
 
     @ApiPropertyOptional()
+    @IsNotEmpty()
     @IsString()
     categoryId: string;
 

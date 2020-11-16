@@ -132,13 +132,13 @@ export class CanvasService {
         if (!canvas) {
             throw new NotFoundException();
         }
-        canvas.name = updateCanvasDto.name;
-        canvas.data = updateCanvasDto.data;
-        canvas.categoryId = updateCanvasDto.categoryId;
-        canvas.imageId = updateCanvasDto.imageId;
+        canvas.name = updateCanvasDto.name || canvas.name;
+        canvas.data = updateCanvasDto.data || canvas.data;
+        canvas.categoryId = updateCanvasDto.categoryId || canvas.categoryId;
+        canvas.imageId = updateCanvasDto.imageId || canvas.imageId;
 
         const image = await this.uploadImageService.getImageById(
-            updateCanvasDto.imageId,
+            canvas.imageId,
         );
 
         const canvasUpdated = await this.canvasRepository.save(canvas);

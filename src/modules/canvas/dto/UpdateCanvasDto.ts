@@ -20,6 +20,7 @@ export class UpdateCanvasDto {
     data: string;
 
     @ApiPropertyOptional()
+    @IsOptional()
     @IsString()
     categoryId: string;
 

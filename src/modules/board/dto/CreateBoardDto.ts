@@ -13,14 +13,17 @@ export class CreateBoardDto {
     orgId: string;
 
     @ApiPropertyOptional()
+    @IsOptional()
     @IsString()
     data: string;
 
     @ApiPropertyOptional()
-    @IsOptional()
+    @IsNotEmpty()
+    @IsString()
     categoryId: string;
 
     @ApiPropertyOptional()
     @IsOptional()
+    @IsString()
     imageId: string;
 }

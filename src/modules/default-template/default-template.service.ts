@@ -77,13 +77,13 @@ export class DefaultTemplateService {
         if (!defaultTemplate) {
             throw new NotFoundException();
         }
-        defaultTemplate.name = defaultTemplateDto.name;
-        defaultTemplate.data = defaultTemplateDto.data;
-        defaultTemplate.categoryId = defaultTemplateDto.categoryId;
-        defaultTemplate.imageId = defaultTemplateDto.imageId;
+        defaultTemplate.name = defaultTemplateDto.name || defaultTemplate.name;
+        defaultTemplate.data = defaultTemplateDto.data || defaultTemplate.data;
+        defaultTemplate.categoryId = defaultTemplateDto.categoryId || defaultTemplate.categoryId;
+        defaultTemplate.imageId = defaultTemplateDto.imageId || defaultTemplate.imageId;
 
         const image = await this.uploadImageService.getImageById(
-            defaultTemplateDto.imageId,
+            defaultTemplate.imageId,
         );
 
         const defaultTemplateUpdated = await this.defaultTemplateRepository.save(

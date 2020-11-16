@@ -163,10 +163,10 @@ export class BoardService {
         if (!board) {
             throw new NotFoundException();
         }
-        board.name = updateBoardDto.name;
-        board.data = updateBoardDto.data;
-        board.categoryId = updateBoardDto.categoryId;
-        board.imageId = updateBoardDto.imageId;
+        board.name = updateBoardDto.name || board.name;
+        board.data = updateBoardDto.data || board.data;
+        board.categoryId = updateBoardDto.categoryId || board.categoryId;
+        board.imageId = updateBoardDto.imageId || board.imageId;
 
         const image = await this.uploadImageService.getImageById(board.imageId);
 

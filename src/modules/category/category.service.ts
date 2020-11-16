@@ -88,11 +88,11 @@ export class CategoryService {
         if (!category) {
             throw new NotFoundException();
         }
-        category.name = updateCategoryDto.name;
-        category.imageId = updateCategoryDto.imageId;
+        category.name = updateCategoryDto.name || category.name;
+        category.imageId = updateCategoryDto.imageId || category.imageId;
 
         const image = await this.uploadImageService.getImageById(
-            updateCategoryDto.imageId,
+            category.imageId,
         );
 
         const categoryUpdated = await this.categoryRepository.save(category);

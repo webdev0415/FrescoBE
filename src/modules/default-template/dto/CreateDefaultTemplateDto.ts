@@ -13,6 +13,7 @@ export class CreateDefaultTemplateDto {
     data: string;
 
     @ApiPropertyOptional()
+    @IsNotEmpty()
     @IsString()
     categoryId: string;
 
