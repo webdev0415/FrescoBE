@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -15,7 +15,7 @@ import { DefaultTemplateService } from './default-template.service';
             CategoryRepository,
             UploadImageRepository,
         ]),
-        UploadImageModule,
+        forwardRef(() => UploadImageModule),
     ],
     controllers: [DefaultTemplateController],
     providers: [DefaultTemplateService],

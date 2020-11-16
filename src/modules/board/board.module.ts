@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
@@ -19,7 +19,7 @@ import { BoardService } from './board.service';
             UploadImageRepository,
             CategoryRepository,
         ]),
-        UploadImageModule,
+        forwardRef(() => UploadImageModule),
     ],
     controllers: [BoardController],
     providers: [BoardService],
