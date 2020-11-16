@@ -14,7 +14,8 @@ export class CategoryTable1605108299294 implements MigrationInterface {
                 },
                 {
                     name: 'name',
-                    type: 'longtext',
+                    type: 'varchar',
+                    length: '225',
                     isNullable: false,
                 },
                 {

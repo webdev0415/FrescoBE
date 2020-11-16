@@ -8,6 +8,9 @@ export class CategoryEntity extends AbstractEntity<CategoryDto> {
     @Column({})
     name: string;
 
+    @Column({ name: 'imageId' })
+    imageId: string;
+
     @CreateDateColumn({
         type: 'timestamp',
         name: 'createdAt',

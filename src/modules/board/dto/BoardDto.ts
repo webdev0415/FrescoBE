@@ -18,11 +18,19 @@ export class BoardDto extends AbstractDto {
     @ApiPropertyOptional()
     data: string;
 
+    @ApiPropertyOptional()
+    categoryId: string;
+
+    @ApiPropertyOptional()
+    imageId: string;
+
     constructor(board: BoardEntity) {
         super(board);
         this.name = board.name;
         this.orgId = board.orgId;
         this.createdUserId = board.createdUserId;
         this.data = board.data;
+        this.categoryId = board.categoryId;
+        this.imageId = board.imageId;
     }
 }

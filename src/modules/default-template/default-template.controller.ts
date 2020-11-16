@@ -50,11 +50,11 @@ export class DefaultTemplateController {
     })
     async create(
         @Body() createDefaultTemplateDto: CreateDefaultTemplateDto,
-    ): Promise<DefaultTemplateDto> {
+    ): Promise<CreateDefaultTemplateDto> {
         const defaultTemplate = await this.defaultTemplateService.create(
             createDefaultTemplateDto,
         );
-        return defaultTemplate.toDto();
+        return defaultTemplate;
     }
 
     @Put(':id')
@@ -70,7 +70,7 @@ export class DefaultTemplateController {
         const defaultTemplate = await this.defaultTemplateService.update(
             defaultTemplateDto,
         );
-        return defaultTemplate.toDto();
+        return defaultTemplate;
     }
 
     @Delete(':id')

@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable complexity */
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
 import { DefaultTemplateEntity } from './default-template.entity';
 import { DefaultTemplateRepository } from './default-template.repository';
 import { CreateDefaultTemplateDto } from './dto/CreateDefaultTemplateDto';
@@ -13,6 +15,7 @@ export class DefaultTemplateService {
     constructor(
         public readonly defaultTemplateRepository: DefaultTemplateRepository,
         public readonly categoryRepository: CategoryRepository,
+        public readonly uploadImageRepository: UploadImageRepository,
     ) {}
 
     async get(): Promise<DefaultTemplateInfoDto[]> {
@@ -24,31 +27,83 @@ export class DefaultTemplateService {
                     id: defaultTemplate.categoryId,
                 },
             });
-            listDefaultInfo.push({ ...defaultTemplate, category });
+            const image = await this.uploadImageRepository.findOne({
+                where: {
+                    id: defaultTemplate.imageId,
+                },
+            });
+            const defaultTemplateDto = defaultTemplate.toDto() as DefaultTemplateInfoDto;
+            defaultTemplateDto.category = category?.toDto() || null;
+            defaultTemplateDto.path = image?.path || '';
+            listDefaultInfo.push(defaultTemplateDto);
         }
         return listDefaultInfo;
     }
 
     async create(
         defaultTemplateDto: CreateDefaultTemplateDto,
-    ): Promise<DefaultTemplateEntity> {
+    ): Promise<CreateDefaultTemplateDto> {
         const defaultTemplateModel = new DefaultTemplateEntity();
         defaultTemplateModel.name = defaultTemplateDto.name;
         defaultTemplateModel.data = defaultTemplateDto.data;
         defaultTemplateModel.categoryId = defaultTemplateDto.categoryId;
-        return this.defaultTemplateRepository.save(defaultTemplateModel);
+        defaultTemplateModel.imageId = defaultTemplateDto.imageId;
+
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: defaultTemplateDto.imageId,
+            },
+        });
+
+        if (!image) {
+            throw new NotFoundException('Image Id is not valid');
+        }
+
+        const defaultTemplateCreated = await this.defaultTemplateRepository.save(
+            defaultTemplateModel,
+        );
+
+        const defaultTemplateCreatedDto = defaultTemplateCreated.toDto() as CreateDefaultTemplateDto;
+        defaultTemplateCreatedDto.path = image?.path || '';
+        defaultTemplateCreatedDto.categoryId =
+            defaultTemplateDto.categoryId || '';
+        defaultTemplateCreatedDto.imageId = defaultTemplateDto.imageId || '';
+
+        return defaultTemplateCreatedDto;
     }
 
     async update(
         defaultTemplateDto: UpdateDefaultTemplateDto,
-    ): Promise<DefaultTemplateEntity> {
+    ): Promise<UpdateDefaultTemplateDto> {
         const defaultTemplate = await this.defaultTemplateRepository.findOne(
             defaultTemplateDto.id,
         );
+        if (!defaultTemplate) {
+            throw new NotFoundException();
+        }
         defaultTemplate.name = defaultTemplateDto.name;
         defaultTemplate.data = defaultTemplateDto.data;
         defaultTemplate.categoryId = defaultTemplateDto.categoryId;
-        return this.defaultTemplateRepository.save(defaultTemplate);
+        defaultTemplate.imageId = defaultTemplateDto.imageId;
+
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: defaultTemplateDto.imageId,
+            },
+        });
+
+        if (!image) {
+            throw new NotFoundException('Image Id is not valid');
+        }
+
+        const defaultTemplateUpdated = await this.defaultTemplateRepository.save(
+            defaultTemplate,
+        );
+
+        const defaultTemplateUpdatedDto = defaultTemplateUpdated.toDto() as UpdateDefaultTemplateDto;
+        defaultTemplateUpdatedDto.path = image?.path || '';
+
+        return defaultTemplateUpdatedDto;
     }
 
     async delete({

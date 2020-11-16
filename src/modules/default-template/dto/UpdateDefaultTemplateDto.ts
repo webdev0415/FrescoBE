@@ -17,4 +17,10 @@ export class UpdateDefaultTemplateDto {
     @ApiPropertyOptional()
     @IsString()
     categoryId: string;
+
+    @ApiPropertyOptional()
+    @IsString()
+    imageId: string;
+
+    path: string;
 }

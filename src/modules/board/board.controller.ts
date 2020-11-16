@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
@@ -11,16 +12,17 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { RolesGuard } from '../../guards/roles.guard';
-import { UserEntity } from '../../modules/user/user.entity';
 
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
+import { RolesGuard } from '../../guards/roles.guard';
 import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
+import { UserEntity } from '../../modules/user/user.entity';
 import { BoardService } from './board.service';
 import { BoardDto } from './dto/BoardDto';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
+import { BoardInfoDto } from './dto/BoardInfoDto';
 import { CreateBoardDto } from './dto/CreateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
 import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Controller('board')
@@ -36,9 +38,9 @@ export class BoardController {
         type: BoardDto,
         description: 'get list board by orgId',
     })
-    async getById(@Param('id') id: string): Promise<BoardDto> {
-        const boards = await this.boardService.getById(id);
-        return boards.toDto();
+    async getById(@Param('id') id: string): Promise<BoardInfoDto> {
+        const board = await this.boardService.getById(id);
+        return board;
     }
 
     @Get('organization/:orgId')
@@ -48,7 +50,7 @@ export class BoardController {
     })
     async getByOrgId(@Param('orgId') orgId: string): Promise<BoardDto[]> {
         const boards = await this.boardService.getByOrgId(orgId);
-        return boards.map((item) => item.toDto());
+        return boards;
     }
 
     @Post('')
@@ -59,11 +61,11 @@ export class BoardController {
     async create(
         @AuthUser() user: UserEntity,
         @Body() createBoardDto: CreateBoardDto,
-    ): Promise<BoardDto> {
+    ): Promise<CreateBoardDto> {
         // console.log('user');
         // return null
         const board = await this.boardService.create(user.id, createBoardDto);
-        return board.toDto();
+        return board;
     }
 
     @Put(':id')
@@ -78,7 +80,7 @@ export class BoardController {
     ): Promise<BoardDto> {
         updateBoardDto.id = id;
         const board = await this.boardService.update(user.id, updateBoardDto);
-        return board.toDto();
+        return board;
     }
 
     @Delete(':id')

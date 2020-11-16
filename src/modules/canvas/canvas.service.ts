@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
     Injectable,
     NotFoundException,
@@ -59,7 +60,11 @@ export class CanvasService {
                 id: canvas.imageId,
             },
         });
-        return { ...canvas, category, image };
+
+        const canvasDto = canvas.toDto() as CanvasInfoDto;
+        canvasDto.category = category?.toDto() || null;
+        canvasDto.path = image?.path || '';
+        return canvasDto;
     }
 
     async getByOrgId(orgId: string): Promise<CanvasInfoDto[]> {
@@ -80,7 +85,11 @@ export class CanvasService {
                     id: canvas.imageId,
                 },
             });
-            listCanvasInfo.push({ ...canvas, category, image });
+
+            const canvasDto = canvas.toDto() as CanvasInfoDto;
+            canvasDto.category = category?.toDto() || null;
+            canvasDto.path = image?.path || '';
+            listCanvasInfo.push(canvasDto);
         }
         return listCanvasInfo;
     }
@@ -104,22 +113,48 @@ export class CanvasService {
             },
         });
 
+        if (!image) {
+            throw new NotFoundException('ImageId is not valid');
+        }
+
         const canvasCreated = await this.canvasRepository.save(canvasModel);
 
         const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
-        canvasCreatedDto.image = image.toDto();
+        // canvasCreatedDto.image = image.toDto();
+        canvasCreatedDto.path = image?.path || '';
+        canvasCreatedDto.categoryId = createCanvasDto.categoryId || '';
+        canvasCreatedDto.imageId = createCanvasDto.imageId || '';
         return canvasCreatedDto;
     }
 
     async update(
         userId: string,
         updateCanvasDto: UpdateCanvasDto,
-    ): Promise<CanvasEntity> {
+    ): Promise<UpdateCanvasDto> {
         await this.isAdminOrEditor(userId, updateCanvasDto.orgId);
         const canvas = await this.canvasRepository.findOne(updateCanvasDto.id);
+        if (!canvas) {
+            throw new NotFoundException();
+        }
         canvas.name = updateCanvasDto.name;
         canvas.data = updateCanvasDto.data;
-        return this.canvasRepository.save(canvas);
+        canvas.categoryId = updateCanvasDto.categoryId;
+        canvas.imageId = updateCanvasDto.imageId;
+
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id: updateCanvasDto.imageId,
+            },
+        });
+
+        if (!image) {
+            throw new NotFoundException('ImageId is not valid');
+        }
+
+        const canvasUpdated = await this.canvasRepository.save(canvas);
+        const canvasUpdatedDto = canvasUpdated.toDto() as UpdateCanvasDto;
+        canvasUpdatedDto.path = image?.path || '';
+        return canvasUpdatedDto;
     }
 
     async delete(

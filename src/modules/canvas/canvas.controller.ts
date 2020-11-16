@@ -78,13 +78,13 @@ export class CanvasController {
         @AuthUser() user: UserEntity,
         @Param('id') id: string,
         @Body() updateCanvasDto: UpdateCanvasDto,
-    ): Promise<CanvasDto> {
+    ): Promise<UpdateCanvasDto> {
         updateCanvasDto.id = id;
         const canvas = await this.canvasService.update(
             user.id,
             updateCanvasDto,
         );
-        return canvas.toDto();
+        return canvas;
     }
 
     @Delete(':id')

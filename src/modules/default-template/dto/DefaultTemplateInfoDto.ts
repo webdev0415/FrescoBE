@@ -16,4 +16,6 @@ export class DefaultTemplateInfoDto {
 
     @ApiPropertyOptional()
     category: CategoryEntity;
+
+    path: string;
 }

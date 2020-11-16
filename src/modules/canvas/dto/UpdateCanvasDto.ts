@@ -21,6 +21,11 @@ export class UpdateCanvasDto {
 
     @ApiPropertyOptional()
     @IsString()
-    @IsOptional()
+    categoryId: string;
+
+    @ApiPropertyOptional()
+    @IsString()
     imageId: string;
+
+    path: string;
 }
