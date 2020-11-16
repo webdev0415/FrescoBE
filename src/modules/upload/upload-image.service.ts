@@ -84,4 +84,17 @@ export class UploadImageService {
             return this.uploadImageRepository.save(uploadImageModel);
         }
     }
+
+    async getImageById(id: string): Promise<UploadImageEntity> {
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id,
+            },
+        });
+
+        if (!image) {
+            throw new NotFoundException('ImageId is not valid');
+        }
+        return image;
+    }
 }
