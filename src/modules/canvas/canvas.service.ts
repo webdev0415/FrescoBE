@@ -113,6 +113,10 @@ export class CanvasService {
             },
         });
 
+        if (!image) {
+            throw new NotFoundException('ImageId is not valid');
+        }
+
         const canvasCreated = await this.canvasRepository.save(canvasModel);
 
         const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
@@ -142,6 +146,10 @@ export class CanvasService {
                 id: updateCanvasDto.imageId,
             },
         });
+
+        if (!image) {
+            throw new NotFoundException('ImageId is not valid');
+        }
 
         const canvasUpdated = await this.canvasRepository.save(canvas);
         const canvasUpdatedDto = canvasUpdated.toDto() as UpdateCanvasDto;

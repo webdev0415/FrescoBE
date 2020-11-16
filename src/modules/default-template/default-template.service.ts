@@ -55,6 +55,10 @@ export class DefaultTemplateService {
             },
         });
 
+        if (!image) {
+            throw new NotFoundException('Image Id is not valid');
+        }
+
         const defaultTemplateCreated = await this.defaultTemplateRepository.save(
             defaultTemplateModel,
         );
@@ -87,6 +91,10 @@ export class DefaultTemplateService {
                 id: defaultTemplateDto.imageId,
             },
         });
+
+        if (!image) {
+            throw new NotFoundException('Image Id is not valid');
+        }
 
         const defaultTemplateUpdated = await this.defaultTemplateRepository.save(
             defaultTemplate,
