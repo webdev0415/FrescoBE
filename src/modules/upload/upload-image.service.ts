@@ -48,41 +48,35 @@ export class UploadImageService {
         id: string,
         file: IFile,
     ): Promise<UploadImageEntity> {
-        if (uploadImageDto.type === 'canvas') {
-            const canvas = await this.canvasRepository.findOne({
-                where: {
-                    id,
-                },
-            });
-            if (!canvas) {
-                throw new NotFoundException();
-            }
-            const image = await this.uploadImageRepository.findOne({
-                where: {
-                    id: canvas.imageId,
-                },
-            });
+        const image = await this.uploadImageRepository.findOne({
+            where: {
+                id,
+            },
+        });
 
-            let path: string;
-            if (file && !this.validatorService.isImage(file.mimetype)) {
-                throw new FileNotImageException();
-            }
-            if (file) {
-                path = await this.awsS3Service.uploadImage(file);
-            }
+        let path: string;
 
-            if (image) {
-                image.updatedAt = new Date();
-                image.path = path;
-                return this.uploadImageRepository.save(image);
-            }
-            const uploadImageModel = new UploadImageEntity();
-            uploadImageModel.type = uploadImageDto.type;
-            uploadImageModel.createdAt = new Date();
-            uploadImageModel.updatedAt = new Date();
-            uploadImageModel.path = path;
-            return this.uploadImageRepository.save(uploadImageModel);
+        if (file && !this.validatorService.isImage(file.mimetype)) {
+            throw new FileNotImageException();
         }
+
+        if (file) {
+            path = await this.awsS3Service.uploadImage(file);
+        }
+
+        if (image) {
+            image.updatedAt = new Date();
+            image.path = path;
+            return this.uploadImageRepository.save(image);
+        }
+
+        const uploadImageModel = new UploadImageEntity();
+        uploadImageModel.type = uploadImageDto.type;
+        uploadImageModel.createdAt = new Date();
+        uploadImageModel.updatedAt = new Date();
+        uploadImageModel.path = path;
+
+        return this.uploadImageRepository.save(uploadImageModel);
     }
 
     async getImageById(id: string): Promise<UploadImageEntity> {
