@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { CanvasService } from '../../modules/canvas/canvas.service';
+import { OrganizationRepository } from '../../modules/organization/organization.repository';
 import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
 import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
 import { InvitationTypeLinkRepository } from './invitation-type-link.repository';
@@ -10,6 +11,7 @@ export class InvitationTypeLinkService {
     constructor(
         public readonly invitationTypeLinkRepository: InvitationTypeLinkRepository,
         public readonly canvasService: CanvasService,
+        public readonly organizationRepository: OrganizationRepository,
     ) {}
 
     // eslint-disable-next-line complexity
@@ -17,6 +19,14 @@ export class InvitationTypeLinkService {
         userId: string,
         createInvitationTypeLinkDto: CreateInvitationTypeLinkDto,
     ): Promise<InvitationTypeLinkEntity> {
+        const org = await this.organizationRepository.findOne({
+            where: {
+                id: createInvitationTypeLinkDto.orgId,
+            },
+        });
+        if (!org) {
+            throw new NotFoundException('orgId is not valid');
+        }
         await this.canvasService.isAdminOrEditor(
             userId,
             createInvitationTypeLinkDto.orgId,
