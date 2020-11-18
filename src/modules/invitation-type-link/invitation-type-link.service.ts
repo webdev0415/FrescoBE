@@ -46,4 +46,37 @@ export class InvitationTypeLinkService {
 
         return this.invitationTypeLinkRepository.save(invitationTypeLinkModel);
     }
+
+    // eslint-disable-next-line complexity
+    async handleRequest(
+        userId: string,
+        createInvitationTypeLinkDto: CreateInvitationTypeLinkDto,
+    ): Promise<InvitationTypeLinkEntity> {
+        const org = await this.organizationRepository.findOne({
+            where: {
+                id: createInvitationTypeLinkDto.orgId,
+            },
+        });
+        if (!org) {
+            throw new NotFoundException('orgId is not valid');
+        }
+        await this.canvasService.isAdminOrEditor(
+            userId,
+            createInvitationTypeLinkDto.orgId,
+        );
+        const invitationTypeLinkModel = new InvitationTypeLinkEntity();
+        invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
+        invitationTypeLinkModel.createdUserId = userId;
+        invitationTypeLinkModel.orgId = createInvitationTypeLinkDto.orgId;
+        invitationTypeLinkModel.numberOfUser =
+            createInvitationTypeLinkDto.numberOfUser;
+        invitationTypeLinkModel.type = createInvitationTypeLinkDto.type;
+        invitationTypeLinkModel.permission =
+            createInvitationTypeLinkDto.permission;
+        invitationTypeLinkModel.typeId =
+            createInvitationTypeLinkDto.typeId || '';
+        invitationTypeLinkModel.isDeleted = false;
+
+        return this.invitationTypeLinkRepository.save(invitationTypeLinkModel);
+    }
 }

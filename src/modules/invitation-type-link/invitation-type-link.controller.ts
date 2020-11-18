@@ -43,4 +43,20 @@ export class InvitationTypeLinkController {
         );
         return invitationTypeLink.toDto();
     }
+
+    @Post('request')
+    @ApiOkResponse({
+        type: InvitationTypeLinkDto,
+        description: 'handle request invitation type link',
+    })
+    async handleRequest(
+        @AuthUser() user: UserEntity,
+        @Body() createInvitationTypeLinkDto: CreateInvitationTypeLinkDto,
+    ): Promise<CreateInvitationTypeLinkDto> {
+        const invitationTypeLink = await this.invitationTypeLinkService.handleRequest(
+            user.id,
+            createInvitationTypeLinkDto,
+        );
+        return invitationTypeLink.toDto();
+    }
 }

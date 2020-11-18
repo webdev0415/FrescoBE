@@ -1,9 +1,9 @@
 import { Repository } from 'typeorm';
 import { EntityRepository } from 'typeorm/decorator/EntityRepository';
 
-import { InvitationTypeLinkUserEntity } from './invitation-type-link.entity';
+import { InvitationTypeLinkUserEntity } from './invitation-type-link-user.entity';
 
 @EntityRepository(InvitationTypeLinkUserEntity)
-export class InvitationTypeLinkRepository extends Repository<
+export class InvitationTypeLinkUserRepository extends Repository<
     InvitationTypeLinkUserEntity
 > {}

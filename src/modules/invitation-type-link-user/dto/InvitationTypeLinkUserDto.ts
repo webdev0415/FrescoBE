@@ -3,7 +3,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 
 import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { InvitationTypeLinkUserEntity } from '../invitation-type-link.entity';
+import { InvitationTypeLinkUserEntity } from '../invitation-type-link-user.entity';
 
 export class InvitationTypeLinkUserDto extends AbstractDto {
     @ApiPropertyOptional()

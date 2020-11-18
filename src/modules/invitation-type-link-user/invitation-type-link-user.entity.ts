@@ -22,11 +22,5 @@ export class InvitationTypeLinkUserEntity extends AbstractEntity<
     })
     createdAt: Date;
 
-    // @OneToMany(
-    //     (type) => UserToOrgEntity,
-    //     (userToOrgEntity) => userToOrgEntity.user,
-    // )
-    // orgs?: UserToOrgEntity[];
-
     dtoClass = InvitationTypeLinkUserDto;
 }
