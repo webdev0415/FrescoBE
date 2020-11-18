@@ -8,7 +8,7 @@ export class AddPermissionToBoardUserOrg1605635480617
             new TableColumn({
                 name: 'permission',
                 type: 'enum',
-                enum: ['creater', 'admin', 'editor', 'view'],
+                enum: ['creator', 'admin', 'editor', 'view'],
                 enumName: 'permissionEnum',
                 isNullable: false,
             }),

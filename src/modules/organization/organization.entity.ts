@@ -2,6 +2,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 // Entities
 import { AbstractEntity } from '../../common/abstract.entity';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 import { UserToOrgEntity } from '../user-org/user-org.entity';
 // import { PlanEntity } from '../plan/plan.entity';
 // import { UserEntity } from '../user/user.entity';
@@ -36,6 +37,12 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
 
     @OneToMany(() => UserToOrgEntity, (userToOrgEntity) => userToOrgEntity.user)
     users?: UserToOrgEntity[];
+
+    @OneToMany(
+        () => CanvasUserOrgEntity,
+        (canvasUserOrgEntity) => canvasUserOrgEntity.organization,
+    )
+    canvases?: CanvasUserOrgEntity[];
 
     // @OneToMany(
     //     () => CollaborationEntity,

@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, OneToMany } from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { RoleType } from '../../common/constants/role-type';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 import { UserToOrgEntity } from '../user-org/user-org.entity';
 import { UserDto } from './dto/UserDto';
 
@@ -32,11 +33,14 @@ export class UserEntity extends AbstractEntity<UserDto> {
     })
     createdAt: Date;
 
-    @OneToMany(
-        (type) => UserToOrgEntity,
-        (userToOrgEntity) => userToOrgEntity.user,
-    )
+    @OneToMany(() => UserToOrgEntity, (userToOrgEntity) => userToOrgEntity.user)
     orgs?: UserToOrgEntity[];
+
+    @OneToMany(
+        () => CanvasUserOrgEntity,
+        (canvasUserOrgEntity) => canvasUserOrgEntity.user,
+    )
+    canvases?: CanvasUserOrgEntity[];
 
     dtoClass = UserDto;
 }

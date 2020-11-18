@@ -1,6 +1,13 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {
+    Column,
+    CreateDateColumn,
+    Entity,
+    OneToMany,
+    UpdateDateColumn,
+} from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 import { CanvasDto } from './dto/CanvasDto';
 
 @Entity({ name: 'canvas' })
@@ -36,6 +43,12 @@ export class CanvasEntity extends AbstractEntity<CanvasDto> {
         default: () => 'CURRENT_TIMESTAMP',
     })
     updatedAt: Date;
+
+    @OneToMany(
+        () => CanvasUserOrgEntity,
+        (canvasUserOrgEntity) => canvasUserOrgEntity.canvas,
+    )
+    canvases?: CanvasUserOrgEntity[];
 
     dtoClass = CanvasDto;
 }
