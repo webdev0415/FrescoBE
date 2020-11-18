@@ -46,29 +46,12 @@ export class InvitationTypeLinkEntity extends AbstractEntity<
     })
     public type: InvitationType;
 
-    @OneToOne((organization) => OrganizationEntity)
-    @JoinColumn({ name: 'orgId' })
-    organization?: OrganizationEntity;
-
     @CreateDateColumn({
         type: 'timestamp',
         name: 'createdAt',
         default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date;
-
-    @UpdateDateColumn({
-        type: 'timestamp',
-        name: 'updatedAt',
-        default: () => 'CURRENT_TIMESTAMP',
-    })
-    updatedAt: Date;
-
-    // @OneToMany(
-    //     (type) => UserToOrgEntity,
-    //     (userToOrgEntity) => userToOrgEntity.user,
-    // )
-    // orgs?: UserToOrgEntity[];
 
     dtoClass = InvitationTypeLinkDto;
 }

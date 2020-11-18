@@ -8,10 +8,6 @@ import { AbstractDto } from '../../../common/dto/AbstractDto';
 import { InvitationTypeLinkEntity } from '../invitation-type-link.entity';
 
 export class InvitationTypeLinkDto extends AbstractDto {
-    name?: string;
-
-    organizationName?: string;
-
     @ApiPropertyOptional()
     createdUserId: string;
 
@@ -35,12 +31,12 @@ export class InvitationTypeLinkDto extends AbstractDto {
 
     constructor(invitation: InvitationTypeLinkEntity) {
         super(invitation);
-        // this.name = invitation.user?.name;
-        this.orgId = invitation.orgId;
-        // this.toUserId = invitation.toUserId;
-        // this.organizationName = invitation.organization?.name;
-        // this.toEmail = invitation.toEmail;
         this.token = invitation.token;
+        this.createdUserId = invitation.createUserId;
+        this.orgId = invitation.orgId;
+        this.numberOfUsers = invitation.numberOfUsers;
+        this.type = invitation.type;
         this.permission = invitation.permission;
+        this.typeId = invitation.typeId;
     }
 }
