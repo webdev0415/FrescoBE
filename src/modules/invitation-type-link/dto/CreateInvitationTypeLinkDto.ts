@@ -1,6 +1,6 @@
 'use strict';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
 import { InvitationType } from '../../../common/constants/invitation-type';
@@ -9,23 +9,23 @@ import { PermissionEnum } from '../../../common/constants/permission';
 export class CreateInvitationTypeLinkDto {
     createdUserId: string;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsNotEmpty({ message: 'orgId is required' })
     orgId: string;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsNotEmpty({ message: 'numberOfUser is required' })
     numberOfUser: number;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsNotEmpty({ message: 'token is required' })
     token: string;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsNotEmpty({ message: 'permission is required' })
     permission: PermissionEnum;
 
-    @ApiPropertyOptional()
+    @ApiProperty()
     @IsNotEmpty({ message: 'type is required' })
     type: InvitationType;
 
