@@ -15,7 +15,7 @@ export class InvitationTypeLinkDto extends AbstractDto {
     orgId: string;
 
     @ApiPropertyOptional()
-    numberOfUsers: number;
+    numberOfUser: number;
 
     @ApiPropertyOptional()
     token: string;
@@ -32,9 +32,9 @@ export class InvitationTypeLinkDto extends AbstractDto {
     constructor(invitation: InvitationTypeLinkEntity) {
         super(invitation);
         this.token = invitation.token;
-        this.createdUserId = invitation.createUserId;
+        this.createdUserId = invitation.createdUserId;
         this.orgId = invitation.orgId;
-        this.numberOfUsers = invitation.numberOfUsers;
+        this.numberOfUser = invitation.numberOfUser;
         this.type = invitation.type;
         this.permission = invitation.permission;
         this.typeId = invitation.typeId;

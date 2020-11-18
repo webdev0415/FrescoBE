@@ -7,28 +7,26 @@ import { InvitationType } from '../../../common/constants/invitation-type';
 import { PermissionEnum } from '../../../common/constants/permission';
 
 export class CreateInvitationTypeLinkDto {
-    @ApiPropertyOptional()
-    @IsNotEmpty()
     createdUserId: string;
 
     @ApiPropertyOptional()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'orgId is required' })
     orgId: string;
 
     @ApiPropertyOptional()
-    @IsNotEmpty()
-    numberOfUsers: number;
+    @IsNotEmpty({ message: 'numberOfUser is required' })
+    numberOfUser: number;
 
     @ApiPropertyOptional()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'token is required' })
     token: string;
 
     @ApiPropertyOptional()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'permission is required' })
     permission: PermissionEnum;
 
     @ApiPropertyOptional()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'type is required' })
     type: InvitationType;
 
     typeId?: string;

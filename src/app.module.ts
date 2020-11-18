@@ -20,6 +20,7 @@ import { BoardModule } from './modules/board/board.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
 import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
+import { InvitationTypeLinkModule } from './modules/invitation-type-link/invitation-type-link.module';
 import { InvitationModule } from './modules/invitation/invitation.module';
 import { MailModule } from './modules/mail/mail.module';
 import { OrganizationModule } from './modules/organization/organization.module';
@@ -46,6 +47,7 @@ import { SharedModule } from './shared/shared.module';
         CanvasModule,
         UploadImageModule,
         CategoryModule,
+        InvitationTypeLinkModule,
         MulterModule.register({
             dest: './upload',
         }),

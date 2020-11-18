@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { CanvasService } from '../../modules/canvas/canvas.service';
-import { AwsS3Service } from '../../shared/services/aws-s3.service';
-import { ValidatorService } from '../../shared/services/validator.service';
-import { CanvasRepository } from '../canvas/canvas.repository';
 import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
 import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
 import { InvitationTypeLinkRepository } from './invitation-type-link.repository';
@@ -12,9 +9,6 @@ import { InvitationTypeLinkRepository } from './invitation-type-link.repository'
 export class InvitationTypeLinkService {
     constructor(
         public readonly invitationTypeLinkRepository: InvitationTypeLinkRepository,
-        public readonly canvasRepository: CanvasRepository,
-        public readonly validatorService: ValidatorService,
-        public readonly awsS3Service: AwsS3Service,
         public readonly canvasService: CanvasService,
     ) {}
 
@@ -29,13 +23,16 @@ export class InvitationTypeLinkService {
         );
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
         invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
-        invitationTypeLinkModel.createUserId = userId;
+        invitationTypeLinkModel.createdUserId = userId;
         invitationTypeLinkModel.orgId = createInvitationTypeLinkDto.orgId;
-        invitationTypeLinkModel.numberOfUsers =
-            createInvitationTypeLinkDto.numberOfUsers;
+        invitationTypeLinkModel.numberOfUser =
+            createInvitationTypeLinkDto.numberOfUser;
         invitationTypeLinkModel.type = createInvitationTypeLinkDto.type;
         invitationTypeLinkModel.permission =
             createInvitationTypeLinkDto.permission;
+        invitationTypeLinkModel.typeId =
+            createInvitationTypeLinkDto.typeId || '';
+        invitationTypeLinkModel.isDeleted = false;
 
         return this.invitationTypeLinkRepository.save(invitationTypeLinkModel);
     }
