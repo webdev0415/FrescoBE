@@ -1,25 +1,25 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 
-import { InvitationType } from '../../common/constants/invitation-type';
-import { InvitationAcceptedException } from '../../exceptions/accepted-invitation';
-import { InvitationLimitedException } from '../../exceptions/invitation-limited';
-import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
-import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
-import { BoardRepository } from '../../modules/board/board.repository';
-import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
-import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
-import { CanvasRepository } from '../../modules/canvas/canvas.repository';
-import { CanvasService } from '../../modules/canvas/canvas.service';
-import { InvitationTypeLinkUserService } from '../../modules/invitation-type-link-user/invitation-type-link-user.service';
-import { OrganizationRepository } from '../../modules/organization/organization.repository';
-import { ConfigService } from '../../shared/services/config.service';
-import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
-import { DeleteInvitationTypeLinkDto } from './dto/DeleteInvitationTypeLinkDto';
-import { HandleRequestInvitationLinkDto } from './dto/HandleRequestInvitationLinkDto';
-import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
-import { InvitationTypeLinkInfoDto } from './dto/InvitationTypeLinkInfoDto';
-import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
-import { InvitationTypeLinkRepository } from './invitation-type-link.repository';
+import {InvitationType} from '../../common/constants/invitation-type';
+import {InvitationAcceptedException} from '../../exceptions/accepted-invitation';
+import {InvitationLimitedException} from '../../exceptions/invitation-limited';
+import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
+import {BoardUserOrgRepository} from '../../modules/board-user-org/board-user-org.repository';
+import {BoardRepository} from '../../modules/board/board.repository';
+import {CanvasUserOrgEntity} from '../../modules/canvas-user-org/canvas-user-org.entity';
+import {CanvasUserOrgRepository} from '../../modules/canvas-user-org/canvas-user-org.repository';
+import {CanvasRepository} from '../../modules/canvas/canvas.repository';
+import {CanvasService} from '../../modules/canvas/canvas.service';
+import {InvitationTypeLinkUserService} from '../../modules/invitation-type-link-user/invitation-type-link-user.service';
+import {OrganizationRepository} from '../../modules/organization/organization.repository';
+import {ConfigService} from '../../shared/services/config.service';
+import {CreateInvitationTypeLinkDto} from './dto/CreateInvitationTypeLinkDto';
+import {DeleteInvitationTypeLinkDto} from './dto/DeleteInvitationTypeLinkDto';
+import {HandleRequestInvitationLinkDto} from './dto/HandleRequestInvitationLinkDto';
+import {InvitationTypeLinkDto} from './dto/InvitationTypeLinkDto';
+import {InvitationTypeLinkInfoDto} from './dto/InvitationTypeLinkInfoDto';
+import {InvitationTypeLinkEntity} from './invitation-type-link.entity';
+import {InvitationTypeLinkRepository} from './invitation-type-link.repository';
 
 @Injectable()
 export class InvitationTypeLinkService {
@@ -174,14 +174,24 @@ export class InvitationTypeLinkService {
                     id: item.orgId,
                 },
             });
-            const board = await this.boardRepository.findOne({
-                where: {
-                    id: item.typeId,
-                },
-            });
 
             const invitationTypeLinkInfoDto = item.toDto() as InvitationTypeLinkInfoDto;
-            invitationTypeLinkInfoDto.board = board?.toDto() || null;
+            if(invitationTypeLinkEntity.type == InvitationType.BOARD){
+                const board = await this.boardRepository.findOne({
+                    where: {
+                        id: item.typeId,
+                    },
+                });
+                invitationTypeLinkInfoDto.board = board?.toDto() || null;
+            }else if(invitationTypeLinkEntity.type == InvitationType.CANVAS) {
+                const canvas = await this.canvasRepository.findOne({
+                    where: {
+                        id: item.typeId,
+                    },
+                });
+                invitationTypeLinkInfoDto.canvas = canvas?.toDto() || null;
+            }
+
             invitationTypeLinkInfoDto.organization =
                 organization?.toDto() || null;
             listInvitationTypeLink.push(invitationTypeLinkInfoDto);

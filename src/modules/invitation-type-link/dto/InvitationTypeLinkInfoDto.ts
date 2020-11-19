@@ -12,6 +12,7 @@ import {InvitationTypeLinkEntity} from "../invitation-type-link.entity";
 import {BoardEntity} from "../../board/board.entity";
 import {BoardDto} from "../../board/dto/BoardDto";
 import {BoardInfoDto} from "../../board/dto/BoardInfoDto";
+import {CanvasEntity} from "../../canvas/canvas.entity";
 
 export class InvitationTypeLinkInfoDto extends AbstractDto {
     @ApiPropertyOptional()
@@ -36,6 +37,7 @@ export class InvitationTypeLinkInfoDto extends AbstractDto {
 
     organization: OrganizationEntity;
     board: BoardEntity;
+    canvas: CanvasEntity;
 
     constructor(invitationTypeLinkEntity: InvitationTypeLinkEntity) {
         super(invitationTypeLinkEntity);

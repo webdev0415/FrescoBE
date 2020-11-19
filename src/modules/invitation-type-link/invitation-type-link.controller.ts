@@ -7,7 +7,7 @@ import {
     Get,
     HttpCode,
     Param,
-    Post,
+    Post, Query,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
@@ -69,21 +69,19 @@ export class InvitationTypeLinkController {
         return invitationTypeLink.toDto();
     }
 
-    @Get(':type/:orgId/:typeId')
+    @Get('')
     @ApiOkResponse({
         type: InvitationTypeLinkInfoDto,
         description: 'get invitation type link by type and organization id',
     })
     async getInvitationTypeLinkByTypeAndOrgId(
         @AuthUser() user: UserEntity,
-        @Param('type') type: InvitationType,
-        @Param('orgId') orgId: string,
-        @Param('typeId') typeId: string,
+        @Query() query,
     ): Promise<InvitationTypeLinkInfoDto[]> {
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
-        invitationTypeLinkModel.type = type;
-        invitationTypeLinkModel.orgId = orgId;
-        invitationTypeLinkModel.typeId = typeId;
+        invitationTypeLinkModel.type = query.type;
+        invitationTypeLinkModel.orgId = query.orgId;
+        invitationTypeLinkModel.typeId = query.typeId;
         const invitationTypeLinkInfoDto = await this.invitationTypeLinkService.getInvitationTypeLinkByTypeAndOrgId(
             user.id,
             invitationTypeLinkModel,
@@ -98,13 +96,13 @@ export class InvitationTypeLinkController {
     })
     async delete(
         @AuthUser() user: UserEntity,
-        @Body() deleteInvitationTypeLinkDto: DeleteInvitationTypeLinkDto,
         @Param('id') id: string,
     ): Promise<InvitationTypeLinkDto> {
+        const deleteInvitationTypeLinkDto = new DeleteInvitationTypeLinkDto()
         deleteInvitationTypeLinkDto.invitationTypeLinkId = id;
         deleteInvitationTypeLinkDto.createdUserId = user.id;
         const invitationTypeLinkInfoDto = await this.invitationTypeLinkService.delete(
-            deleteInvitationTypeLinkDto,
+            deleteInvitationTypeLinkDto
         );
         return invitationTypeLinkInfoDto;
     }
