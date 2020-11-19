@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { InvitationType } from '../../common/constants/invitation-type';
 import { InvitationAcceptedException } from '../../exceptions/accepted-invitation';
-import { InvitationLimitedException } from '../../exceptions/accepted-invitation-limited';
+import { InvitationLimitedException } from '../../exceptions/invitation-limited';
 import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
 import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
 import { BoardRepository } from '../../modules/board/board.repository';
@@ -99,7 +99,7 @@ export class InvitationTypeLinkService {
             },
         );
         if (!invitationTypeLink) {
-            throw new NotFoundException('tocken is not valid');
+            throw new NotFoundException('token is not valid');
         }
 
         const invitationTypeLinkUser = await this.invitationTypeLinkUserService.getInvitationTypeLinkUser(
@@ -108,7 +108,7 @@ export class InvitationTypeLinkService {
         );
         if (invitationTypeLinkUser) {
             throw new InvitationAcceptedException(
-                'You excepted this invitation',
+                'You accepted this invitation',
             );
         }
 
@@ -125,13 +125,16 @@ export class InvitationTypeLinkService {
         });
         // update numberOfUser
         invitationTypeLink.numberOfUser += 1;
-        await this.invitationTypeLinkRepository.save(invitationTypeLink);
+        const invitationTypeLinkUpdated = await this.invitationTypeLinkRepository.save(
+            invitationTypeLink,
+        );
 
         // create ${type}_user_org record
         if (invitationTypeLink.type === InvitationType.CANVAS) {
             const canvasUserOrgModel = new CanvasUserOrgEntity();
             canvasUserOrgModel.canvasId = invitationTypeLink.typeId;
             canvasUserOrgModel.orgId = invitationTypeLink.orgId;
+            canvasUserOrgModel.permission = invitationTypeLink.permission;
             canvasUserOrgModel.userId = userId;
             await this.canvasUserOrgRepository.save(canvasUserOrgModel);
         } else {
@@ -139,10 +142,11 @@ export class InvitationTypeLinkService {
             boardUserOrgModel.boardId = invitationTypeLink.typeId;
             boardUserOrgModel.orgId = invitationTypeLink.orgId;
             boardUserOrgModel.userId = userId;
+            boardUserOrgModel.permission = invitationTypeLink.permission;
             await this.boardUserOrgRepository.save(boardUserOrgModel);
         }
 
-        return invitationTypeLink.toDto();
+        return invitationTypeLinkUpdated;
     }
 
     async getInvitationTypeLinkByTypeAndOrgId(

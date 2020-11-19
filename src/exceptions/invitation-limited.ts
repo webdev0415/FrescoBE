@@ -4,6 +4,10 @@ import { BadRequestException } from '@nestjs/common';
 
 export class InvitationLimitedException extends BadRequestException {
     constructor(error?: string) {
-        super('error.Invitation_accepted', error);
+        if (error) {
+            super(error);
+        } else {
+            super('error.Invitation_limited');
+        }
     }
 }

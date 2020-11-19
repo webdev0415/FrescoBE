@@ -2,7 +2,6 @@
 import { Injectable } from '@nestjs/common';
 
 import { CreateInvitationTypeLinkUserDto } from './dto/CreateInvitationTypeLinkUserDto';
-import { InvitationTypeLinkUserDto } from './dto/InvitationTypeLinkUserDto';
 import { InvitationTypeLinkUserEntity } from './invitation-type-link-user.entity';
 import { InvitationTypeLinkUserRepository } from './invitation-type-link-user.repository';
 
@@ -34,6 +33,7 @@ export class InvitationTypeLinkUserService {
         invitationTypeLinkUserModel.userId = createCategoryDto.userId;
         invitationTypeLinkUserModel.invitationTypeLinkId =
             createCategoryDto.invitationTypeLinkId;
+        invitationTypeLinkUserModel.createdAt = new Date();
 
         const invitationTypeLinkUser = await this.invitationTypeLinkUserRepository.save(
             invitationTypeLinkUserModel,

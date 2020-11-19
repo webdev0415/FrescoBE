@@ -1,9 +1,13 @@
 'use strict';
 
-import { BadRequestException } from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 
-export class InvitationAcceptedException extends BadRequestException {
+export class InvitationAcceptedException extends ConflictException {
     constructor(error?: string) {
-        super('error.Invitation_accepted', error);
+        if (error) {
+            super(error);
+        } else {
+            super('error.Invitation_accepted');
+        }
     }
 }

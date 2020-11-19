@@ -39,7 +39,7 @@ export class InvitationTypeLinkController {
 
     @Post('')
     @ApiOkResponse({
-        type: InvitationTypeLinkDto,
+        type: CreateInvitationTypeLinkDto,
         description: 'create invitation type link',
     })
     async create(
@@ -55,7 +55,7 @@ export class InvitationTypeLinkController {
 
     @Post('request')
     @ApiOkResponse({
-        type: InvitationTypeLinkDto,
+        type: CreateInvitationTypeLinkDto,
         description: 'handle request invitation type link',
     })
     async handleRequest(
