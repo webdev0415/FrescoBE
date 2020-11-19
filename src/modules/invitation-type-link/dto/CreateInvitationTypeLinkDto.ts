@@ -13,8 +13,6 @@ export class CreateInvitationTypeLinkDto {
     @IsNotEmpty({ message: 'orgId is required' })
     orgId: string;
 
-    @ApiProperty()
-    @IsNotEmpty({ message: 'numberOfUser is required' })
     numberOfUser: number;
 
     @ApiProperty()

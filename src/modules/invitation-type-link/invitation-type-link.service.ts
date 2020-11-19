@@ -5,6 +5,7 @@ import { BoardRepository } from '../../modules/board/board.repository';
 import { CanvasRepository } from '../../modules/canvas/canvas.repository';
 import { CanvasService } from '../../modules/canvas/canvas.service';
 import { OrganizationRepository } from '../../modules/organization/organization.repository';
+import { ConfigService } from '../../shared/services/config.service';
 import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
 import { DeleteInvitationTypeLinkDto } from './dto/DeleteInvitationTypeLinkDto';
 import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
@@ -20,6 +21,7 @@ export class InvitationTypeLinkService {
         public readonly organizationRepository: OrganizationRepository,
         public readonly canvasRepository: CanvasRepository,
         public readonly boardRepository: BoardRepository,
+        public readonly configService: ConfigService,
     ) {}
 
     // eslint-disable-next-line complexity
@@ -59,12 +61,13 @@ export class InvitationTypeLinkService {
             throw new NotFoundException('typeId is not valid');
         }
 
+        const numberOfUser = this.configService.getNumber('NUMBER_OF_USER');
+
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
         invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
         invitationTypeLinkModel.createdUserId = userId;
         invitationTypeLinkModel.orgId = createInvitationTypeLinkDto.orgId;
-        invitationTypeLinkModel.numberOfUser =
-            createInvitationTypeLinkDto.numberOfUser;
+        invitationTypeLinkModel.numberOfUser = numberOfUser;
         invitationTypeLinkModel.type = createInvitationTypeLinkDto.type;
         invitationTypeLinkModel.permission =
             createInvitationTypeLinkDto.permission;
