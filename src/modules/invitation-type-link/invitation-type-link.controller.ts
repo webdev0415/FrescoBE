@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {
     Body,
-    Controller,
+    Controller, Delete, Get, HttpCode, Param,
     Post,
     UseGuards,
     UseInterceptors,
@@ -17,6 +17,10 @@ import { UserEntity } from '../../modules/user/user.entity';
 import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
 import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
 import { InvitationTypeLinkService } from './invitation-type-link.service';
+import {InvitationType} from "../../common/constants/invitation-type";
+import {InvitationTypeLinkInfoDto} from "./dto/InvitationTypeLinkInfoDto";
+import {InvitationTypeLinkEntity} from "./invitation-type-link.entity";
+import {DeleteInvitationTypeLinkDto} from "./dto/DeleteInvitationTypeLinkDto";
 
 @Controller('invitation-type')
 @ApiTags('invitation-type')
@@ -58,5 +62,40 @@ export class InvitationTypeLinkController {
             createInvitationTypeLinkDto,
         );
         return invitationTypeLink.toDto();
+    }
+
+    @Get(':type/:orgId/:typeId')
+    @ApiOkResponse({
+        type: InvitationTypeLinkInfoDto,
+        description: 'get invitation type link by type and organization id',
+    })
+    async getInvitationTypeLinkByTypeAndOrgId(
+        @AuthUser() user: UserEntity,
+        @Param('type') type: InvitationType,
+        @Param('orgId') orgId: string,
+        @Param('typeId') typeId: string,
+    ): Promise<InvitationTypeLinkInfoDto[]> {
+        const invitationTypeLinkModel = new InvitationTypeLinkEntity();
+        invitationTypeLinkModel.type = type;
+        invitationTypeLinkModel.orgId = orgId;
+        invitationTypeLinkModel.typeId = typeId;
+        const invitationTypeLinkInfoDto = await this.invitationTypeLinkService.getInvitationTypeLinkByTypeAndOrgId(user.id, invitationTypeLinkModel);
+        return invitationTypeLinkInfoDto;
+    }
+
+    @Delete(':id')
+    @ApiOkResponse({
+        type: InvitationTypeLinkDto,
+        description: 'delete invitation type link',
+    })
+    async delete(
+        @AuthUser() user: UserEntity,
+        @Body() deleteInvitationTypeLinkDto: DeleteInvitationTypeLinkDto,
+        @Param('id') id: string,
+    ): Promise<InvitationTypeLinkDto> {
+        deleteInvitationTypeLinkDto.invitationTypeLinkId = id;
+        deleteInvitationTypeLinkDto.createdUserId = user.id;
+        const invitationTypeLinkInfoDto = await this.invitationTypeLinkService.delete(deleteInvitationTypeLinkDto);
+        return invitationTypeLinkInfoDto;
     }
 }
