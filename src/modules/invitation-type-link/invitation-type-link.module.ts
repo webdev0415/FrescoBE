@@ -7,6 +7,7 @@ import { CanvasRepository } from '../canvas/canvas.repository';
 import { InvitationTypeLinkController } from './invitation-type-link.controller';
 import { InvitationTypeLinkRepository } from './invitation-type-link.repository';
 import { InvitationTypeLinkService } from './invitation-type-link.service';
+import {BoardRepository} from "../board/board.repository";
 
 @Module({
     imports: [
@@ -14,6 +15,7 @@ import { InvitationTypeLinkService } from './invitation-type-link.service';
             InvitationTypeLinkRepository,
             CanvasRepository,
             OrganizationRepository,
+            BoardRepository
         ]),
         forwardRef(() => CanvasModule),
     ],

@@ -29,6 +29,8 @@ export class InvitationTypeLinkDto extends AbstractDto {
     @ApiPropertyOptional()
     typeId: string;
 
+    isDeleted: boolean;
+
     constructor(invitation: InvitationTypeLinkEntity) {
         super(invitation);
         this.token = invitation.token;
@@ -38,5 +40,6 @@ export class InvitationTypeLinkDto extends AbstractDto {
         this.type = invitation.type;
         this.permission = invitation.permission;
         this.typeId = invitation.typeId;
+        this.isDeleted = invitation.isDeleted;
     }
 }
