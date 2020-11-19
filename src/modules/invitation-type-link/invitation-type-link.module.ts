@@ -1,6 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { BoardRepository } from '../../modules/board/board.repository';
 import { CanvasModule } from '../../modules/canvas/canvas.module';
 import { OrganizationRepository } from '../../modules/organization/organization.repository';
 import { CanvasRepository } from '../canvas/canvas.repository';
@@ -14,6 +15,7 @@ import { InvitationTypeLinkService } from './invitation-type-link.service';
             InvitationTypeLinkRepository,
             CanvasRepository,
             OrganizationRepository,
+            BoardRepository,
         ]),
         forwardRef(() => CanvasModule),
     ],

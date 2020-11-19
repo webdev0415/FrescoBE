@@ -29,5 +29,7 @@ export class CreateInvitationTypeLinkDto {
     @IsNotEmpty({ message: 'type is required' })
     type: InvitationType;
 
-    typeId?: string;
+    @ApiProperty()
+    @IsNotEmpty({ message: 'typeId is required' })
+    typeId: string;
 }
