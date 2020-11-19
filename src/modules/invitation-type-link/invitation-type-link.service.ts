@@ -1,13 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import { InvitationType } from '../../common/constants/invitation-type';
+import { InvitationAcceptedException } from '../../exceptions/accepted-invitation';
+import { InvitationLimitedException } from '../../exceptions/accepted-invitation-limited';
+import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
 import { BoardRepository } from '../../modules/board/board.repository';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
+import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
 import { CanvasRepository } from '../../modules/canvas/canvas.repository';
 import { CanvasService } from '../../modules/canvas/canvas.service';
+import { InvitationTypeLinkUserService } from '../../modules/invitation-type-link-user/invitation-type-link-user.service';
 import { OrganizationRepository } from '../../modules/organization/organization.repository';
 import { ConfigService } from '../../shared/services/config.service';
 import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
 import { DeleteInvitationTypeLinkDto } from './dto/DeleteInvitationTypeLinkDto';
+import { HandleRequestInvitationLinkDto } from './dto/HandleRequestInvitationLinkDto';
 import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
 import { InvitationTypeLinkInfoDto } from './dto/InvitationTypeLinkInfoDto';
 import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
@@ -22,6 +30,9 @@ export class InvitationTypeLinkService {
         public readonly canvasRepository: CanvasRepository,
         public readonly boardRepository: BoardRepository,
         public readonly configService: ConfigService,
+        public readonly invitationTypeLinkUserService: InvitationTypeLinkUserService,
+        public readonly boardUserOrgRepository: BoardUserOrgRepository,
+        public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
     ) {}
 
     // eslint-disable-next-line complexity
@@ -78,37 +89,60 @@ export class InvitationTypeLinkService {
     // eslint-disable-next-line complexity
     async handleRequest(
         userId: string,
-        createInvitationTypeLinkDto: CreateInvitationTypeLinkDto,
+        handleRequestInvitationLinkDto: HandleRequestInvitationLinkDto,
     ): Promise<InvitationTypeLinkEntity> {
-        const org = await this.organizationRepository.findOne({
-            where: {
-                id: createInvitationTypeLinkDto.orgId,
+        const invitationTypeLink = await this.invitationTypeLinkRepository.findOne(
+            {
+                where: {
+                    token: handleRequestInvitationLinkDto.token,
+                },
             },
-        });
-        if (!org) {
-            throw new NotFoundException('orgId is not valid');
-        }
-        await this.canvasService.isAdminOrEditor(
-            userId,
-            createInvitationTypeLinkDto.orgId,
         );
+        if (!invitationTypeLink) {
+            throw new NotFoundException('tocken is not valid');
+        }
 
+        const invitationTypeLinkUser = await this.invitationTypeLinkUserService.getInvitationTypeLinkUser(
+            invitationTypeLink.id,
+            userId,
+        );
+        if (invitationTypeLinkUser) {
+            throw new InvitationAcceptedException(
+                'You excepted this invitation',
+            );
+        }
+
+        // compare number of user
         const numberOfUser = this.configService.getNumber('NUMBER_OF_USER');
+        if (invitationTypeLink.numberOfUser >= numberOfUser) {
+            throw new InvitationLimitedException('Invitation is limited');
+        }
 
-        const invitationTypeLinkModel = new InvitationTypeLinkEntity();
-        invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
-        invitationTypeLinkModel.createdUserId = userId;
-        invitationTypeLinkModel.orgId = createInvitationTypeLinkDto.orgId;
-        invitationTypeLinkModel.numberOfUser =
-            createInvitationTypeLinkDto.numberOfUser;
-        invitationTypeLinkModel.type = createInvitationTypeLinkDto.type;
-        invitationTypeLinkModel.permission =
-            createInvitationTypeLinkDto.permission;
-        invitationTypeLinkModel.typeId =
-            createInvitationTypeLinkDto.typeId || '';
-        invitationTypeLinkModel.isDeleted = false;
+        // create invitationTypeLinkUserService
+        await this.invitationTypeLinkUserService.create({
+            userId,
+            invitationTypeLinkId: invitationTypeLink.id,
+        });
+        // update numberOfUser
+        invitationTypeLink.numberOfUser += 1;
+        await this.invitationTypeLinkRepository.save(invitationTypeLink);
 
-        return this.invitationTypeLinkRepository.save(invitationTypeLinkModel);
+        // create ${type}_user_org record
+        if (invitationTypeLink.type === InvitationType.CANVAS) {
+            const canvasUserOrgModel = new CanvasUserOrgEntity();
+            canvasUserOrgModel.canvasId = invitationTypeLink.typeId;
+            canvasUserOrgModel.orgId = invitationTypeLink.orgId;
+            canvasUserOrgModel.userId = userId;
+            await this.canvasUserOrgRepository.save(canvasUserOrgModel);
+        } else {
+            const boardUserOrgModel = new BoardUserOrgEntity();
+            boardUserOrgModel.boardId = invitationTypeLink.typeId;
+            boardUserOrgModel.orgId = invitationTypeLink.orgId;
+            boardUserOrgModel.userId = userId;
+            await this.boardUserOrgRepository.save(boardUserOrgModel);
+        }
+
+        return invitationTypeLink.toDto();
     }
 
     async getInvitationTypeLinkByTypeAndOrgId(

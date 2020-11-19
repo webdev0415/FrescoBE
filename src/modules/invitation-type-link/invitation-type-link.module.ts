@@ -1,8 +1,11 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
 import { BoardRepository } from '../../modules/board/board.repository';
+import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
 import { CanvasModule } from '../../modules/canvas/canvas.module';
+import { InvitationTypeLinkUserModule } from '../../modules/invitation-type-link-user/invitation-type-link-user.module';
 import { OrganizationRepository } from '../../modules/organization/organization.repository';
 import { CanvasRepository } from '../canvas/canvas.repository';
 import { InvitationTypeLinkController } from './invitation-type-link.controller';
@@ -16,8 +19,11 @@ import { InvitationTypeLinkService } from './invitation-type-link.service';
             CanvasRepository,
             OrganizationRepository,
             BoardRepository,
+            BoardUserOrgRepository,
+            CanvasUserOrgRepository,
         ]),
         forwardRef(() => CanvasModule),
+        forwardRef(() => InvitationTypeLinkUserModule),
     ],
     controllers: [InvitationTypeLinkController],
     providers: [InvitationTypeLinkService],
