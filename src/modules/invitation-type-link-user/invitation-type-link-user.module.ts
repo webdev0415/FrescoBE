@@ -6,7 +6,7 @@ import { CanvasRepository } from '../canvas/canvas.repository';
 import { OrganizationRepository } from '../organization/organization.repository';
 import { InvitationTypeLinkUserController } from './invitation-type-link-user.controller';
 import { InvitationTypeLinkUserRepository } from './invitation-type-link-user.repository';
-import { InvitationTypeLinkUserService } from './invitation-type-link.service';
+import { InvitationTypeLinkUserService } from './invitation-type-link-user.service';
 
 @Module({
     imports: [

@@ -61,13 +61,11 @@ export class InvitationTypeLinkService {
             throw new NotFoundException('typeId is not valid');
         }
 
-        const numberOfUser = this.configService.getNumber('NUMBER_OF_USER');
-
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
         invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
         invitationTypeLinkModel.createdUserId = userId;
         invitationTypeLinkModel.orgId = createInvitationTypeLinkDto.orgId;
-        invitationTypeLinkModel.numberOfUser = numberOfUser;
+        invitationTypeLinkModel.numberOfUser = 0;
         invitationTypeLinkModel.type = createInvitationTypeLinkDto.type;
         invitationTypeLinkModel.permission =
             createInvitationTypeLinkDto.permission;
@@ -94,6 +92,9 @@ export class InvitationTypeLinkService {
             userId,
             createInvitationTypeLinkDto.orgId,
         );
+
+        const numberOfUser = this.configService.getNumber('NUMBER_OF_USER');
+
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
         invitationTypeLinkModel.token = createInvitationTypeLinkDto.token;
         invitationTypeLinkModel.createdUserId = userId;
