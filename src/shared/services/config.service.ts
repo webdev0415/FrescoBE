@@ -94,6 +94,13 @@ export class ConfigService {
         };
     }
 
+    get sendGridConfig() {
+        return {
+            sendGridApiKey: this.get('SENDGRID_API_KEY'),
+            emailFrom: this.get('EMAIL_FROM'),
+        };
+    }
+
     get awsS3Config(): IAwsConfig {
         return {
             accessKeyId: this.get('AWS_S3_ACCESS_KEY_ID'),

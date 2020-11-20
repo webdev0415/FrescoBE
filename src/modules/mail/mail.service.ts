@@ -1,8 +1,10 @@
 import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable, Logger } from '@nestjs/common';
-import { SendEmailInvitationDto } from '../../modules/invitation/dto/SendEmailInvitationDto';
+import { InjectSendGrid, SendGridService } from '@ntegral/nestjs-sendgrid';
 
+import { Templates } from '../../common/constants/email-templates';
 import { ConfigService } from '../../shared/services/config.service';
+import { SendEmailInvitationDto } from '../invitation/dto/SendEmailInvitationDto';
 import { UserDto } from '../user/dto/UserDto';
 
 @Injectable()
@@ -12,7 +14,20 @@ export class MailService {
     constructor(
         private readonly _mailerService: MailerService,
         public readonly configService: ConfigService,
+        @InjectSendGrid() private readonly _client: SendGridService,
     ) {}
+
+    async sendTestEmail(user: UserDto, code: string): Promise<any> {
+        const clientUrl = this.configService.get('CLIENT_URL');
+        const url = `${clientUrl}/auth/confirm/${code}`;
+        return this._client.send({
+            to: user.email,
+            from: this.configService.get('EMAIL_FROM'),
+            subject: 'Welcome to Fresco! Please Confirm Your Email Address',
+            templateId: Templates.CONFIRMATION_TEMPLATE_ID,
+            dynamicTemplateData: { url },
+        });
+    }
 
     /** Send email confirmation link to new user account. */
     async sendConfirmationEmail(user: UserDto, code: string): Promise<boolean> {
