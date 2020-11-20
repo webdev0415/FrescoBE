@@ -31,12 +31,13 @@ async function bootstrap() {
         { cors: true },
     );
     applicationInstance = app;
+    const configService = app.select(SharedModule).get(ConfigService);
     app.enable('trust proxy'); // only if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
     app.use(helmet());
     app.use(
         RateLimit({
             windowMs: 15 * 60 * 1000, // 15 minutes
-            max: 100, // limit each IP to 100 requests per windowMs
+            max: configService.getNumber('RATE_LIMIT_PER_IP') || 100, // limit each IP to 100 requests per windowMs
         }),
     );
     app.use(compression());
@@ -61,8 +62,6 @@ async function bootstrap() {
             },
         }),
     );
-
-    const configService = app.select(SharedModule).get(ConfigService);
 
     app.connectMicroservice({
         transport: Transport.TCP,
