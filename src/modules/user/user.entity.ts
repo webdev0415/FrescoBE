@@ -5,6 +5,7 @@ import { RoleType } from '../../common/constants/role-type';
 import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 import { UserToOrgEntity } from '../user-org/user-org.entity';
 import { UserDto } from './dto/UserDto';
+import {BoardUserOrgEntity} from "../board-user-org/board-user-org.entity";
 
 @Entity({ name: 'user' })
 export class UserEntity extends AbstractEntity<UserDto> {
@@ -41,6 +42,12 @@ export class UserEntity extends AbstractEntity<UserDto> {
         (canvasUserOrgEntity) => canvasUserOrgEntity.user,
     )
     canvases?: CanvasUserOrgEntity[];
+
+    @OneToMany(
+        () => BoardUserOrgEntity,
+        (boardUserOrgEntity) => boardUserOrgEntity.user,
+    )
+    boards?: BoardUserOrgEntity[];
 
     dtoClass = UserDto;
 }

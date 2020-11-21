@@ -8,6 +8,7 @@ import { UserToOrgEntity } from '../user-org/user-org.entity';
 // import { UserEntity } from '../user/user.entity';
 // Dtos
 import { OrganizationDto } from './dto/OrganizationDto';
+import {BoardUserOrgEntity} from "../board-user-org/board-user-org.entity";
 
 @Entity({ name: 'organization' })
 export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
@@ -43,6 +44,13 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
         (canvasUserOrgEntity) => canvasUserOrgEntity.organization,
     )
     canvases?: CanvasUserOrgEntity[];
+
+
+    @OneToMany(
+        () => BoardUserOrgEntity,
+        (boardUserOrgEntity) => boardUserOrgEntity.organization,
+    )
+    boards?: BoardUserOrgEntity[];
 
     // @OneToMany(
     //     () => CollaborationEntity,

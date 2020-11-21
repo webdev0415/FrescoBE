@@ -11,6 +11,7 @@ import { CanvasRepository } from '../canvas/canvas.repository';
 import { InvitationTypeLinkController } from './invitation-type-link.controller';
 import { InvitationTypeLinkRepository } from './invitation-type-link.repository';
 import { InvitationTypeLinkService } from './invitation-type-link.service';
+import {UserRepository} from "../user/user.repository";
 
 @Module({
     imports: [
@@ -21,6 +22,7 @@ import { InvitationTypeLinkService } from './invitation-type-link.service';
             BoardRepository,
             BoardUserOrgRepository,
             CanvasUserOrgRepository,
+            UserRepository,
         ]),
         forwardRef(() => CanvasModule),
         forwardRef(() => InvitationTypeLinkUserModule),

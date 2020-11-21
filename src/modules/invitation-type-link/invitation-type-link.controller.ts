@@ -26,6 +26,8 @@ import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
 import { InvitationTypeLinkInfoDto } from './dto/InvitationTypeLinkInfoDto';
 import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
 import { InvitationTypeLinkService } from './invitation-type-link.service';
+import {CanvasInfoDto} from "../canvas/dto/CanvasInfoDto";
+import {BoardInfoDto} from "../board/dto/BoardInfoDto";
 
 @Controller('invitation-type')
 @ApiTags('invitation-type')
@@ -105,5 +107,21 @@ export class InvitationTypeLinkController {
             deleteInvitationTypeLinkDto
         );
         return invitationTypeLinkInfoDto;
+    }
+
+    @Get(':type/:typeId')
+    @ApiOkResponse({
+        description: 'get invitation type link by type and organization id',
+    })
+    async getUserOrgByType(
+        @AuthUser() user: UserEntity,
+        @Param('type') type: InvitationType,
+        @Param('typeId') typeId: string,
+    ): Promise<CanvasInfoDto | BoardInfoDto> {
+        const userByType = await this.invitationTypeLinkService.getUserOrgByType(
+            type,
+            typeId,
+        );
+        return userByType;
     }
 }

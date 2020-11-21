@@ -20,6 +20,9 @@ import {InvitationTypeLinkDto} from './dto/InvitationTypeLinkDto';
 import {InvitationTypeLinkInfoDto} from './dto/InvitationTypeLinkInfoDto';
 import {InvitationTypeLinkEntity} from './invitation-type-link.entity';
 import {InvitationTypeLinkRepository} from './invitation-type-link.repository';
+import {CanvasInfoDto} from "../canvas/dto/CanvasInfoDto";
+import {BoardInfoDto} from "../board/dto/BoardInfoDto";
+import {UserRepository} from "../user/user.repository";
 
 @Injectable()
 export class InvitationTypeLinkService {
@@ -33,6 +36,7 @@ export class InvitationTypeLinkService {
         public readonly invitationTypeLinkUserService: InvitationTypeLinkUserService,
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
         public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
+        public readonly userRespository: UserRepository,
     ) {}
 
     // eslint-disable-next-line complexity
@@ -220,5 +224,57 @@ export class InvitationTypeLinkService {
             invitationTypeLink,
         );
         return invitationTypeLinkDeleted.toDto() as InvitationTypeLinkDto;
+    }
+
+    async getUserOrgByType(type: InvitationType, typeId: string): Promise<CanvasInfoDto | BoardInfoDto>{
+        if(type == InvitationType.CANVAS){
+            const typeEntity = await this.canvasRepository.findOne({
+                    id: typeId
+                },
+                {
+                    relations: ['canvases']
+                }
+            );
+            if(!typeEntity){
+                throw new NotFoundException();
+            }
+            const typeDto = typeEntity.toDto() as CanvasInfoDto;
+            typeDto.canvases = typeEntity.canvases.map((item) => item.toDto());
+            for (const item of typeDto.canvases) {
+                const user = await this.userRespository.findOne({
+                    id: item.userId
+                });
+                item.user = user?.toDto() || null;
+                const organization = await this.organizationRepository.findOne({
+                    id: item.orgId
+                });
+                item.organization = organization?.toDto() || null;
+            }
+            return typeDto;
+        }else if(type == InvitationType.BOARD){
+            const typeEntity = await this.boardRepository.findOne({
+                    id: typeId
+                },
+                {
+                    relations: ['boards']
+                }
+            );
+            if(!typeEntity){
+                throw new NotFoundException();
+            }
+            const typeDto = typeEntity.toDto() as BoardInfoDto;
+            typeDto.boards = typeEntity.boards.map((item) => item.toDto());
+            for (const item of typeDto.boards) {
+                const user = await this.userRespository.findOne({
+                    id: item.userId
+                });
+                item.user = user?.toDto() || null;
+                const organization = await this.organizationRepository.findOne({
+                    id: item.orgId
+                });
+                item.organization = organization?.toDto() || null;
+            }
+            return typeDto;
+        }
     }
 }
