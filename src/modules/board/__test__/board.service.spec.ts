@@ -47,6 +47,12 @@ const mockCreateBoardDto:CreateBoardDto={
 
 }
 
+const mockUpdateBoardDto:UpdateBoardDto={
+    orgId:"org",name:"name",imageId:"imageId",data:"data",categoryId:"categoryId",id:""
+
+}
+
+
 const dateValue = new Date();
 
 const mockCategoryEntity: CategoryEntity = {
@@ -90,6 +96,7 @@ const mockCategoryRepository = () => ({
     create: jest.fn(),
     update: jest.fn(),
     dispose: jest.fn(),
+    delete: jest.fn(),
     createQueryBuilder: jest.fn(() => ({
         delete: jest.fn().mockReturnThis(),
         from: jest.fn().mockReturnThis(),
@@ -123,7 +130,7 @@ describe('AuthService', () => {
     let uploadImageRepository;
     let categoryRepository;
     let uploadImageService;
-    let boardService;
+    let boardService:BoardService;
     beforeEach(async () => {
         UtilsService.validateHash = jest.fn().mockResolvedValue(true);
         const module = await Test.createTestingModule({
@@ -228,7 +235,7 @@ describe('AuthService', () => {
             expect(result).not.toBeUndefined();
             expect(result.length).toEqual(1);
             expect(result[0].categoryId).toEqual(mockCategoryEntity.id)
-            expect(result[0].path).toEqual(mockImageEntity.path)
+            expect(result[0]["path"]).toEqual(mockImageEntity.path)
 
         });
 
@@ -248,30 +255,97 @@ describe('AuthService', () => {
 
 
         it(' Create with data', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
 
-            boardRepository.save.mockReturnValue([mockBoardEntity]);
+            boardRepository.save.mockImplementation(async (value)=>value);
             categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageService.getImageById.mockReturnValue(mockImageEntity);
+            boardUserOrgRepository.save.mockImplementation(async (value)=>value)
 
             const result = await boardService.create("id",mockCreateBoardDto)
 
             expect(result).not.toBeUndefined();
-            expect(result.length).toEqual(1);
-            expect(result[0].categoryId).toEqual(mockCategoryEntity.id)
-            expect(result[0].path).toEqual(mockImageEntity.path)
+
 
         });
 
-        it(' return BoardInfoDto[] with Zero object and not undefined', async () => {
+    });
 
-            boardRepository.find.mockReturnValue([]);
+    describe('Update', () => {
 
-            const result = await boardService.getByOrgId("invalidId")
+
+        it('Update board entity, successfull', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+            boardRepository.save.mockImplementation(async (value)=>value);
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(mockImageEntity);
+            boardUserOrgRepository.save.mockImplementation(async (value)=>value)
+            boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            const result = await boardService.update("id",mockUpdateBoardDto)
+
+
 
             expect(result).not.toBeUndefined();
-            expect(result.length).toEqual(0);
+
 
         });
+
+        it('Update board entity, Throw NotFoundException', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+            boardRepository.save.mockImplementation(async (value)=>value);
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(mockImageEntity);
+            boardUserOrgRepository.save.mockImplementation(async (value)=>value)
+            boardRepository.findOne.mockReturnValue(undefined);
+
+            let result=boardService.update("id",mockUpdateBoardDto)
+            let rejected=false
+            try {
+                const response = await result;
+
+            }
+            catch (e) {
+                rejected=true;
+                expect(e).toEqual(new NotFoundException())
+            }
+            expect(rejected).toBeTruthy();
+
+        });
+    });
+
+    describe('delete', () => {
+
+
+        it('Update board entity, successfull', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+            boardRepository.delete.mockImplementation(async (value)=>value);
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(mockImageEntity);
+            boardUserOrgRepository.delete.mockImplementation(async (value)=>value)
+            boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            const result = await boardService.delete(new DeleteBoardDto())
+
+            expect(result).toBeUndefined()
+
+
+        });
+
     });
 
 });
