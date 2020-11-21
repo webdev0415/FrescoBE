@@ -52,7 +52,7 @@ export class BoardService {
         // });
 
         if (!userToOrg) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("");
         }
         return userToOrg;
     }

@@ -57,7 +57,7 @@ describe('AuthService', () => {
     let utilsService;
 
     beforeEach(async () => {
-        UtilsService.validateHash = jest.fn().mockResolvedValue(true);
+      //  UtilsService.validateHash = jest.fn().mockResolvedValue(true);
         const module = await Test.createTestingModule({
             providers: [
                 AuthService,
