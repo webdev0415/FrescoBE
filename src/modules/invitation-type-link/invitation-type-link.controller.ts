@@ -7,7 +7,7 @@ import {
     Get,
     HttpCode,
     Param,
-    Post, Query,
+    Post, Put, Query,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
@@ -28,6 +28,9 @@ import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
 import { InvitationTypeLinkService } from './invitation-type-link.service';
 import {CanvasInfoDto} from "../canvas/dto/CanvasInfoDto";
 import {BoardInfoDto} from "../board/dto/BoardInfoDto";
+import {DefaultTemplateDto} from "../default-template/dto/DefaultTemplateDto";
+import {UpdateDefaultTemplateDto} from "../default-template/dto/UpdateDefaultTemplateDto";
+import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
 
 @Controller('invitation-type')
 @ApiTags('invitation-type')
@@ -123,5 +126,25 @@ export class InvitationTypeLinkController {
             typeId,
         );
         return userByType;
+    }
+
+    @Put(':type/:id')
+    @ApiOkResponse({
+        type: UpdateInvitationTypeLinkDto,
+        description: 'update invitation type link',
+    })
+    async update(
+        @AuthUser() user: UserEntity,
+        @Param('id') id: string,
+        @Param('type') type: InvitationType,
+        @Body() invitationTypeLinkUpdateDto: UpdateInvitationTypeLinkDto,
+    ): Promise<UpdateInvitationTypeLinkDto> {
+        invitationTypeLinkUpdateDto.id = id;
+        invitationTypeLinkUpdateDto.type = type;
+        invitationTypeLinkUpdateDto.createdUserId = user.id;
+        const invitationTypeLinkUpdated = await this.invitationTypeLinkService.update(
+            invitationTypeLinkUpdateDto
+        );
+        return invitationTypeLinkUpdated;
     }
 }

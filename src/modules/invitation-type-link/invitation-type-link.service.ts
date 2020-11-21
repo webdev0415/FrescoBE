@@ -23,6 +23,8 @@ import {InvitationTypeLinkRepository} from './invitation-type-link.repository';
 import {CanvasInfoDto} from "../canvas/dto/CanvasInfoDto";
 import {BoardInfoDto} from "../board/dto/BoardInfoDto";
 import {UserRepository} from "../user/user.repository";
+import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
+import {UpdateCategoryDto} from "../category/dto/UpdateCategoryDto";
 
 @Injectable()
 export class InvitationTypeLinkService {
@@ -276,5 +278,25 @@ export class InvitationTypeLinkService {
             }
             return typeDto;
         }
+    }
+
+    async update(
+        invitationTypeLinkUpdateDto: UpdateInvitationTypeLinkDto
+    ):Promise<UpdateInvitationTypeLinkDto>{
+        const typeEntity = await this.invitationTypeLinkRepository.findOne({
+                where:{
+                    id: invitationTypeLinkUpdateDto.id,
+                    type: invitationTypeLinkUpdateDto.type,
+                    createdUserId: invitationTypeLinkUpdateDto.createdUserId,
+                }
+            }
+        );
+        if(!typeEntity){
+            throw new NotFoundException();
+        }
+        typeEntity.permission = invitationTypeLinkUpdateDto.permission || typeEntity.permission;
+        const invitationTypeLinkUpdated = await this.invitationTypeLinkRepository.save(typeEntity);
+        const invitationTypeLinkUpdatedDto = invitationTypeLinkUpdated.toDto() as UpdateInvitationTypeLinkDto;
+        return invitationTypeLinkUpdatedDto;
     }
 }
