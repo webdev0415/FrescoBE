@@ -1,36 +1,23 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    Param,
-    Post, Put, Query,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { InvitationType } from '../../common/constants/invitation-type';
-import { AuthUser } from '../../decorators/auth-user.decorator';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { UserEntity } from '../../modules/user/user.entity';
-import { CreateInvitationTypeLinkDto } from './dto/CreateInvitationTypeLinkDto';
-import { DeleteInvitationTypeLinkDto } from './dto/DeleteInvitationTypeLinkDto';
-import { HandleRequestInvitationLinkDto } from './dto/HandleRequestInvitationLinkDto';
-import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
-import { InvitationTypeLinkInfoDto } from './dto/InvitationTypeLinkInfoDto';
-import { InvitationTypeLinkEntity } from './invitation-type-link.entity';
-import { InvitationTypeLinkService } from './invitation-type-link.service';
-import {CanvasInfoDto} from "../canvas/dto/CanvasInfoDto";
-import {BoardInfoDto} from "../board/dto/BoardInfoDto";
-import {DefaultTemplateDto} from "../default-template/dto/DefaultTemplateDto";
-import {UpdateDefaultTemplateDto} from "../default-template/dto/UpdateDefaultTemplateDto";
+import {InvitationType} from '../../common/constants/invitation-type';
+import {AuthUser} from '../../decorators/auth-user.decorator';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {UserEntity} from '../../modules/user/user.entity';
+import {CreateInvitationTypeLinkDto} from './dto/CreateInvitationTypeLinkDto';
+import {DeleteInvitationTypeLinkDto} from './dto/DeleteInvitationTypeLinkDto';
+import {HandleRequestInvitationLinkDto} from './dto/HandleRequestInvitationLinkDto';
+import {InvitationTypeLinkDto} from './dto/InvitationTypeLinkDto';
+import {InvitationTypeLinkInfoDto} from './dto/InvitationTypeLinkInfoDto';
+import {InvitationTypeLinkEntity} from './invitation-type-link.entity';
+import {InvitationTypeLinkService} from './invitation-type-link.service';
 import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
+import {GetUsersByBoardOrCanvasTypeDto} from "./dto/GetUsersByBoardOrCanvasTypeDto";
 
 @Controller('invitation-type')
 @ApiTags('invitation-type')
@@ -112,35 +99,69 @@ export class InvitationTypeLinkController {
         return invitationTypeLinkInfoDto;
     }
 
-    @Get(':type/:typeId')
+    @Get(':typeId/board')
     @ApiOkResponse({
-        description: 'get invitation type link by type and organization id',
+        type: GetUsersByBoardOrCanvasTypeDto,
+        description: 'get list user by board Id',
     })
-    async getUserOrgByType(
+    async getUserOrgByBoard(
         @AuthUser() user: UserEntity,
-        @Param('type') type: InvitationType,
         @Param('typeId') typeId: string,
-    ): Promise<CanvasInfoDto | BoardInfoDto> {
-        const userByType = await this.invitationTypeLinkService.getUserOrgByType(
-            type,
+    ): Promise<GetUsersByBoardOrCanvasTypeDto[]> {
+        const userByType = await this.invitationTypeLinkService.getUsersInType(
+            InvitationType.BOARD,
             typeId,
         );
         return userByType;
     }
 
-    @Put(':type/:id')
+    @Get(':typeId/canvas')
+    @ApiOkResponse({
+        type: GetUsersByBoardOrCanvasTypeDto,
+        description: 'get list user by canvas Id',
+    })
+    async getUserOrgByCanvas(
+        @AuthUser() user: UserEntity,
+        @Param('typeId') typeId: string,
+    ): Promise<GetUsersByBoardOrCanvasTypeDto[]> {
+        const userByType = await this.invitationTypeLinkService.getUsersInType(
+            InvitationType.CANVAS,
+            typeId,
+        );
+        return userByType;
+    }
+
+    @Put(':id/canvas')
     @ApiOkResponse({
         type: UpdateInvitationTypeLinkDto,
-        description: 'update invitation type link',
+        description: 'update invitation canvas link',
     })
-    async update(
+    async updateInvitationCanvasLink(
         @AuthUser() user: UserEntity,
         @Param('id') id: string,
-        @Param('type') type: InvitationType,
         @Body() invitationTypeLinkUpdateDto: UpdateInvitationTypeLinkDto,
     ): Promise<UpdateInvitationTypeLinkDto> {
         invitationTypeLinkUpdateDto.id = id;
-        invitationTypeLinkUpdateDto.type = type;
+        invitationTypeLinkUpdateDto.type = InvitationType.CANVAS;
+        invitationTypeLinkUpdateDto.createdUserId = user.id;
+        const invitationTypeLinkUpdated = await this.invitationTypeLinkService.update(
+            invitationTypeLinkUpdateDto
+        );
+        return invitationTypeLinkUpdated;
+    }
+
+    @Put(':id/board')
+    @ApiOkResponse({
+        type: UpdateInvitationTypeLinkDto,
+        description: 'update invitation canvas link',
+    })
+    async updateInvitationBoardLink(
+        @AuthUser() user: UserEntity,
+        @Param('id') id: string,
+        @Body() invitationTypeLinkUpdateDto: UpdateInvitationTypeLinkDto,
+    ): Promise<UpdateInvitationTypeLinkDto> {
+        invitationTypeLinkUpdateDto.id = id;
+        invitationTypeLinkUpdateDto.type = InvitationType.BOARD;
         invitationTypeLinkUpdateDto.createdUserId = user.id;
         const invitationTypeLinkUpdated = await this.invitationTypeLinkService.update(
             invitationTypeLinkUpdateDto

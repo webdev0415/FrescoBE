@@ -25,6 +25,7 @@ import {BoardInfoDto} from "../board/dto/BoardInfoDto";
 import {UserRepository} from "../user/user.repository";
 import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
 import {UpdateCategoryDto} from "../category/dto/UpdateCategoryDto";
+import {GetUsersByBoardOrCanvasTypeDto} from "./dto/GetUsersByBoardOrCanvasTypeDto";
 
 @Injectable()
 export class InvitationTypeLinkService {
@@ -228,56 +229,40 @@ export class InvitationTypeLinkService {
         return invitationTypeLinkDeleted.toDto() as InvitationTypeLinkDto;
     }
 
-    async getUserOrgByType(type: InvitationType, typeId: string): Promise<CanvasInfoDto | BoardInfoDto>{
-        if(type == InvitationType.CANVAS){
-            const typeEntity = await this.canvasRepository.findOne({
-                    id: typeId
-                },
-                {
-                    relations: ['canvases']
-                }
-            );
-            if(!typeEntity){
-                throw new NotFoundException();
-            }
-            const typeDto = typeEntity.toDto() as CanvasInfoDto;
-            typeDto.canvases = typeEntity.canvases.map((item) => item.toDto());
-            for (const item of typeDto.canvases) {
-                const user = await this.userRespository.findOne({
-                    id: item.userId
-                });
-                item.user = user?.toDto() || null;
-                const organization = await this.organizationRepository.findOne({
-                    id: item.orgId
-                });
-                item.organization = organization?.toDto() || null;
-            }
-            return typeDto;
-        }else if(type == InvitationType.BOARD){
-            const typeEntity = await this.boardRepository.findOne({
-                    id: typeId
-                },
-                {
-                    relations: ['boards']
-                }
-            );
-            if(!typeEntity){
-                throw new NotFoundException();
-            }
-            const typeDto = typeEntity.toDto() as BoardInfoDto;
-            typeDto.boards = typeEntity.boards.map((item) => item.toDto());
-            for (const item of typeDto.boards) {
-                const user = await this.userRespository.findOne({
-                    id: item.userId
-                });
-                item.user = user?.toDto() || null;
-                const organization = await this.organizationRepository.findOne({
-                    id: item.orgId
-                });
-                item.organization = organization?.toDto() || null;
-            }
-            return typeDto;
+    async getUsersInType(
+        type: InvitationType,
+        typeId: string,
+    ): Promise<GetUsersByBoardOrCanvasTypeDto []> {
+        let relation = null;
+        let repository = null;
+        let condition = null;
+        const result:GetUsersByBoardOrCanvasTypeDto[] = [];
+        if (type === InvitationType.CANVAS) {
+            relation = 'canvases';
+            repository = this.canvasUserOrgRepository;
+            condition = `${type}_user_org.canvasId = :typeId`;
+        } else {
+            relation = 'boards';
+            repository = this.boardUserOrgRepository;
+            condition = `${type}_user_org.boardId = :typeId`;
         }
+        const boardUserOrg = await repository.createQueryBuilder(`${type}_user_org`)
+            .innerJoinAndSelect(`${type}_user_org.user`, 'user')
+            .innerJoinAndSelect(`${type}_user_org.organization`, 'organization')
+            .select(['user.email', 'user.name', `${type}_user_org.permission`, 'organization.name','organization.lName','organization.fName'])
+            .where(condition, {typeId})
+            .getMany();
+        boardUserOrg.forEach((item) => {
+            result.push({
+                email: item.user.email,
+                name: item.user.name,
+                permission: item.permission,
+                organizationName: item.organization.name,
+                lName: item.organization.lName,
+                fName: item.organization.fName
+            })
+        })
+        return result;
     }
 
     async update(
