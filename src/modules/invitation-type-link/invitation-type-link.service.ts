@@ -26,6 +26,9 @@ import {UserRepository} from "../user/user.repository";
 import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
 import {UpdateCategoryDto} from "../category/dto/UpdateCategoryDto";
 import {GetUsersByBoardOrCanvasTypeDto} from "./dto/GetUsersByBoardOrCanvasTypeDto";
+import {GetInvitationTypeLinkByTypeAndOrgDto} from "./dto/GetInvitationTypeLinkByTypeAndOrgDto";
+import {PermissionEnum} from "../../common/constants/permission";
+import {OrganizationEntity} from "../organization/organization.entity";
 
 @Injectable()
 export class InvitationTypeLinkService {
@@ -159,51 +162,32 @@ export class InvitationTypeLinkService {
     async getInvitationTypeLinkByTypeAndOrgId(
         userId: string,
         invitationTypeLinkEntity: InvitationTypeLinkEntity,
-    ): Promise<InvitationTypeLinkInfoDto[]> {
-        const listInvitationTypeLink = [];
-        const invitationTypeLink = await this.invitationTypeLinkRepository.find(
-            {
-                where: {
-                    type: invitationTypeLinkEntity.type,
-                    orgId: invitationTypeLinkEntity.orgId,
-                    typeId: invitationTypeLinkEntity.typeId,
-                    createdUserId: userId,
-                    isDeleted: 0,
-                },
-            },
-        );
-        if (!invitationTypeLink) {
-            throw new NotFoundException();
-        }
-        for (const item of invitationTypeLink) {
-            const organization = await this.organizationRepository.findOne({
-                where: {
-                    id: item.orgId,
-                },
+    ): Promise<GetInvitationTypeLinkByTypeAndOrgDto[]> {
+        let type = invitationTypeLinkEntity.type;
+        const result:GetInvitationTypeLinkByTypeAndOrgDto[] = [];
+        const invitationTypeLinks = await this.invitationTypeLinkRepository.createQueryBuilder(`invitation_type_link`)
+            .innerJoinAndSelect(`invitation_type_link.${type}`, `${type}`)
+            .innerJoinAndSelect(`invitation_type_link.organization`, `organization`)
+            .where('invitation_type_link.type = :type AND invitation_type_link.typeId = :typeId AND invitation_type_link.orgId = :orgId AND invitation_type_link.isDeleted = :isDeleted',
+                { type: type, typeId: invitationTypeLinkEntity.typeId, orgId: invitationTypeLinkEntity.orgId , isDeleted: 0})
+            .getMany();
+
+        invitationTypeLinks.forEach((item) => {
+            result.push({
+                id: item.id,
+                orgId: item.orgId,
+                createdUserId: item.createdUserId,
+                permission: item.permission,
+                numberOfUser: item.numberOfUser,
+                type: item.type,
+                typeId: item.typeId,
+                isDeleted: item.isDeleted,
+                organization: item.organization,
+                boardOrCanvas: type === InvitationType.CANVAS ? item.canvas : item.board,
             });
+        });
 
-            const invitationTypeLinkInfoDto = item.toDto() as InvitationTypeLinkInfoDto;
-            if(invitationTypeLinkEntity.type == InvitationType.BOARD){
-                const board = await this.boardRepository.findOne({
-                    where: {
-                        id: item.typeId,
-                    },
-                });
-                invitationTypeLinkInfoDto.board = board?.toDto() || null;
-            }else if(invitationTypeLinkEntity.type == InvitationType.CANVAS) {
-                const canvas = await this.canvasRepository.findOne({
-                    where: {
-                        id: item.typeId,
-                    },
-                });
-                invitationTypeLinkInfoDto.canvas = canvas?.toDto() || null;
-            }
-
-            invitationTypeLinkInfoDto.organization =
-                organization?.toDto() || null;
-            listInvitationTypeLink.push(invitationTypeLinkInfoDto);
-        }
-        return listInvitationTypeLink;
+        return result;
     }
 
     async delete({
@@ -261,7 +245,7 @@ export class InvitationTypeLinkService {
                 lName: item.organization.lName,
                 fName: item.organization.fName
             })
-        })
+        });
         return result;
     }
 

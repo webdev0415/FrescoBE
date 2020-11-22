@@ -9,6 +9,7 @@ import { UserToOrgEntity } from '../user-org/user-org.entity';
 // Dtos
 import { OrganizationDto } from './dto/OrganizationDto';
 import {BoardUserOrgEntity} from "../board-user-org/board-user-org.entity";
+import {InvitationTypeLinkEntity} from "../invitation-type-link/invitation-type-link.entity";
 
 @Entity({ name: 'organization' })
 export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
@@ -52,6 +53,12 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
     )
     boards?: BoardUserOrgEntity[];
 
+
+    @OneToMany(
+        () => InvitationTypeLinkEntity,
+        (invitationTypeLinkEntity) => invitationTypeLinkEntity.organization,
+    )
+    invitationTypeLinks?: InvitationTypeLinkEntity[];
     // @OneToMany(
     //     () => CollaborationEntity,
     //     (collaboration: CollaborationEntity) => collaboration.organization,

@@ -18,6 +18,7 @@ import {InvitationTypeLinkEntity} from './invitation-type-link.entity';
 import {InvitationTypeLinkService} from './invitation-type-link.service';
 import {UpdateInvitationTypeLinkDto} from "./dto/UpdateInvitationTypeLinkDto";
 import {GetUsersByBoardOrCanvasTypeDto} from "./dto/GetUsersByBoardOrCanvasTypeDto";
+import {GetInvitationTypeLinkByTypeAndOrgDto} from "./dto/GetInvitationTypeLinkByTypeAndOrgDto";
 
 @Controller('invitation-type')
 @ApiTags('invitation-type')
@@ -63,13 +64,13 @@ export class InvitationTypeLinkController {
 
     @Get('')
     @ApiOkResponse({
-        type: InvitationTypeLinkInfoDto,
+        type: GetInvitationTypeLinkByTypeAndOrgDto,
         description: 'get invitation type link by type and organization id',
     })
     async getInvitationTypeLinkByTypeAndOrgId(
         @AuthUser() user: UserEntity,
         @Query() query,
-    ): Promise<InvitationTypeLinkInfoDto[]> {
+    ): Promise<GetInvitationTypeLinkByTypeAndOrgDto[]> {
         const invitationTypeLinkModel = new InvitationTypeLinkEntity();
         invitationTypeLinkModel.type = query.type;
         invitationTypeLinkModel.orgId = query.orgId;

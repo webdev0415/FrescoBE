@@ -4,6 +4,7 @@ import { AbstractEntity } from '../../common/abstract.entity';
 import { BoardDto } from './dto/BoardDto';
 import {CanvasUserOrgEntity} from "../canvas-user-org/canvas-user-org.entity";
 import {BoardUserOrgEntity} from "../board-user-org/board-user-org.entity";
+import {InvitationTypeLinkEntity} from "../invitation-type-link/invitation-type-link.entity";
 
 @Entity({ name: 'board' })
 export class BoardEntity extends AbstractEntity<BoardDto> {
@@ -44,6 +45,12 @@ export class BoardEntity extends AbstractEntity<BoardDto> {
         (boardUserOrgEntity) => boardUserOrgEntity.board,
     )
     boards?: BoardUserOrgEntity[];
+
+    @OneToMany(
+        () => InvitationTypeLinkEntity,
+        (invitationTypeLinkEntity) => invitationTypeLinkEntity.board,
+    )
+    invitationBoardLinks?: InvitationTypeLinkEntity[];
 
     dtoClass = BoardDto;
 }

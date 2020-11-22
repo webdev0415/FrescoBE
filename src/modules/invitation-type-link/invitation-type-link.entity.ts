@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // import { UserToOrgEntity } from '../user-org/user-org.entity';
-import { Column, CreateDateColumn, Entity } from 'typeorm';
+import {Column, CreateDateColumn, Entity, JoinColumn, ManyToOne} from 'typeorm';
 
 import { AbstractEntity } from '../../common/abstract.entity';
 import { InvitationType } from '../../common/constants/invitation-type';
 import { PermissionEnum } from '../../common/constants/permission';
 import { InvitationTypeLinkDto } from './dto/InvitationTypeLinkDto';
+import {CanvasEntity} from "../canvas/canvas.entity";
+import {BoardEntity} from "../board/board.entity";
+import {OrganizationEntity} from "../organization/organization.entity";
 
 @Entity({ name: 'invitation_type_link' })
 export class InvitationTypeLinkEntity extends AbstractEntity<
@@ -47,6 +50,18 @@ export class InvitationTypeLinkEntity extends AbstractEntity<
         default: () => 'CURRENT_TIMESTAMP',
     })
     createdAt: Date;
+
+    @ManyToOne(() => CanvasEntity, (canvasEntity) => canvasEntity.invitationCanvasLinks)
+    @JoinColumn({ name: 'typeId' })
+    public canvas!: CanvasEntity;
+
+    @ManyToOne(() => BoardEntity, (boardEntity) => boardEntity.invitationBoardLinks)
+    @JoinColumn({ name: 'typeId' })
+    public board!: BoardEntity;
+
+    @ManyToOne(() => OrganizationEntity, (organizationEntity) => organizationEntity.invitationTypeLinks)
+    @JoinColumn({ name: 'orgId' })
+    public organization: OrganizationEntity;
 
     dtoClass = InvitationTypeLinkDto;
 }
