@@ -268,4 +268,17 @@ export class InvitationTypeLinkService {
         const invitationTypeLinkUpdatedDto = invitationTypeLinkUpdated.toDto() as UpdateInvitationTypeLinkDto;
         return invitationTypeLinkUpdatedDto;
     }
+
+    async getLinkByTypeId(type: InvitationType, typeId: string):Promise<InvitationTypeLinkDto>{
+        const invitationTypeLinkEntity = await this.invitationTypeLinkRepository.findOne({
+            where:{
+                typeId: typeId,
+                type: type
+            }
+        });
+        if (!invitationTypeLinkEntity) {
+            throw new NotFoundException();
+        }
+        return invitationTypeLinkEntity?.toDto() || null;
+    }
 }

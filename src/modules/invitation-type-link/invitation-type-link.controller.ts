@@ -169,4 +169,36 @@ export class InvitationTypeLinkController {
         );
         return invitationTypeLinkUpdated;
     }
+
+    @Get(':typeId/canvas-link')
+    @ApiOkResponse({
+        type: InvitationTypeLinkDto,
+        description: 'get list user by canvas Id',
+    })
+    async getLinkByCanvas(
+        @AuthUser() user: UserEntity,
+        @Param('typeId') typeId: string,
+    ): Promise<InvitationTypeLinkDto> {
+        const link = await this.invitationTypeLinkService.getLinkByTypeId(
+            InvitationType.CANVAS,
+            typeId
+        );
+        return link;
+    }
+
+    @Get(':typeId/board-link')
+    @ApiOkResponse({
+        type: InvitationTypeLinkDto,
+        description: 'get list user by board Id',
+    })
+    async getLinkByBoard(
+        @AuthUser() user: UserEntity,
+        @Param('typeId') typeId: string,
+    ): Promise<InvitationTypeLinkDto> {
+        const link = await this.invitationTypeLinkService.getLinkByTypeId(
+            InvitationType.BOARD,
+            typeId
+        );
+        return link;
+    }
 }
