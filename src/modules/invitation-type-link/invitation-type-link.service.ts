@@ -115,6 +115,13 @@ export class InvitationTypeLinkService {
             throw new NotFoundException('token is not valid');
         }
 
+        // check if user is him/her self
+        if (userId === invitationTypeLink.createdUserId) {
+            throw new InvitationAcceptedException(
+                'You created this invitation',
+            );
+        }
+
         const invitationTypeLinkUser = await this.invitationTypeLinkUserService.getInvitationTypeLinkUser(
             invitationTypeLink.id,
             userId,
