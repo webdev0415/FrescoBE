@@ -7,7 +7,8 @@ import {globalMockExpectedResult} from "./base.service.specs";
 
 
 export const mockCategoryRepository = () => ({
-    findOne: jest.fn(),find: jest.fn(),
+    findOne: jest.fn(),
+    find: jest.fn(),
     save: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),

@@ -56,8 +56,8 @@ export const mockUpdateBoardDto:UpdateBoardDto={
 const dateValue = new Date();
 
 export const mockCategoryEntity: CategoryEntity = {
-    id: "id", name: "category", imageId: "image", toDto: () => {
-        return {}
+    id: "id", name: "category", imageId: "image", toDto: ():CategoryDto => {
+        return {id:"id",imageId:"imageId",name:"category"}
     }
     , createdAt: dateValue, dtoClass: CategoryDto, updatedAt: dateValue
 }
@@ -123,7 +123,7 @@ const mockUploadImageService = () => ({
 
 const globalMockExpectedResult = {};
 
-describe('AuthService', () => {
+describe('BoardService', () => {
     let boardRepository;
     let userToOrgRepository;
     let boardUserOrgRepository;
