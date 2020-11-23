@@ -31,5 +31,8 @@ export const mockBoardUserOrgRepository = mockCategoryRepository
 
 export const mockCanvasRepository = mockCategoryRepository
 
+export const mockDefaultTemplateRepository = mockCategoryRepository
+
+
 export const mockUploadImageRepository = mockCategoryRepository
 
