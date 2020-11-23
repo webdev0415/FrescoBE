@@ -134,7 +134,7 @@ export class InvitationTypeLinkService {
 
         // compare number of user
         const numberOfUser = this.configService.getNumber('NUMBER_OF_USER');
-        if (invitationTypeLink.numberOfUser >= numberOfUser) {
+        if (invitationTypeLink.numberOfUser >= numberOfUser - 1) {
             throw new InvitationLimitedException('Invitation is limited');
         }
 
