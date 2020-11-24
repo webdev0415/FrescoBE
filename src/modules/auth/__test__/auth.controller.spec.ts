@@ -33,6 +33,18 @@ const mockMailService = () => ({
     sendConfirmationEmail: jest.fn(),
 });
 const mockCache = () => ({});
+export const userEntity: UserEntity = {
+    id: '1',
+    name: 'example',
+    role: RoleType.USER,
+    email: 'example@fresco.com',
+    password: '123',
+    verified: true,
+    googleId: null,
+    createdAt: new Date(),
+    dtoClass: UserDto,
+    toDto: () => '',
+};
 
 describe('AuthController', () => {
     let authController: AuthController;
@@ -45,18 +57,6 @@ describe('AuthController', () => {
     let cacheManager;
     let clientUrl: string;
 
-    const userEntity: UserEntity = {
-        id: '1',
-        name: 'example',
-        role: RoleType.USER,
-        email: 'example@fresco.com',
-        password: '123',
-        verified: true,
-        googleId: null,
-        createdAt: new Date(),
-        dtoClass: UserDto,
-        toDto: () => '',
-    };
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
@@ -156,7 +156,7 @@ describe('AuthController', () => {
 
     describe('userRegister', () => {
         const userRegisterDto: UserRegisterDto = {
-            name: 'example',
+
             email: 'example@fresco.com',
             password: '123',
         };

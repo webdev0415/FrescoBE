@@ -31,3 +31,12 @@ export const mockAwsS3Service = () => ({
 
     uploadImage: jest.fn(),
 });
+
+export const mockBoardService = () => ({
+
+    getById: jest.fn(),
+    getByOrgId: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+});
