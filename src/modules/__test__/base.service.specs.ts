@@ -53,10 +53,10 @@ export const mockCanvasService = () => ({
     delete: jest.fn(),
 });
 
-export const mockDefaultTemplateService = () => ({
+export const mockInvitationService = () => ({
 
-    get: jest.fn(),
     create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
+    resendInvitation: jest.fn(),
+    checkValidToken: jest.fn(),
+    verify: jest.fn(),
 });
