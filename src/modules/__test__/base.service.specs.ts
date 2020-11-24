@@ -1,4 +1,5 @@
 import {TokenPayloadDto} from "../auth/dto/TokenPayloadDto";
+import {ValidatorService} from "../../shared/services/validator.service";
 
 export const dateValue = new Date();
 
@@ -22,3 +23,11 @@ export const mockMailService = () => ({
 
 });
 
+export const mockValidatorService = () => ({
+
+    isImage: jest.fn(),
+});
+export const mockAwsS3Service = () => ({
+
+    uploadImage: jest.fn(),
+});

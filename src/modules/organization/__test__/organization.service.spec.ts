@@ -11,7 +11,7 @@ import {CreateOrganizationDto} from "../dto/CreateOrganizationDto";
 import {OrganizationEntity} from "../organization.entity";
 
 
-describe('Invitation Service', () => {
+describe('Organization Service', () => {
 
     let userToOrgRepository;
     let organizationRepository;
