@@ -10,7 +10,7 @@ export const mockCategoryRepository = () => ({
     findOne: jest.fn(),
     find: jest.fn(),
     save: jest.fn(),
-    create: jest.fn(),
+    create: jest.fn(),count: jest.fn(),
     update: jest.fn(),
     dispose: jest.fn(),
     delete: jest.fn(),
@@ -38,4 +38,6 @@ export const mockUploadImageRepository = mockCategoryRepository
 
 
 export const mockInvitationRepository = mockCategoryRepository
+
+export const mockOrganizationRepository = mockCategoryRepository
 
