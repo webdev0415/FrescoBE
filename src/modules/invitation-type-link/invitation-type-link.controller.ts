@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import {Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards, UseInterceptors,} from '@nestjs/common';
-import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {ApiBearerAuth, ApiOkResponse, ApiQuery, ApiTags} from '@nestjs/swagger';
 
 import {InvitationType} from '../../common/constants/invitation-type';
 import {AuthUser} from '../../decorators/auth-user.decorator';
@@ -67,6 +67,9 @@ export class InvitationTypeLinkController {
         type: GetInvitationTypeLinkByTypeAndOrgDto,
         description: 'get invitation type link by type and organization id',
     })
+    @ApiQuery({ name: 'type', enum: InvitationType })
+    @ApiQuery({ name: 'orgId' })
+    @ApiQuery({ name: 'typeId' })
     async getInvitationTypeLinkByTypeAndOrgId(
         @AuthUser() user: UserEntity,
         @Query() query,
