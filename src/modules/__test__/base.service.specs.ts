@@ -8,6 +8,9 @@ export const globalMockExpectedResult = {};
 
 export const mockUploadImageService = () => ({
     getImageById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
 
 });
 export const mockCategoryService = () => ({
