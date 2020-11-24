@@ -38,6 +38,10 @@ export const mockAwsS3Service = () => ({
 
     uploadImage: jest.fn(),
 });
+export const mockUserService = () => ({
+
+    suggestEmail: jest.fn(),
+});
 
 export const mockBoardService = () => ({
 
