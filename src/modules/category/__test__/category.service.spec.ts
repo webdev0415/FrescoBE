@@ -34,27 +34,7 @@ import {UpdateCategoryDto} from "../dto/UpdateCategoryDto";
 import {DeleteCategoryDto} from "../dto/DeleteCategoryDto";
 
 
-export const mockCanvasEntity: CanvasEntity = {
-    id: "id",
-    categoryId: "testCategory",
-    name: "board",
-    toDto: () => {
-        let info: CanvasDto = {
-            imageId: "", data: "", categoryId: mockCategoryEntity.id, name: "", orgId: "",createdUserId:"createdUserId",id:"id"
 
-        }
-
-        return info;
-    },
-    createdAt: dateValue,
-    createdUserId: "id",
-    data: "",
-    imageId: "image",
-    orgId: "org",
-    updatedAt: dateValue,
-    dtoClass: BoardDto
-
-}
 export const mockCreateCategoryDto:CreateCategoryDto={
     name:"name",imageId:"imageId",path:"path"
 }
@@ -71,7 +51,7 @@ describe('CategoryService', () => {
     let boardService: BoardService;
     let categoryService: CategoryService;
     beforeEach(async () => {
-        UtilsService.validateHash = jest.fn().mockResolvedValue(true);
+
         const module = await Test.createTestingModule({
             providers: [
                 {provide: BoardRepository, useFactory: mockBoardRepository},

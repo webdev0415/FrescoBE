@@ -1,3 +1,4 @@
+import {TokenPayloadDto} from "../auth/dto/TokenPayloadDto";
 
 export const dateValue = new Date();
 
@@ -9,6 +10,15 @@ export const mockUploadImageService = () => ({
 
 });
 export const mockCategoryService = () => ({
-    getImageById: jest.fn(),
+
 
 });
+export const mockAuthService = () => ({
+    getUserByEmail: jest.fn(), createToken: jest.fn().mockReturnValue({accessToken:"token",expiresIn:200}),
+
+});
+export const mockMailService = () => ({
+    sendInvitationEmail: jest.fn(),
+
+});
+

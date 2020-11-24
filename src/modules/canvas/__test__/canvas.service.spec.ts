@@ -75,7 +75,7 @@ describe('CanvasService', () => {
     let boardService: BoardService;
     let canvasService: CanvasService;
     beforeEach(async () => {
-        UtilsService.validateHash = jest.fn().mockResolvedValue(true);
+
         const module = await Test.createTestingModule({
             providers: [
                 {provide: BoardRepository, useFactory: mockBoardRepository},

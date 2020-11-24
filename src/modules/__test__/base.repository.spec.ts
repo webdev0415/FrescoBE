@@ -36,3 +36,6 @@ export const mockDefaultTemplateRepository = mockCategoryRepository
 
 export const mockUploadImageRepository = mockCategoryRepository
 
+
+export const mockInvitationRepository = mockCategoryRepository
+
