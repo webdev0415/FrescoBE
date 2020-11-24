@@ -13,6 +13,7 @@ export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {
     listenTo() {
         return UserEntity;
     }
+
     beforeInsert(event: InsertEvent<UserEntity>) {
         if (event.entity.password) {
             event.entity.password = UtilsService.generateHash(
