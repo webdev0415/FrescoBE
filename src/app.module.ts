@@ -1,7 +1,5 @@
 // import './boilerplate.polyfill';
 
-import { MailerModule } from '@nestjs-modules/mailer';
-import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {
     CacheInterceptor,
     CacheModule,
@@ -54,41 +52,6 @@ import { SharedModule } from './shared/shared.module';
             useFactory: (configService: ConfigService) =>
                 configService.typeOrmConfig,
             inject: [ConfigService],
-        }),
-        MailerModule.forRootAsync({
-            imports: [MailerModule],
-            inject: [ConfigService],
-            useFactory: (configService: ConfigService) => {
-                const {
-                    host,
-                    port,
-                    user,
-                    password,
-                    defaultFrom,
-                } = configService.smtpConfig;
-                return {
-                    transport: {
-                        host,
-                        port,
-                        // secure: true,
-                        // tls: { ciphers: 'SSLv3' }, // gmail
-                        auth: {
-                            user,
-                            pass: password,
-                        },
-                    },
-                    defaults: {
-                        from: defaultFrom,
-                    },
-                    template: {
-                        dir: __dirname + '/templates',
-                        adapter: new HandlebarsAdapter(),
-                        options: {
-                            strict: true,
-                        },
-                    },
-                };
-            },
         }),
     ],
     // providers: [
