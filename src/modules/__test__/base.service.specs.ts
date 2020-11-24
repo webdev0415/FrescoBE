@@ -40,3 +40,11 @@ export const mockBoardService = () => ({
     update: jest.fn(),
     delete: jest.fn(),
 });
+export const mockCanvasService = () => ({
+
+    getById: jest.fn(),
+    getByOrgId: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+});
