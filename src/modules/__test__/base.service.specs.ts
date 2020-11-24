@@ -60,3 +60,12 @@ export const mockInvitationService = () => ({
     checkValidToken: jest.fn(),
     verify: jest.fn(),
 });
+
+export const mockOrganizationService = () => ({
+
+    getById: jest.fn(),
+    getByOrgId: jest.fn(),
+    create: jest.fn(),
+    getOrganizationByUserId: jest.fn(),
+    getOrganizationByUserAndOrgId: jest.fn(),
+});
