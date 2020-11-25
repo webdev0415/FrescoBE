@@ -1,16 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import {userEntity} from "../../auth/__test__/auth.controller.spec";
-import {CreateUploadImageDto} from "../dto/CreateUploadImageDto";
-import {ConflictException, NotFoundException} from "@nestjs/common";
-import {mockUploadImageService} from "../../__test__/base.service.specs";
-import {UserToOrgDto} from "../../user-org/dto/user-orgDto";
-import {UserToOrgEntity} from "../../user-org/user-org.entity";
 import {UploadImageController} from "../upload-image.controller";
 import {UploadImageEntity} from "../upload-image.entity";
 import {Test} from "@nestjs/testing";
 import {UploadImageService} from "../upload-image.service";
 import {UploadImageDto} from "../dto/UploadImageDto";
+import {mockUploadImageService} from "../../__test__/base.service.specs";
 
 let mockUploadImageEntity: UploadImageEntity = new UploadImageEntity();
 let mockUploadImageDto: UploadImageDto = new UploadImageDto(mockUploadImageEntity);

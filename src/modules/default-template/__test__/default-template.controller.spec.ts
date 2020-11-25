@@ -3,11 +3,10 @@
 import {DefaultTemplateEntity} from "../default-template.entity";
 import {DefaultTemplateController} from "../default-template.controller";
 import {Test} from "@nestjs/testing";
-import {mockDefaultTemplateService} from "../../__test__/base.service.specs";
 import {DefaultTemplateService} from "../default-template.service";
 import {CreateDefaultTemplateDto} from "../dto/CreateDefaultTemplateDto";
 import {UpdateDefaultTemplateDto} from "../dto/UpdateDefaultTemplateDto";
-import {DeleteDefaultTemplateDto} from "../dto/DeleteDefaultTemplateDto";
+import {mockDefaultTemplateService} from "../../__test__/base.service.specs";
 
 let mockDefaultTemplateEntity: DefaultTemplateEntity = new DefaultTemplateEntity();
 

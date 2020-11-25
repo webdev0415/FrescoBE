@@ -1,21 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-
-    CacheModule,
-
-} from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import {Test} from '@nestjs/testing';
 
 
 import {CanvasController} from "../canvas.controller";
 import {CanvasService} from "../canvas.service";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
-import {CreateCanvasDto} from "../../Canvas/dto/CreateCanvasDto";
-import {UpdateCanvasDto} from "../../Canvas/dto/UpdateCanvasDto";
-import {mockCanvasService} from "../../__test__/base.service.specs";
 import {mockCanvasEntity} from "../../Canvas/__test__/Canvas.service.spec";
 
 import {DeleteCanvasDto} from "../../Canvas/dto/DeleteCanvasDto";
+import {mockCanvasService} from "../../__test__/base.service.specs";
+import {CreateCanvasDto} from "../dto/CreateCanvasDto";
+import {UpdateCanvasDto} from "../dto/UpdateCanvasDto";
 
 const mockCache = () => ({});
 

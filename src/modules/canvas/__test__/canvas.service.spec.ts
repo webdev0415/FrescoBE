@@ -1,5 +1,4 @@
 import {Test} from '@nestjs/testing';
-import {UtilsService} from '../../../providers/utils.service';
 
 import {BoardUserOrgRepository} from "../../board-user-org/board-user-org.repository";
 import {UserToOrgRepository} from "../../user-org/user-org.repository";
@@ -18,21 +17,16 @@ import {
     mockUploadImageRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
-import {dateValue, globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 import {BoardRepository} from "../../board/board.repository";
 import {CanvasService} from "../canvas.service";
-import {
-    mockBoardEntity, mockCategoryEntity, mockCreateBoardDto, mockImageEntity, mockUpdateBoardDto,
-
-} from "../../board/__test__/board.service.spec";
+import {mockBoardEntity, mockCategoryEntity, mockImageEntity,} from "../../board/__test__/board.service.spec";
 import {BoardDto} from "../../board/dto/BoardDto";
 import {CanvasEntity} from "../canvas.entity";
 import {CanvasDto} from "../dto/CanvasDto";
-import {CanvasInfoDto} from "../dto/CanvasInfoDto";
 import {DeleteBoardDto} from "../../board/dto/DeleteBoardDto";
-import {CreateBoardDto} from "../../board/dto/CreateBoardDto";
 import {CreateCanvasDto} from "../dto/CreateCanvasDto";
 import {UpdateCanvasDto} from "../dto/UpdateCanvasDto";
+import {dateValue, globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 
 export const mockCanvasEntity: CanvasEntity = {
     id: "id",

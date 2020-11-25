@@ -1,14 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 
-import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
-import { UploadImageService } from '../../modules/upload/upload-image.service';
-import { UserToOrgRepository } from '../user-org/user-org.repository';
-import { CategoryEntity } from './category.entity';
-import { CategoryRepository } from './category.repository';
-import { CategoryInfoDto } from './dto/CategoryInfoDto';
-import { CreateCategoryDto } from './dto/CreateCategoryDto';
-import { DeleteCategoryDto } from './dto/DeleteCategoryDto';
-import { UpdateCategoryDto } from './dto/UpdateCategoryDto';
+import {UploadImageRepository} from '../../modules/upload/upload-image.repository';
+import {UploadImageService} from '../../modules/upload/upload-image.service';
+import {UserToOrgRepository} from '../user-org/user-org.repository';
+import {CategoryEntity} from './category.entity';
+import {CategoryRepository} from './category.repository';
+import {CategoryInfoDto} from './dto/CategoryInfoDto';
+import {CreateCategoryDto} from './dto/CreateCategoryDto';
+import {DeleteCategoryDto} from './dto/DeleteCategoryDto';
+import {UpdateCategoryDto} from './dto/UpdateCategoryDto';
 
 @Injectable()
 export class CategoryService {

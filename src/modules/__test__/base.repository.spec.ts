@@ -1,10 +1,7 @@
-import {CanvasRepository} from "../canvas/canvas.repository";
-import {UserToOrgRepository} from "../user-org/user-org.repository";
-import {CategoryRepository} from "../category/category.repository";
-import {UploadImageRepository} from "../upload/upload-image.repository";
-import {UploadImageService} from "../upload/upload-image.service";
-import {globalMockExpectedResult} from "./base.service.specs";
-
+describe('Base test suit', () => {
+    it('should run ', async () => {
+    });
+});
 
 export const mockCategoryRepository = () => ({
     findOne: jest.fn(),

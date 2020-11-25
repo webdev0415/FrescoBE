@@ -1,9 +1,9 @@
 'use strict';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import {ApiPropertyOptional} from '@nestjs/swagger';
 
-import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { BoardEntity } from '../board.entity';
+import {AbstractDto} from '../../../common/dto/AbstractDto';
+import {BoardEntity} from '../board.entity';
 
 export class BoardDto extends AbstractDto {
     @ApiPropertyOptional()

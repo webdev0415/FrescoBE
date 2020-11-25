@@ -9,7 +9,6 @@ import {
     mockInvitationRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
-import {mockAuthService, mockMailService, mockUploadImageService} from "../../__test__/base.service.specs";
 
 import {AuthService} from "../../auth/auth.service";
 import {MailService} from "../../mail/mail.service";
@@ -23,6 +22,7 @@ import {UserEntity} from "../../user/user.entity";
 import {InvitationNotValidException} from "../../../exceptions/invitaion-not-found.exception";
 import {VerifyTokenDto} from "../dto/VerifyTokenDto";
 import {LoginPayloadDto} from "../../auth/dto/LoginPayloadDto";
+import {mockAuthService, mockMailService, mockUploadImageService} from "../../__test__/base.service.specs";
 
 
 describe('Invitation Service', () => {

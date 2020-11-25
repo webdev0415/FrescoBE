@@ -1,10 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { WsException } from '@nestjs/websockets';
+import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
+import {WsException} from '@nestjs/websockets';
 import * as jwt from 'jsonwebtoken';
-import { Socket } from 'socket.io';
+import {Socket} from 'socket.io';
 
-import { UserService } from '../modules/user/user.service';
-import { ConfigService } from '../shared/services/config.service';
+import {UserService} from '../modules/user/user.service';
+import {ConfigService} from '../shared/services/config.service';
 
 @Injectable()
 export class SocketGuard implements CanActivate {

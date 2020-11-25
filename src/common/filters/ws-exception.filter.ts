@@ -1,6 +1,6 @@
-import { ArgumentsHost, Catch, Optional } from '@nestjs/common';
-import { BaseWsExceptionFilter } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import {ArgumentsHost, Catch, Optional} from '@nestjs/common';
+import {BaseWsExceptionFilter} from '@nestjs/websockets';
+import {Socket} from 'socket.io';
 
 @Catch()
 export class WsExceptionFilter extends BaseWsExceptionFilter {

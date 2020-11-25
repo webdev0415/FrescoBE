@@ -1,21 +1,17 @@
 /* eslint-disable complexity */
-import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException,} from '@nestjs/common';
 
-import { PermissionEnum } from '../../common/constants/permission';
-import { CategoryRepository } from '../../modules/category/category.repository';
-import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
-import { UploadImageService } from '../../modules/upload/upload-image.service';
-import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
-import { CanvasEntity } from './canvas.entity';
-import { CanvasRepository } from './canvas.repository';
-import { CanvasInfoDto } from './dto/CanvasInfoDto';
-import { CreateCanvasDto } from './dto/CreateCanvasDto';
-import { DeleteCanvasDto } from './dto/DeleteCanvasDto';
-import { UpdateCanvasDto } from './dto/UpdateCanvasDto';
+import {PermissionEnum} from '../../common/constants/permission';
+import {CategoryRepository} from '../../modules/category/category.repository';
+import {UploadImageRepository} from '../../modules/upload/upload-image.repository';
+import {UploadImageService} from '../../modules/upload/upload-image.service';
+import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
+import {CanvasEntity} from './canvas.entity';
+import {CanvasRepository} from './canvas.repository';
+import {CanvasInfoDto} from './dto/CanvasInfoDto';
+import {CreateCanvasDto} from './dto/CreateCanvasDto';
+import {DeleteCanvasDto} from './dto/DeleteCanvasDto';
+import {UpdateCanvasDto} from './dto/UpdateCanvasDto';
 
 @Injectable()
 export class CanvasService {

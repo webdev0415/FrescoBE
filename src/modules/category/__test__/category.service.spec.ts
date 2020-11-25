@@ -1,5 +1,4 @@
 import {Test} from '@nestjs/testing';
-import {UtilsService} from '../../../providers/utils.service';
 
 import {BoardUserOrgRepository} from "../../board-user-org/board-user-org.repository";
 import {UserToOrgRepository} from "../../user-org/user-org.repository";
@@ -7,32 +6,23 @@ import {UploadImageRepository} from "../../upload/upload-image.repository";
 import {CategoryRepository} from "../../category/category.repository";
 import {UploadImageService} from "../../upload/upload-image.service";
 
-import {NotFoundException, UnauthorizedException} from "@nestjs/common";
+import {NotFoundException} from "@nestjs/common";
 
 import {BoardService} from "../../board/board.service";
 import {
     mockBoardRepository,
     mockBoardUserOrgRepository,
-
     mockCategoryRepository,
     mockUploadImageRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
-import {dateValue, globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
-import {BoardDto} from "../../board/dto/BoardDto";
-import {mockBoardEntity, mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
-import {DeleteBoardDto} from "../../board/dto/DeleteBoardDto";
-import {UpdateCanvasDto} from "../../canvas/dto/UpdateCanvasDto";
-import {CreateCanvasDto} from "../../canvas/dto/CreateCanvasDto";
-import {CanvasDto} from "../../canvas/dto/CanvasDto";
-import {CanvasService} from "../../canvas/canvas.service";
-import {CanvasEntity} from "../../canvas/canvas.entity";
+import {mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
 import {BoardRepository} from "../../board/board.repository";
 import {CategoryService} from "../category.service";
 import {CreateCategoryDto} from "../dto/CreateCategoryDto";
 import {UpdateCategoryDto} from "../dto/UpdateCategoryDto";
 import {DeleteCategoryDto} from "../dto/DeleteCategoryDto";
-
+import {globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 
 
 export const mockCreateCategoryDto:CreateCategoryDto={

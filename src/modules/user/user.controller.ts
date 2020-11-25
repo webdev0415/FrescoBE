@@ -1,22 +1,14 @@
 'use strict';
 
-import {
-    Body,
-    Controller,
-    HttpCode,
-    HttpStatus,
-    Post,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Body, Controller, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { AutoSuggestEmailDto } from './dto/AutoSuggestEmailDto';
-import { UserDto } from './dto/UserDto';
-import { UserService } from './user.service';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {AutoSuggestEmailDto} from './dto/AutoSuggestEmailDto';
+import {UserDto} from './dto/UserDto';
+import {UserService} from './user.service';
 
 @Controller('users')
 @ApiTags('users')

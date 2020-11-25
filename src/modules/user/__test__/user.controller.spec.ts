@@ -4,10 +4,10 @@ import {UserEntity} from "../user.entity";
 import {UserController} from "../user.controller";
 import {Test} from "@nestjs/testing";
 import {UserService} from "../user.service";
-import {mockUserService} from "../../__test__/base.service.specs";
 
 import {AutoSuggestEmailDto} from "../dto/AutoSuggestEmailDto";
 import {UserDto} from "../dto/UserDto";
+import {mockUserService} from "../../__test__/base.service.specs";
 
 let mockUserEntity: UserEntity = new UserEntity();
 

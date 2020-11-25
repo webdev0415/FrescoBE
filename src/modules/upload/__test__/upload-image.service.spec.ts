@@ -4,13 +4,13 @@ import {UploadImageService} from "../upload-image.service";
 import {UploadImageRepository} from "../upload-image.repository";
 import {CanvasRepository} from "../../canvas/canvas.repository";
 import {ValidatorService} from "../../../shared/services/validator.service";
-import {mockAwsS3Service, mockValidatorService} from "../../__test__/base.service.specs";
 import {AwsS3Service} from "../../../shared/services/aws-s3.service";
 import {CreateUploadImageDto} from "../dto/CreateUploadImageDto";
 import {IFile} from "../../../interfaces/IFile";
 import {FileNotImageException} from "../../../exceptions/file-not-image.exception";
 import {UploadImageEntity} from "../upload-image.entity";
 import {NotFoundException} from "@nestjs/common";
+import {mockAwsS3Service, mockValidatorService} from "../../__test__/base.service.specs";
 
 
 describe('Organization Service', () => {

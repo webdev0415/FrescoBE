@@ -1,13 +1,13 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
-import { FindConditions } from 'typeorm';
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
+import {FindConditions} from 'typeorm';
 
-import { CreateUserInvitationDto } from '../../modules/auth/dto/CreateUserInvitationDto';
-import { UserLoginGoogleDto } from '../auth/dto/UserLoginGoogleDto';
-import { UserRegisterDto } from '../auth/dto/UserRegisterDto';
-import { UserDto } from './dto/UserDto';
-import { UserEntity } from './user.entity';
-import { UserRepository } from './user.repository';
+import {CreateUserInvitationDto} from '../../modules/auth/dto/CreateUserInvitationDto';
+import {UserLoginGoogleDto} from '../auth/dto/UserLoginGoogleDto';
+import {UserRegisterDto} from '../auth/dto/UserRegisterDto';
+import {UserDto} from './dto/UserDto';
+import {UserEntity} from './user.entity';
+import {UserRepository} from './user.repository';
 
 @Injectable()
 export class UserService {

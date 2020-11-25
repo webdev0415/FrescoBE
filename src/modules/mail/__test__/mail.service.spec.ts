@@ -1,10 +1,10 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import { Test } from '@nestjs/testing';
+import {MailerService} from '@nestjs-modules/mailer';
+import {Test} from '@nestjs/testing';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { ConfigService } from '../../../shared/services/config.service';
-import { UserDto } from '../../user/dto/UserDto';
-import { MailService } from '../mail.service';
+import {RoleType} from '../../../common/constants/role-type';
+import {ConfigService} from '../../../shared/services/config.service';
+import {UserDto} from '../../user/dto/UserDto';
+import {MailService} from '../mail.service';
 
 const mockUser: UserDto = {
     id: '1',
@@ -45,8 +45,8 @@ describe('MailService', () => {
         it('sendConfirmationEmail error', () => {
             const errorMessage = 'Sending email failed.';
             const error = new Error(errorMessage);
-            mailerService.sendMail.mockReturnValue(error);
-            expect(mailService.sendConfirmationEmail(mockUser)).rejects.toThrow(
+            mailerService.sendMail.mockRejectedValue(error);
+            expect(mailService.sendConfirmationEmail(mockUser,"")).rejects.toThrow(
                 errorMessage,
             );
         });

@@ -1,16 +1,16 @@
-import { JwtService } from '@nestjs/jwt';
-import { Test } from '@nestjs/testing';
+import {JwtService} from '@nestjs/jwt';
+import {Test} from '@nestjs/testing';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { UtilsService } from '../../../providers/utils.service';
-import { ConfigService } from '../../../shared/services/config.service';
-import { UserDto } from '../../user/dto/UserDto';
-import { UserEntity } from '../../user/user.entity';
-import { UserService } from '../../user/user.service';
-import { AuthService } from '../auth.service';
-import { TokenPayloadDto } from '../dto/TokenPayloadDto';
-import { UserLoginDto } from '../dto/UserLoginDto';
-import { UserLoginGoogleDto } from '../dto/UserLoginGoogleDto';
+import {RoleType} from '../../../common/constants/role-type';
+import {UtilsService} from '../../../providers/utils.service';
+import {ConfigService} from '../../../shared/services/config.service';
+import {UserDto} from '../../user/dto/UserDto';
+import {UserEntity} from '../../user/user.entity';
+import {UserService} from '../../user/user.service';
+import {AuthService} from '../auth.service';
+import {TokenPayloadDto} from '../dto/TokenPayloadDto';
+import {UserLoginDto} from '../dto/UserLoginDto';
+import {UserLoginGoogleDto} from '../dto/UserLoginGoogleDto';
 
 const mockUserGoogle: UserLoginGoogleDto = {
     email: 'test@gmail.com',
@@ -57,7 +57,7 @@ describe('AuthService', () => {
     let utilsService;
 
     beforeEach(async () => {
-      //  UtilsService.validateHash = jest.fn().mockResolvedValue(true);
+        UtilsService.validateHash = jest.fn().mockResolvedValue(true);
         const module = await Test.createTestingModule({
             providers: [
                 AuthService,

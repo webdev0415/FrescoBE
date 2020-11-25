@@ -1,10 +1,10 @@
 'use strict';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import {ApiPropertyOptional} from '@nestjs/swagger';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { UserEntity } from '../user.entity';
+import {RoleType} from '../../../common/constants/role-type';
+import {AbstractDto} from '../../../common/dto/AbstractDto';
+import {UserEntity} from '../user.entity';
 
 export class UserDto extends AbstractDto {
     @ApiPropertyOptional()

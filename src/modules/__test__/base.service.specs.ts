@@ -1,6 +1,3 @@
-import {TokenPayloadDto} from "../auth/dto/TokenPayloadDto";
-import {ValidatorService} from "../../shared/services/validator.service";
-
 export const dateValue = new Date();
 
 export const globalMockExpectedResult = {};
@@ -75,4 +72,11 @@ export const mockOrganizationService = () => ({
     create: jest.fn(),
     getOrganizationByUserId: jest.fn(),
     getOrganizationByUserAndOrgId: jest.fn(),
+});
+export const mockDefaultTemplateService = () => ({
+
+    get: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
 });

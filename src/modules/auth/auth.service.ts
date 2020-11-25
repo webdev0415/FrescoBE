@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/tslint/config */
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import {Injectable} from '@nestjs/common';
+import {JwtService} from '@nestjs/jwt';
 
-import { UserNotFoundException } from '../../exceptions/user-not-found.exception';
-import { UserVerifyDto } from '../../modules/invitation/dto/UserVerifyDto';
-import { ContextService } from '../../providers/context.service';
-import { UtilsService } from '../../providers/utils.service';
-import { ConfigService } from '../../shared/services/config.service';
-import { UserDto } from '../user/dto/UserDto';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { CreateUserInvitationDto } from './dto/CreateUserInvitationDto';
-import { TokenPayloadDto } from './dto/TokenPayloadDto';
-import { UserLoginDto } from './dto/UserLoginDto';
-import { UserLoginGoogleDto } from './dto/UserLoginGoogleDto';
+import {UserNotFoundException} from '../../exceptions/user-not-found.exception';
+import {UserVerifyDto} from '../../modules/invitation/dto/UserVerifyDto';
+import {ContextService} from '../../providers/context.service';
+import {UtilsService} from '../../providers/utils.service';
+import {ConfigService} from '../../shared/services/config.service';
+import {UserDto} from '../user/dto/UserDto';
+import {UserEntity} from '../user/user.entity';
+import {UserService} from '../user/user.service';
+import {CreateUserInvitationDto} from './dto/CreateUserInvitationDto';
+import {TokenPayloadDto} from './dto/TokenPayloadDto';
+import {UserLoginDto} from './dto/UserLoginDto';
+import {UserLoginGoogleDto} from './dto/UserLoginGoogleDto';
 
 @Injectable()
 export class AuthService {

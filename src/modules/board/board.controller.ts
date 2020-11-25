@@ -1,29 +1,19 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { AuthUser } from '../../decorators/auth-user.decorator';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { UserEntity } from '../../modules/user/user.entity';
-import { BoardService } from './board.service';
-import { BoardDto } from './dto/BoardDto';
-import { BoardInfoDto } from './dto/BoardInfoDto';
-import { CreateBoardDto } from './dto/CreateBoardDto';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
-import { UpdateBoardDto } from './dto/UpdateBoardDto';
+import {AuthUser} from '../../decorators/auth-user.decorator';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {UserEntity} from '../../modules/user/user.entity';
+import {BoardService} from './board.service';
+import {BoardDto} from './dto/BoardDto';
+import {BoardInfoDto} from './dto/BoardInfoDto';
+import {CreateBoardDto} from './dto/CreateBoardDto';
+import {DeleteBoardDto} from './dto/DeleteBoardDto';
+import {UpdateBoardDto} from './dto/UpdateBoardDto';
 
 @Controller('board')
 @ApiTags('board')

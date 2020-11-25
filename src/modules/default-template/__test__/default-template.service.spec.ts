@@ -8,7 +8,6 @@ import {
     mockDefaultTemplateRepository,
     mockUploadImageRepository
 } from "../../__test__/base.repository.spec";
-import {globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 import {mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
 import {DefaultTemplateService} from "../default-template.service";
 import {DefaultTemplateEntity} from "../default-template.entity";
@@ -18,6 +17,7 @@ import {UpdateDefaultTemplateDto} from "../dto/UpdateDefaultTemplateDto";
 import {DefaultTemplateRepository} from "../default-template.repository";
 import {NotFoundException} from "@nestjs/common";
 import {DeleteDefaultTemplateDto} from "../dto/DeleteDefaultTemplateDto";
+import {mockUploadImageService} from "../../__test__/base.service.specs";
 
 
 export const mockDefaultTemplateEntity: DefaultTemplateEntity = {

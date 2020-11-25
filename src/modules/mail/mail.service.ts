@@ -1,9 +1,9 @@
-import { MailerService } from '@nestjs-modules/mailer';
-import { Injectable, Logger } from '@nestjs/common';
-import { SendEmailInvitationDto } from '../../modules/invitation/dto/SendEmailInvitationDto';
+import {MailerService} from '@nestjs-modules/mailer';
+import {Injectable, Logger} from '@nestjs/common';
+import {SendEmailInvitationDto} from '../../modules/invitation/dto/SendEmailInvitationDto';
 
-import { ConfigService } from '../../shared/services/config.service';
-import { UserDto } from '../user/dto/UserDto';
+import {ConfigService} from '../../shared/services/config.service';
+import {UserDto} from '../user/dto/UserDto';
 
 @Injectable()
 export class MailService {

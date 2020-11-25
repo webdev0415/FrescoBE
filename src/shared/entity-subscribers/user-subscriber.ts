@@ -1,12 +1,7 @@
-import {
-    EntitySubscriberInterface,
-    EventSubscriber,
-    InsertEvent,
-    UpdateEvent,
-} from 'typeorm';
+import {EntitySubscriberInterface, EventSubscriber, InsertEvent,} from 'typeorm';
 
-import { UserEntity } from '../../modules/user/user.entity';
-import { UtilsService } from '../../providers/utils.service';
+import {UserEntity} from '../../modules/user/user.entity';
+import {UtilsService} from '../../providers/utils.service';
 
 @EventSubscriber()
 export class UserSubscriber implements EntitySubscriberInterface<UserEntity> {

@@ -1,19 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-
-    CacheModule,
-
-} from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import {Test} from '@nestjs/testing';
 
 import {CategoryController} from "../category.controller";
 import {CategoryService} from "../category.service";
 import {CategoryEntity} from "../category.entity";
-import {userEntity} from "../../auth/__test__/auth.controller.spec";
-import {mockCategoryService} from "../../__test__/base.service.specs";
 import {CreateCategoryDto} from "../dto/CreateCategoryDto";
 import {UpdateCategoryDto} from "../dto/UpdateCategoryDto";
 import {DeleteCategoryDto} from "../dto/DeleteCategoryDto";
+import {mockCategoryService} from "../../__test__/base.service.specs";
 
 let mockCategoryEntity:CategoryEntity=new CategoryEntity();
 

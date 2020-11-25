@@ -1,9 +1,9 @@
 'use strict';
 
-import { Controller, Get, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import {Controller} from '@nestjs/common';
+import {ApiTags} from '@nestjs/swagger';
 
-import { MailService } from './mail.service';
+import {MailService} from './mail.service';
 
 @Controller('mail')
 @ApiTags('mail')

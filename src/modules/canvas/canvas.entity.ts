@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {Column, CreateDateColumn, Entity, UpdateDateColumn} from 'typeorm';
 
-import { AbstractEntity } from '../../common/abstract.entity';
-import { CanvasDto } from './dto/CanvasDto';
+import {AbstractEntity} from '../../common/abstract.entity';
+import {CanvasDto} from './dto/CanvasDto';
 
 @Entity({ name: 'canvas' })
 export class CanvasEntity extends AbstractEntity<CanvasDto> {

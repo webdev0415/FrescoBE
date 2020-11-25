@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import {Module} from '@nestjs/common';
+import {TypeOrmModule} from '@nestjs/typeorm';
 
-import { CanvasRepository } from '../../modules/canvas/canvas.repository';
-import { UploadImageController } from './upload-image.controller';
-import { UploadImageRepository } from './upload-image.repository';
-import { UploadImageService } from './upload-image.service';
+import {CanvasRepository} from '../../modules/canvas/canvas.repository';
+import {UploadImageController} from './upload-image.controller';
+import {UploadImageRepository} from './upload-image.repository';
+import {UploadImageService} from './upload-image.service';
 
 @Module({
     imports: [

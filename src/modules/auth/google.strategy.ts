@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, VerifyCallback } from 'passport-google-oauth20';
+import {Injectable} from '@nestjs/common';
+import {PassportStrategy} from '@nestjs/passport';
+import {Strategy, VerifyCallback} from 'passport-google-oauth20';
 
-import { UserGoogleNotValidException } from '../../exceptions/user-google-not-valid-exception';
-import { ConfigService } from '../../shared/services/config.service';
-import { AuthService } from './auth.service';
-import { GoogleProfileDto } from './dto/GoogleProfileDto';
-import { UserLoginGoogleDto } from './dto/UserLoginGoogleDto';
+import {UserGoogleNotValidException} from '../../exceptions/user-google-not-valid-exception';
+import {ConfigService} from '../../shared/services/config.service';
+import {AuthService} from './auth.service';
+import {GoogleProfileDto} from './dto/GoogleProfileDto';
+import {UserLoginGoogleDto} from './dto/UserLoginGoogleDto';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {

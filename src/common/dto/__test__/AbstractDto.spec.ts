@@ -1,4 +1,4 @@
-import { AbstractDto } from '../AbstractDto';
+import {AbstractDto} from '../AbstractDto';
 
 describe('AbstractDto', () => {
     it('AbstractDto snapshot ', () => {

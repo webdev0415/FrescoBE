@@ -7,9 +7,9 @@ import {OrganizationService} from "../organization.service";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
 import {CreateOrganizationDto} from "../dto/CreateOrganizationDto";
 import {ConflictException, NotFoundException} from "@nestjs/common";
-import {mockOrganizationService} from "../../__test__/base.service.specs";
 import {UserToOrgDto} from "../../user-org/dto/user-orgDto";
 import {UserToOrgEntity} from "../../user-org/user-org.entity";
+import {mockOrganizationService} from "../../__test__/base.service.specs";
 
 let mockOrganizationEntity: OrganizationEntity = new OrganizationEntity();
 

@@ -1,19 +1,18 @@
-import { UseFilters, UseGuards } from '@nestjs/common';
+import {UseFilters} from '@nestjs/common';
 import {
+    ConnectedSocket,
     MessageBody,
     OnGatewayConnection,
     OnGatewayDisconnect,
     SubscribeMessage,
     WebSocketGateway,
-    WebSocketServer,
-    WsResponse,
-    ConnectedSocket
+    WebSocketServer
 } from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { BoardEventEnum } from '../../common/constants/board-event';
-import { WsExceptionFilter } from '../../common/filters/ws-exception.filter';
-import { SocketGuard } from '../../guards/socket.guard';
-import { BoardEventDto } from './dto/board-event.dto';
+import {Server, Socket} from 'socket.io';
+import {BoardEventEnum} from '../../common/constants/board-event';
+import {WsExceptionFilter} from '../../common/filters/ws-exception.filter';
+import {BoardEventDto} from './dto/board-event.dto';
+
 // @UseGuards(SocketGuard)
 @UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ namespace: '/board', transports: ['websocket'] })

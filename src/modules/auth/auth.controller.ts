@@ -17,25 +17,25 @@ import {
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Cache } from 'cache-manager';
-import { v4 } from 'uuid';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {Cache} from 'cache-manager';
+import {v4} from 'uuid';
 
-import { AuthUser } from '../../decorators/auth-user.decorator';
-import { AuthGuard, AuthGuardGoogle } from '../../guards/auth.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { InvitationService } from '../../modules/invitation/invitation.service';
-import { ConfigService } from '../../shared/services/config.service';
-import { MailService } from '../mail/mail.service';
-import { UserDto } from '../user/dto/UserDto';
-import { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { AuthService } from './auth.service';
-import { CreateUserInvitationDto } from './dto/CreateUserInvitationDto';
-import { LoginPayloadDto } from './dto/LoginPayloadDto';
-import { TokenPayloadDto } from './dto/TokenPayloadDto';
-import { UserLoginDto } from './dto/UserLoginDto';
-import { UserRegisterDto } from './dto/UserRegisterDto';
+import {AuthUser} from '../../decorators/auth-user.decorator';
+import {AuthGuard, AuthGuardGoogle} from '../../guards/auth.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {InvitationService} from '../../modules/invitation/invitation.service';
+import {ConfigService} from '../../shared/services/config.service';
+import {MailService} from '../mail/mail.service';
+import {UserDto} from '../user/dto/UserDto';
+import {UserEntity} from '../user/user.entity';
+import {UserService} from '../user/user.service';
+import {AuthService} from './auth.service';
+import {CreateUserInvitationDto} from './dto/CreateUserInvitationDto';
+import {LoginPayloadDto} from './dto/LoginPayloadDto';
+import {TokenPayloadDto} from './dto/TokenPayloadDto';
+import {UserLoginDto} from './dto/UserLoginDto';
+import {UserRegisterDto} from './dto/UserRegisterDto';
 import {ResendConfirmationEmail} from "./dto/ResendConfirmationEmail";
 
 @Controller('auth')

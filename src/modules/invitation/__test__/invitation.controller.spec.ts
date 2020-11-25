@@ -4,7 +4,6 @@
 import {InvitationController} from "../invitation.controller";
 import {InvitationEntity} from "../invitation.entity";
 import {InvitationService} from "../invitation.service";
-import {mockInvitationService} from "../../__test__/base.service.specs";
 import {CreateUserInvitationDto} from "../../auth/dto/CreateUserInvitationDto";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
 import {InvitationDto} from "../dto/InvitationDto";
@@ -12,6 +11,7 @@ import {SendInvitationDto} from "../dto/SendInvitationDto";
 import {Test} from "@nestjs/testing";
 import {VerifyTokenDto} from "../dto/VerifyTokenDto";
 import {LoginPayloadDto} from "../../auth/dto/LoginPayloadDto";
+import {mockInvitationService} from "../../__test__/base.service.specs";
 
 let mockInvitationEntity: InvitationEntity = new InvitationEntity();
 

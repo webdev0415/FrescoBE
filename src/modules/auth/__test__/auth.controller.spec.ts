@@ -1,24 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-    CACHE_MANAGER,
-    CacheModule,
-    ConflictException,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import {CACHE_MANAGER, CacheModule, ConflictException, NotFoundException, UnauthorizedException,} from '@nestjs/common';
+import {Test} from '@nestjs/testing';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { ConfigService } from '../../../shared/services/config.service';
-import { MailService } from '../../mail/mail.service';
-import { UserDto } from '../../user/dto/UserDto';
-import { UserEntity } from '../../user/user.entity';
-import { UserService } from '../../user/user.service';
-import { AuthController } from '../auth.controller';
-import { AuthService } from '../auth.service';
-import { LoginPayloadDto } from '../dto/LoginPayloadDto';
-import { TokenPayloadDto } from '../dto/TokenPayloadDto';
-import { UserRegisterDto } from '../dto/UserRegisterDto';
+import {RoleType} from '../../../common/constants/role-type';
+import {ConfigService} from '../../../shared/services/config.service';
+import {MailService} from '../../mail/mail.service';
+import {UserDto} from '../../user/dto/UserDto';
+import {UserEntity} from '../../user/user.entity';
+import {UserService} from '../../user/user.service';
+import {AuthController} from '../auth.controller';
+import {AuthService} from '../auth.service';
+import {LoginPayloadDto} from '../dto/LoginPayloadDto';
+import {TokenPayloadDto} from '../dto/TokenPayloadDto';
+import {UserRegisterDto} from '../dto/UserRegisterDto';
+import {InvitationService} from "../../invitation/invitation.service";
+import {mockInvitationService} from "../../__test__/base.service.specs";
 
 const mockUserService = () => ({
     checkIfExists: jest.fn(),
@@ -68,6 +64,7 @@ describe('AuthController', () => {
                 { provide: UserService, useFactory: mockUserService },
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
+                { provide: InvitationService, useFactory: mockInvitationService },
                 // { provide: Cache, useFactory: mockCache },
             ],
         }).compile();
@@ -107,7 +104,7 @@ describe('AuthController', () => {
             authService.validateUser.mockResolvedValue({
                 ...userEntity,
                 verified: false,
-            });
+            } as any);
             authService.createToken.mockResolvedValue(token);
             const error = new UnauthorizedException();
             await expect(authController.userLogin(userEntity)).rejects.toThrow(

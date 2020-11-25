@@ -1,29 +1,19 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { AuthUser } from '../../decorators/auth-user.decorator';
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { UserEntity } from '../user/user.entity';
-import { CanvasService } from './canvas.service';
-import { CanvasDto } from './dto/CanvasDto';
-import { CanvasInfoDto } from './dto/CanvasInfoDto';
-import { CreateCanvasDto } from './dto/CreateCanvasDto';
-import { DeleteCanvasDto } from './dto/DeleteCanvasDto';
-import { UpdateCanvasDto } from './dto/UpdateCanvasDto';
+import {AuthUser} from '../../decorators/auth-user.decorator';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {UserEntity} from '../user/user.entity';
+import {CanvasService} from './canvas.service';
+import {CanvasDto} from './dto/CanvasDto';
+import {CanvasInfoDto} from './dto/CanvasInfoDto';
+import {CreateCanvasDto} from './dto/CreateCanvasDto';
+import {DeleteCanvasDto} from './dto/DeleteCanvasDto';
+import {UpdateCanvasDto} from './dto/UpdateCanvasDto';
 
 @Controller('canvas')
 @ApiTags('canvas')
