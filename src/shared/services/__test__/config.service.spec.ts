@@ -48,6 +48,7 @@ describe('ConfigService', () => {
         //     logging: configService.nodeEnv === 'development',
         //     namingStrategy: new SnakeNamingStrategy(),
         // });
+
         expect(configService.typeOrmConfig).not.toBeUndefined()
     });
 
