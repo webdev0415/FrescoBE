@@ -129,10 +129,8 @@ export class AuthController {
         await this._cacheManager.set(code, createdUser.id, { ttl: 3600 });
 
         await this.mailService.sendConfirmationEmail(createdUser, code);
-
         return createdUser.toDto();
     }
-
 
     @Post('resendConfirmationEmail')
     @HttpCode(HttpStatus.OK)
