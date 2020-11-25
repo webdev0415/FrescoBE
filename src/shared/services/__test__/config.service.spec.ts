@@ -1,6 +1,7 @@
 import { join } from 'path';
 
 import { SnakeNamingStrategy } from '../../../snake-naming.strategy';
+import { UserSubscriber } from '../../entity-subscribers/user-subscriber';
 import { ConfigService } from '../config.service';
 
 describe('ConfigService', () => {
@@ -22,13 +23,10 @@ describe('ConfigService', () => {
         }
     });
 
-    it('smtpConfig', () => {
-        expect(configService.smtpConfig).toEqual({
-            host: configService.get('SMTP_HOST'),
-            port: configService.get('SMTP_PORT'),
-            user: configService.get('SMTP_USER'),
-            password: configService.get('SMTP_PASSWORD'),
-            defaultFrom: configService.get('SMTP_DEFAULT_FROM'),
+    it('sendGridConfig', () => {
+        expect(configService.sendGridConfig).toEqual({
+            sendGridApiKey: configService.get('SENDGRID_API_KEY'),
+            emailFrom: configService.get('EMAIL_FROM'),
         });
     });
 
@@ -46,6 +44,7 @@ describe('ConfigService', () => {
             username: configService.get('DB_USERNAME'),
             password: configService.get('DB_PASSWORD'),
             database: configService.get('DB_DATABASE'),
+            subscribers: [UserSubscriber],
             migrationsRun: true,
             logging: configService.nodeEnv === 'development',
             namingStrategy: new SnakeNamingStrategy(),
@@ -73,11 +72,8 @@ describe('ConfigService', () => {
         expect(configService.get('DB_PASSWORD')).toBeTruthy();
         expect(configService.get('DB_DATABASE')).toBeTruthy();
 
-        expect(configService.get('SMTP_HOST')).toBeTruthy();
-        expect(configService.get('SMTP_PORT')).toBeTruthy();
-        expect(configService.get('SMTP_USER')).toBeTruthy();
-        expect(configService.get('SMTP_PASSWORD')).toBeTruthy();
-        expect(configService.get('SMTP_DEFAULT_FROM')).toBeTruthy();
+        expect(configService.get('SENDGRID_API_KEY')).toBeTruthy();
+        expect(configService.get('EMAIL_FROM')).toBeTruthy();
 
         expect(configService.get('GOOGLE_CLIENT_ID')).toBeTruthy();
         expect(configService.get('GOOGLE_SECRET')).toBeTruthy();

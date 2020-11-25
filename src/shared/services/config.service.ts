@@ -84,16 +84,6 @@ export class ConfigService {
         };
     }
 
-    get smtpConfig(): ISMTPConfig {
-        return {
-            host: this.get('SMTP_HOST'),
-            port: this.get('SMTP_PORT'),
-            user: this.get('SMTP_USER'),
-            password: this.get('SMTP_PASSWORD'),
-            defaultFrom: this.get('SMTP_DEFAULT_FROM'),
-        };
-    }
-
     get sendGridConfig() {
         return {
             sendGridApiKey: this.get('SENDGRID_API_KEY'),

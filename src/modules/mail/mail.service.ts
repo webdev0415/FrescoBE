@@ -15,12 +15,16 @@ export class MailService {
         @InjectSendGrid() private readonly _client: SendGridService,
     ) {}
 
+    getEmailClient(): SendGridService {
+        return this._client;
+    }
+
     /** Send email confirmation link to new user account. */
     async sendConfirmationEmail(user: UserDto, code: string): Promise<any> {
         try {
             const clientUrl = this.configService.get('CLIENT_URL');
             const url = `${clientUrl}/auth/confirm/${code}`;
-            return await this._client.send({
+            return await this.getEmailClient().send({
                 to: user.email,
                 from: this.configService.get('EMAIL_FROM'),
                 templateId: Templates.CONFIRMATION_TEMPLATE_ID,
@@ -42,7 +46,7 @@ export class MailService {
         try {
             const clientUrl = this.configService.get('CLIENT_URL');
             const url = `${clientUrl}/invitation/check/${code}`;
-            return await this._client.send({
+            return await this.getEmailClient().send({
                 to: organization.email,
                 from: this.configService.get('EMAIL_FROM'),
                 templateId: Templates.INVITATION_TEMPLATE_ID,
