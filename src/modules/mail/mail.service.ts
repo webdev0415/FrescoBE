@@ -64,25 +64,24 @@ export class MailService {
         }
     }
 
-    async sendNotificationPeople(
-      organization: SendEmailInvitationDto,
-      code: string,
-    ): Promise<any> {
+    async sendNotificationPeople(emails: string[], url_invite: string, message: string): Promise<any> {
       try {
           const clientUrl = this.configService.get('CLIENT_URL');
-          const url = `${clientUrl}/invitation/check/${code}`;
-          return await this.getEmailClient().send({
-              to: organization.email,
+          const url = `${clientUrl}/${url_invite}`;
+          console.log('clientUrl', clientUrl)
+          console.log('url', url)
+          return await this.getEmailClient().sendMultiple({
+              to: emails,
               from: this.configService.get('EMAIL_FROM'),
               templateId: Templates.INVITATION_TEMPLATE_ID,
               dynamicTemplateData: {
                   url,
-                  organization: organization.organizationName,
+                  organization: message,
               },
           });
       } catch (error) {
           this._logger.error(
-              `Failed to send invitation email to ${organization.email}`,
+              `Failed to send Notify email to ${emails}`,
               error.stack,
           );
           throw error;

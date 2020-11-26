@@ -193,21 +193,21 @@ export class InvitationService {
     }
 
     async invitationTypeEmails(
-        
-        listInVitationTypeEmailDto: InVitationTypeEmailDto[],
+        inVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
-        // const listInviteUsers = [];
+        const listEmailNotify = [];
         let condition = null;
         let repository = null;
         let model = null;
-        listInVitationTypeEmailDto.forEach(async (item) => {
+        inVitationTypeEmailDto.invitationEmails.forEach(async (item) => {
+            listEmailNotify.push(item.toEmail);
             const userOrg = await this.userToOrgRepository.findOne({
                 where: {
                     orgId: item.orgId,
                     userId: item.toUserId,
                 },
             });
-            console.log('1111111111111', userOrg)
+            console.log('1111111111111', userOrg);
 
             if (!userOrg) {
                 const userToOrgModel = new UserToOrgEntity();
@@ -215,7 +215,7 @@ export class InvitationService {
                 userToOrgModel.userId = item.toUserId;
                 userToOrgModel.permission = item.permission;
                 await this.userToOrgRepository.save(userToOrgModel);
-                console.log('222222222222222', userToOrgModel)
+                console.log('222222222222222', userToOrgModel);
             }
 
             if (item.type === InvitationType.CANVAS) {
@@ -226,7 +226,7 @@ export class InvitationService {
                 model.orgId = item.orgId;
                 model.permission = item.permission;
                 model.userId = item.toUserId;
-                console.log('3333333333333333', model, condition)
+                console.log('3333333333333333', model, condition);
             } else {
                 repository = this.boardUserOrgRepository;
                 condition = `${item.type}_user_org.boardId = :typeId`;
@@ -235,7 +235,7 @@ export class InvitationService {
                 model.orgId = item.orgId;
                 model.userId = item.toUserId;
                 model.permission = item.permission;
-                console.log('444444444444444', model, condition)
+                console.log('444444444444444', model, condition);
             }
 
             const type = await repository
@@ -249,17 +249,22 @@ export class InvitationService {
                 })
                 .getOne();
 
-                console.log('555555555555555', type)
+            console.log('555555555555555', type);
             if (type) {
-                console.log('66666666666666666666', type)
+                console.log('66666666666666666666', type);
                 return;
             }
 
             await repository.save(model);
-            console.log('77777777777777777777', type)
-            if (item.notify) {
-                // send mail
-            }
+            console.log('77777777777777777777', type);
         });
+
+        // if (listEmailNotify.length > 0) {
+        //     await this.mailService.sendNotificationPeople(
+        //         listEmailNotify,
+        //         null,
+        //         inVitationTypeEmailDto.message,
+        //     );
+        // }
     }
 }

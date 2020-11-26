@@ -96,7 +96,7 @@ export class InvitationController {
         description: 'invitation type email',
     })
     async invitationEmail(
-      @Body() listInVitationTypeEmailDto: InVitationTypeEmailDto[],
+      @Body() listInVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
         return this.invitationService.invitationTypeEmails(listInVitationTypeEmailDto);
     }

@@ -1,41 +1,26 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { PermissionEnum } from '../../../common/constants/permission';
-import { InvitationType } from '../../../common/constants/invitation-type';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import {
+    IsArray,
+    IsBoolean,
+    IsNotEmpty,
+    IsNumber,
+    IsOptional,
+    IsString,
+} from 'class-validator';
+import { InVitationEmailDto } from './InvitationEmailDto';
 
 export class InVitationTypeEmailDto {
-    @IsString()
-    @IsNotEmpty({ message: 'orgId is required' })
-    @ApiProperty()
-    orgId: string;
+    @IsNotEmpty({ message: 'invitationEmails is required' })
+    @IsArray({ message: 'invitationEmails must be an array' })
+    invitationEmails: InVitationEmailDto[];
 
-    @IsString()
-    @IsNotEmpty({ message: 'toUserId is required' })
-    @ApiProperty()
-    toUserId: string;
-
-    @IsString()
-    @IsNotEmpty({ message: 'toEmail is required' })
-    @ApiProperty()
-    toEmail: string;
-
-    @IsString()
-    @IsNotEmpty({ message: 'typeId is required' })
-    @ApiProperty()
-    typeId: string;
-
-    @IsBoolean()
+    @IsNumber()
     @IsOptional()
     @ApiPropertyOptional()
-    notify: boolean;
+    notify: number;
 
-    @IsEnum(PermissionEnum)
-    @IsNotEmpty({ message: 'permission is required' })
-    @ApiProperty()
-    permission: PermissionEnum;
-
-    @IsEnum(InvitationType, { message: 'type is not valid' })
-    @ApiProperty()
-    @IsNotEmpty({ message: 'type is required' })
-    type: InvitationType;
+    @IsString({ message: 'message must be string' })
+    @IsOptional()
+    @ApiPropertyOptional()
+    message: string;
 }
