@@ -1,9 +1,9 @@
 'use strict';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
+import {ApiPropertyOptional} from '@nestjs/swagger';
 
-import { AbstractDto } from '../../../common/dto/AbstractDto';
-import { UploadImageEntity } from '../upload-image.entity';
+import {AbstractDto} from '../../../common/dto/AbstractDto';
+import {UploadImageEntity} from '../upload-image.entity';
 
 export class UploadImageDto extends AbstractDto {
     @ApiPropertyOptional()

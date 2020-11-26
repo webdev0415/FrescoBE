@@ -1,12 +1,15 @@
-import { NotFoundException } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
+import {NotFoundException} from '@nestjs/common';
+import {Test} from '@nestjs/testing';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { UserLoginGoogleDto } from '../../auth/dto/UserLoginGoogleDto';
-import { UserRepository } from '../../user/user.repository';
-import { UserDto } from '../dto/UserDto';
-import { UserEntity } from '../user.entity';
-import { UserService } from '../user.service';
+import {RoleType} from '../../../common/constants/role-type';
+import {UserLoginGoogleDto} from '../../auth/dto/UserLoginGoogleDto';
+import {UserRepository} from '../../user/user.repository';
+import {UserDto} from '../dto/UserDto';
+import {UserEntity} from '../user.entity';
+import {UserService} from '../user.service';
+import {UserToOrgRepository} from "../../user-org/user-org.repository";
+import {mockUserToOrgRepository} from "../../__test__/base.repository.spec";
+import {UserRegisterDto} from "../../auth/dto/UserRegisterDto";
 
 const mockUserRepository = () => ({
     findOne: jest.fn(),
@@ -26,12 +29,13 @@ const mockUserRepository = () => ({
 
 describe('UserService', () => {
     let userRepository;
-    let userService;
+    let userService:UserService;
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             providers: [
                 UserService,
                 { provide: UserRepository, useFactory: mockUserRepository },
+                { provide: UserToOrgRepository, useFactory: mockUserToOrgRepository },
             ],
         }).compile();
 
@@ -93,11 +97,9 @@ describe('UserService', () => {
             dtoClass: UserDto,
             toDto: () => '',
         });
-        const mockUser: UserDto = {
-            id: '1',
-            name: 'example',
-            role: RoleType.USER,
-            email: 'example@fresco.com',
+        const mockUser: UserRegisterDto = {
+
+            email: 'example@fresco.com',password:""
         };
 
         userRepository.create.mockReturnValue({
@@ -200,13 +202,13 @@ describe('UserService', () => {
 
         userRepository.update.mockReturnValue({ ...user, verified: true });
         userRepository.findOne.mockResolvedValue({ ...user, verified: true });
-        const result = userService.update('1');
+        const result = userService.update(new  UserLoginGoogleDto());
         expect(result).toEqual(expectedResult);
     });
 
     it('validateUser throws UserNotFoundException', () => {
         const expectedResult = new NotFoundException();
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        expect(userService.update('')).rejects.toThrow(expectedResult);
+        expect(userService.update(new  UserLoginGoogleDto())).rejects.toThrow(expectedResult);
     });
 });

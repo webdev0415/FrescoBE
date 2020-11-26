@@ -1,14 +1,8 @@
-import {
-    ArgumentsHost,
-    BadRequestException,
-    Catch,
-    ExceptionFilter,
-    HttpStatus,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { ValidationError } from 'class-validator';
-import { Response } from 'express';
-import { STATUS_CODES } from 'http';
+import {ArgumentsHost, BadRequestException, Catch, ExceptionFilter, HttpStatus,} from '@nestjs/common';
+import {Reflector} from '@nestjs/core';
+import {ValidationError} from 'class-validator';
+import {Response} from 'express';
+import {STATUS_CODES} from 'http';
 import * as _ from 'lodash';
 
 @Catch(BadRequestException)

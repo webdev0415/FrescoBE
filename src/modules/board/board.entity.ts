@@ -1,7 +1,7 @@
-import { Column, CreateDateColumn, Entity, UpdateDateColumn } from 'typeorm';
+import {Column, CreateDateColumn, Entity, UpdateDateColumn} from 'typeorm';
 
-import { AbstractEntity } from '../../common/abstract.entity';
-import { BoardDto } from './dto/BoardDto';
+import {AbstractEntity} from '../../common/abstract.entity';
+import {BoardDto} from './dto/BoardDto';
 
 @Entity({ name: 'board' })
 export class BoardEntity extends AbstractEntity<BoardDto> {
@@ -33,7 +33,7 @@ export class BoardEntity extends AbstractEntity<BoardDto> {
     @UpdateDateColumn({
         type: 'timestamp',
         name: 'updatedAt',
-        default: () => 'CURRENT_TIMESTAMP' 
+        default: () => 'CURRENT_TIMESTAMP'
     })
     updatedAt: Date;
 

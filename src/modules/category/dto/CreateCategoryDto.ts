@@ -1,7 +1,7 @@
 'use strict';
 
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional } from 'class-validator';
+import {ApiPropertyOptional} from '@nestjs/swagger';
+import {IsNotEmpty, IsOptional} from 'class-validator';
 
 export class CreateCategoryDto {
     @ApiPropertyOptional()

@@ -1,15 +1,10 @@
-import {
-    ArgumentsHost,
-    Catch,
-    ExceptionFilter,
-    HttpStatus,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Response } from 'express';
-import { STATUS_CODES } from 'http';
-import { QueryFailedError } from 'typeorm';
+import {ArgumentsHost, Catch, ExceptionFilter, HttpStatus,} from '@nestjs/common';
+import {Reflector} from '@nestjs/core';
+import {Response} from 'express';
+import {STATUS_CODES} from 'http';
+import {QueryFailedError} from 'typeorm';
 
-import { constraintErrors } from './constraint-errors';
+import {constraintErrors} from './constraint-errors';
 
 @Catch(QueryFailedError)
 export class QueryFailedFilter implements ExceptionFilter {

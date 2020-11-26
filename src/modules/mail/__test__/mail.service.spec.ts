@@ -1,15 +1,10 @@
-import { Test } from '@nestjs/testing';
-import {
-    SENDGRID_TOKEN,
-    SendGridModule,
-    SendGridModuleOptions,
-    SendGridService,
-} from '@ntegral/nestjs-sendgrid';
+import {MailerService} from '@nestjs-modules/mailer';
+import {Test} from '@nestjs/testing';
 
-import { RoleType } from '../../../common/constants/role-type';
-import { ConfigService } from '../../../shared/services/config.service';
-import { UserDto } from '../../user/dto/UserDto';
-import { MailService } from '../mail.service';
+import {RoleType} from '../../../common/constants/role-type';
+import {ConfigService} from '../../../shared/services/config.service';
+import {UserDto} from '../../user/dto/UserDto';
+import {MailService} from '../mail.service';
 
 const mockUser: UserDto = {
     id: '1',
@@ -18,53 +13,42 @@ const mockUser: UserDto = {
     role: RoleType.USER,
 };
 
+const mockMailerService = () => ({
+    sendMail: jest.fn(),
+});
+
 describe('MailService', () => {
     let mailerService;
     let mailService;
 
     beforeEach(async () => {
-        const config: SendGridModuleOptions = {
-            apiKey: 'SG.123',
-        };
         const module = await Test.createTestingModule({
-            imports: [
-                SendGridModule.forRootAsync({
-                    useFactory: () => config,
-                }),
+            providers: [
+                ConfigService,
+                MailService,
+                { provide: MailerService, useFactory: mockMailerService },
             ],
-            providers: [ConfigService, MailService],
         }).compile();
 
         mailService = module.get<MailService>(MailService);
-        mailerService = module.get<SendGridService>(SENDGRID_TOKEN);
+        mailerService = module.get<MailerService>(MailerService);
     });
 
     describe('sendConfirmationEmail', () => {
         it('sendConfirmationEmail success', () => {
-            const mock = jest
-                .spyOn(mailService, 'getEmailClient')
-                .mockImplementationOnce(() => ({ send: jest.fn() }));
-
             const expectedResult: Promise<boolean> = Promise.resolve(true);
+            mailerService.sendMail.mockResolvedValue(expectedResult);
             const result = mailService.sendConfirmationEmail(mockUser);
             expect(result).toEqual(expectedResult);
-            expect(mock).toHaveBeenCalled();
+            expect(mailerService.sendMail).toBeCalled();
         });
-
         it('sendConfirmationEmail error', () => {
             const errorMessage = 'Sending email failed.';
-            const mock = jest
-                .spyOn(mailService, 'getEmailClient')
-                .mockImplementationOnce(() => ({
-                    send: jest.fn().mockReturnValue(new Error(errorMessage)),
-                }));
-
-            try {
-                mailService.sendConfirmationEmail(mockUser);
-            } catch (err) {
-                expect(err.message).toEqual(errorMessage);
-            }
-            expect(mock).toHaveBeenCalled();
+            const error = new Error(errorMessage);
+            mailerService.sendMail.mockRejectedValue(error);
+            expect(mailService.sendConfirmationEmail(mockUser,"")).rejects.toThrow(
+                errorMessage,
+            );
         });
     });
 });

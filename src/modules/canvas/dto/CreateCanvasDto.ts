@@ -1,7 +1,7 @@
 'use strict';
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
+import {IsNotEmpty, IsOptional, IsString} from 'class-validator';
 
 // import { UploadImageEntity } from '../../../modules/upload/upload-image.entity';
 

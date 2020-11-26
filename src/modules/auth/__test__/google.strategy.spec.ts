@@ -1,9 +1,9 @@
-import { Test } from '@nestjs/testing';
+import {Test} from '@nestjs/testing';
 
-import { ConfigService } from '../../../shared/services/config.service';
-import { AuthService } from '../auth.service';
-import { GoogleProfileDto } from '../dto/GoogleProfileDto';
-import { GoogleStrategy } from '../google.strategy';
+import {ConfigService} from '../../../shared/services/config.service';
+import {AuthService} from '../auth.service';
+import {GoogleProfileDto} from '../dto/GoogleProfileDto';
+import {GoogleStrategy} from '../google.strategy';
 
 const mockAuthService = () => ({
     validateOAuthLoginEmail: jest.fn(),

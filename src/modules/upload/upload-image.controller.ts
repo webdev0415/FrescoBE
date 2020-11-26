@@ -1,23 +1,15 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Controller,
-    Param,
-    Post,
-    Put,
-    UploadedFile,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Controller, Param, Post, Put, UploadedFile, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {FileInterceptor} from '@nestjs/platform-express';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { IFile } from '../../interfaces/IFile';
-import { UploadImageDto } from './dto/UploadImageDto';
-import { UploadImageService } from './upload-image.service';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {IFile} from '../../interfaces/IFile';
+import {UploadImageDto} from './dto/UploadImageDto';
+import {UploadImageService} from './upload-image.service';
 
 @Controller('upload')
 @ApiTags('upload')

@@ -1,27 +1,17 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    UseGuards,
-    UseInterceptors,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards, UseInterceptors,} from '@nestjs/common';
+import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
 
-import { AuthGuard } from '../../guards/auth.guard';
-import { RolesGuard } from '../../guards/roles.guard';
-import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.service';
-import { CategoryService } from './category.service';
-import { CategoryDto } from './dto/CategoryDto';
-import { CategoryInfoDto } from './dto/CategoryInfoDto';
-import { CreateCategoryDto } from './dto/CreateCategoryDto';
-import { DeleteCategoryDto } from './dto/DeleteCategoryDto';
-import { UpdateCategoryDto } from './dto/UpdateCategoryDto';
+import {AuthGuard} from '../../guards/auth.guard';
+import {RolesGuard} from '../../guards/roles.guard';
+import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
+import {CategoryService} from './category.service';
+import {CategoryDto} from './dto/CategoryDto';
+import {CategoryInfoDto} from './dto/CategoryInfoDto';
+import {CreateCategoryDto} from './dto/CreateCategoryDto';
+import {DeleteCategoryDto} from './dto/DeleteCategoryDto';
+import {UpdateCategoryDto} from './dto/UpdateCategoryDto';
 
 @Controller('category')
 @ApiTags('category')

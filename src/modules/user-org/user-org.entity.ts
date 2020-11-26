@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne} from 'typeorm';
 
-import { AbstractEntity } from '../../common/abstract.entity';
-import { PermissionEnum } from '../../common/constants/permission';
-import { OrganizationEntity } from '../organization/organization.entity';
-import { UserEntity } from '../user/user.entity';
-import { UserToOrgDto } from './dto/user-orgDto';
+import {AbstractEntity} from '../../common/abstract.entity';
+import {PermissionEnum} from '../../common/constants/permission';
+import {OrganizationEntity} from '../organization/organization.entity';
+import {UserEntity} from '../user/user.entity';
+import {UserToOrgDto} from './dto/user-orgDto';
 
 @Entity({ name: 'user_org' })
 export class UserToOrgEntity extends AbstractEntity<UserToOrgDto> {

@@ -1,9 +1,9 @@
-import { Column, CreateDateColumn, Entity, OneToMany } from 'typeorm';
+import {Column, CreateDateColumn, Entity, OneToMany} from 'typeorm';
 
-import { AbstractEntity } from '../../common/abstract.entity';
-import { RoleType } from '../../common/constants/role-type';
-import { UserToOrgEntity } from '../user-org/user-org.entity';
-import { UserDto } from './dto/UserDto';
+import {AbstractEntity} from '../../common/abstract.entity';
+import {RoleType} from '../../common/constants/role-type';
+import {UserToOrgEntity} from '../user-org/user-org.entity';
+import {UserDto} from './dto/UserDto';
 
 @Entity({ name: 'user' })
 export class UserEntity extends AbstractEntity<UserDto> {

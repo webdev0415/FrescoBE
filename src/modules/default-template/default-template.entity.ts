@@ -5,6 +5,8 @@ import { DefaultTemplateDto } from './dto/DefaultTemplateDto';
 
 @Entity({ name: 'default_template' })
 export class DefaultTemplateEntity extends AbstractEntity<DefaultTemplateDto> {
+
+
     @Column({})
     name: string;
 

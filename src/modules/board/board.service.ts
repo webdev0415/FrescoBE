@@ -1,23 +1,19 @@
 /* eslint-disable complexity */
-import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException,} from '@nestjs/common';
 
-import { PermissionEnum } from '../../common/constants/permission';
-import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
-import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
-import { CategoryRepository } from '../../modules/category/category.repository';
-import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
-import { UploadImageService } from '../../modules/upload/upload-image.service';
-import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
-import { BoardEntity } from './board.entity';
-import { BoardRepository } from './board.repository';
-import { BoardInfoDto } from './dto/BoardInfoDto';
-import { CreateBoardDto } from './dto/CreateBoardDto';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
-import { UpdateBoardDto } from './dto/UpdateBoardDto';
+import {PermissionEnum} from '../../common/constants/permission';
+import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
+import {BoardUserOrgRepository} from '../../modules/board-user-org/board-user-org.repository';
+import {CategoryRepository} from '../../modules/category/category.repository';
+import {UploadImageRepository} from '../../modules/upload/upload-image.repository';
+import {UploadImageService} from '../../modules/upload/upload-image.service';
+import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
+import {BoardEntity} from './board.entity';
+import {BoardRepository} from './board.repository';
+import {BoardInfoDto} from './dto/BoardInfoDto';
+import {CreateBoardDto} from './dto/CreateBoardDto';
+import {DeleteBoardDto} from './dto/DeleteBoardDto';
+import {UpdateBoardDto} from './dto/UpdateBoardDto';
 
 @Injectable()
 export class BoardService {
@@ -52,7 +48,7 @@ export class BoardService {
         // });
 
         if (!userToOrg) {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException("");
         }
         return userToOrg;
     }

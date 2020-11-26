@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 
-import { UserToOrgRepository } from './user-org.repository';
+import {UserToOrgRepository} from './user-org.repository';
 
 @Injectable()
 export class UserToOrgService {

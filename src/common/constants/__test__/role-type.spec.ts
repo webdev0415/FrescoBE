@@ -1,4 +1,4 @@
-import { RoleType } from '../role-type';
+import {RoleType} from '../role-type';
 
 describe('RoleType', () => {
     it('RoleType snapshot ', () => {
