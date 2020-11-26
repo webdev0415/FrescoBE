@@ -87,12 +87,23 @@ export class UserService {
             .where('user.email like :email', { email: `%${email}%` })
             .andWhere('user.verified = 1');
 
-        if(userToOrgs && userToOrgs.length > 0){
+        if (userToOrgs && userToOrgs.length > 0) {
             emails.andWhere('user.id NOT IN (:userIds)', { userIds: userIds });
         }
 
         const result = await emails.getMany();
 
+        return result.map((item) => item.toDto());
+    }
+
+    async searchUserByKeyWord(keyword: string): Promise<UserDto[]> {
+        console.log()
+        const users = this.userRepository
+            .createQueryBuilder('user')
+            .where('user.email like :email', { email: `%${keyword}%` })
+            .orWhere('user.name like :name', { name: `%${keyword}%` })
+            .andWhere('user.verified = 1');
+        const result = await users.getMany();
         return result.map((item) => item.toDto());
     }
 }

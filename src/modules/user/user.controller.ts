@@ -1,7 +1,17 @@
 'use strict';
 
-import {Body, Controller, HttpCode, HttpStatus, Post, UseGuards, UseInterceptors,} from '@nestjs/common';
-import {ApiBearerAuth, ApiOkResponse, ApiTags} from '@nestjs/swagger';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Post,
+    Query,
+    UseGuards,
+    UseInterceptors,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import {AuthGuard} from '../../guards/auth.guard';
 import {RolesGuard} from '../../guards/roles.guard';
@@ -29,7 +39,21 @@ export class UserController {
     ): Promise<UserDto[]> {
         const emails = await this.userService.suggestEmail(
             autoSuggestEmailDto.email,
-            autoSuggestEmailDto.orgId
+            autoSuggestEmailDto.orgId,
+        );
+        return emails;
+    }
+
+    @Get('search')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        type: AutoSuggestEmailDto,
+        description: 'search user email',
+    })
+    async searchUserWithEmail(@Query() query): Promise<UserDto[]> {
+        console.log(query);
+        const emails = await this.userService.searchUserByKeyWord(
+            query.keyword,
         );
         return emails;
     }
