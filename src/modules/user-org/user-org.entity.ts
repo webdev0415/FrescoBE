@@ -24,12 +24,12 @@ export class UserToOrgEntity extends AbstractEntity<UserToOrgDto> {
     @Column({ nullable: false, name: 'orgId' })
     orgId: string;
 
-    @ManyToOne((type) => UserEntity, (userEntity) => userEntity.orgs)
+    @ManyToOne(() => UserEntity, (userEntity) => userEntity.orgs)
     @JoinColumn({ name: 'userId' })
     public user!: UserEntity;
 
     @ManyToOne(
-        (type) => OrganizationEntity,
+        () => OrganizationEntity,
         (organizationEntity) => organizationEntity.users,
     )
     @JoinColumn({ name: 'orgId' })

@@ -2,11 +2,14 @@ import { Column, Entity, OneToMany } from 'typeorm';
 
 // Entities
 import { AbstractEntity } from '../../common/abstract.entity';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 import { UserToOrgEntity } from '../user-org/user-org.entity';
 // import { PlanEntity } from '../plan/plan.entity';
 // import { UserEntity } from '../user/user.entity';
 // Dtos
 import { OrganizationDto } from './dto/OrganizationDto';
+import {BoardUserOrgEntity} from "../board-user-org/board-user-org.entity";
+import {InvitationTypeLinkEntity} from "../invitation-type-link/invitation-type-link.entity";
 
 @Entity({ name: 'organization' })
 export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
@@ -37,6 +40,25 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
     @OneToMany(() => UserToOrgEntity, (userToOrgEntity) => userToOrgEntity.user)
     users?: UserToOrgEntity[];
 
+    @OneToMany(
+        () => CanvasUserOrgEntity,
+        (canvasUserOrgEntity) => canvasUserOrgEntity.organization,
+    )
+    canvases?: CanvasUserOrgEntity[];
+
+
+    @OneToMany(
+        () => BoardUserOrgEntity,
+        (boardUserOrgEntity) => boardUserOrgEntity.organization,
+    )
+    boards?: BoardUserOrgEntity[];
+
+
+    @OneToMany(
+        () => InvitationTypeLinkEntity,
+        (invitationTypeLinkEntity) => invitationTypeLinkEntity.organization,
+    )
+    invitationTypeLinks?: InvitationTypeLinkEntity[];
     // @OneToMany(
     //     () => CollaborationEntity,
     //     (collaboration: CollaborationEntity) => collaboration.organization,

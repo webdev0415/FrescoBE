@@ -53,6 +53,28 @@ export class BoardService {
         return userToOrg;
     }
 
+    async checkPermissionInBoard(
+        userId: string,
+        boardId: string,
+        orgId: string,
+    ) {
+        const boardUserOrg = await this.boardUserOrgRepository
+            .createQueryBuilder('boardUserOrgEntity')
+            .where('boardUserOrgEntity.userId = :userId', { userId })
+            .andWhere('boardUserOrgEntity.orgId = :orgId', { orgId })
+            .andWhere('boardUserOrgEntity.boardId = :boardId', { boardId })
+            .andWhere('boardUserOrgEntity.permission != :viewer', {
+                viewer: PermissionEnum.VIEW,
+            })
+            .getOne();
+
+        if (!boardUserOrg) {
+            throw new UnauthorizedException();
+        }
+
+        return boardUserOrg;
+    }
+
     async getById(id: string): Promise<BoardInfoDto> {
         const board = await this.boardRepository.findOne({
             where: {
@@ -154,11 +176,15 @@ export class BoardService {
         userId: string,
         updateBoardDto: UpdateBoardDto,
     ): Promise<BoardEntity> {
-        await this.isAdminOrEditor(userId, updateBoardDto.orgId);
         const board = await this.boardRepository.findOne(updateBoardDto.id);
         if (!board) {
             throw new NotFoundException();
         }
+
+        if(userId !== board.createdUserId) {
+            await this.checkPermissionInBoard(userId, updateBoardDto.id, updateBoardDto.orgId)
+        }
+
         board.name = updateBoardDto.name || board.name;
         board.data = updateBoardDto.data || board.data;
         board.categoryId = updateBoardDto.categoryId || board.categoryId;
