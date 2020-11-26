@@ -4,6 +4,7 @@ import {
     NotFoundException,
     UnauthorizedException,
 } from '@nestjs/common';
+import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -25,6 +26,7 @@ export class CanvasService {
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageRepository: UploadImageRepository,
         public readonly uploadImageService: UploadImageService,
+        public readonly canvasUserOrgRepository: CanvasUserOrgRepository
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -33,14 +35,35 @@ export class CanvasService {
             .where('userToOrg.userId = :userId', { userId })
             .andWhere('userToOrg.orgId = :orgId', { orgId })
             .andWhere(
-                'userToOrg.permission = :admin Or userToOrg.permission = :editor',
-                { admin: PermissionEnum.ADMIN, editor: PermissionEnum.EDITOR },
+                'userToOrg.permission != :viewer',
+                { viewer: PermissionEnum.VIEW },
             )
             .getOne();
         if (!userToOrg) {
             throw new UnauthorizedException();
         }
         return userToOrg;
+    }
+
+    async checkPermissionInBoard(
+        userId: string,
+        canvasId: string,
+        orgId: string,
+    ) {
+        const canvasUserOrg = await this.canvasUserOrgRepository
+            .createQueryBuilder('canvasUserOrg')
+            .where('canvasUserOrg.userId = :userId', { userId })
+            .andWhere('canvasUserOrg.orgId = :orgId', { orgId })
+            .andWhere('canvasUserOrg.canvasId = :canvasId', { canvasId })
+            .andWhere('canvasUserOrg.permission != :viewer', {
+                viewer: PermissionEnum.VIEW,
+            })
+            .getOne();
+        if (!canvasUserOrg) {
+            throw new UnauthorizedException();
+        }
+
+        return canvasUserOrg;
     }
 
     async getById(id: string): Promise<CanvasInfoDto> {
@@ -127,11 +150,14 @@ export class CanvasService {
         userId: string,
         updateCanvasDto: UpdateCanvasDto,
     ): Promise<UpdateCanvasDto> {
-        await this.isAdminOrEditor(userId, updateCanvasDto.orgId);
         const canvas = await this.canvasRepository.findOne(updateCanvasDto.id);
         if (!canvas) {
             throw new NotFoundException();
         }
+        if(userId !== canvas.createdUserId) {
+          await this.checkPermissionInBoard(userId, updateCanvasDto.id, updateCanvasDto.orgId)
+        }
+        
         canvas.name = updateCanvasDto.name || canvas.name;
         canvas.data = updateCanvasDto.data || canvas.data;
         canvas.categoryId = updateCanvasDto.categoryId || canvas.categoryId;
