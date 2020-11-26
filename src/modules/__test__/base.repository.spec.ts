@@ -1,3 +1,5 @@
+import {CanvasUserOrgRepository} from "../canvas-user-org/canvas-user-org.repository";
+
 describe('Base test suit', () => {
     it('should run ', async () => {
     });
@@ -27,6 +29,7 @@ export const mockUserToOrgRepository = mockCategoryRepository
 export const mockBoardUserOrgRepository = mockCategoryRepository
 
 export const mockCanvasRepository = mockCategoryRepository
+export const mockCanvasUserOrgRepository = mockCategoryRepository
 
 export const mockDefaultTemplateRepository = mockCategoryRepository
 
