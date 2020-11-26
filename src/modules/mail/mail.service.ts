@@ -63,4 +63,29 @@ export class MailService {
             throw error;
         }
     }
+
+    async sendNotificationPeople(
+      organization: SendEmailInvitationDto,
+      code: string,
+    ): Promise<any> {
+      try {
+          const clientUrl = this.configService.get('CLIENT_URL');
+          const url = `${clientUrl}/invitation/check/${code}`;
+          return await this.getEmailClient().send({
+              to: organization.email,
+              from: this.configService.get('EMAIL_FROM'),
+              templateId: Templates.INVITATION_TEMPLATE_ID,
+              dynamicTemplateData: {
+                  url,
+                  organization: organization.organizationName,
+              },
+          });
+      } catch (error) {
+          this._logger.error(
+              `Failed to send invitation email to ${organization.email}`,
+              error.stack,
+          );
+          throw error;
+      }
+  }
 }

@@ -1,5 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
+import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
 
 import { AuthModule } from '../../modules/auth/auth.module';
 import { MailModule } from '../../modules/mail/mail.module';
@@ -14,7 +16,7 @@ import { InvitationService } from './invitation.service';
         forwardRef(() => UserModule),
         forwardRef(() => MailModule),
         forwardRef(() => AuthModule),
-        TypeOrmModule.forFeature([InvitationRepository, UserToOrgRepository]),
+        TypeOrmModule.forFeature([InvitationRepository, UserToOrgRepository, BoardUserOrgRepository, CanvasUserOrgRepository]),
     ],
     controllers: [InvitationController],
     providers: [InvitationService],
