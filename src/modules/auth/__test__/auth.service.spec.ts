@@ -11,6 +11,8 @@ import {AuthService} from '../auth.service';
 import {TokenPayloadDto} from '../dto/TokenPayloadDto';
 import {UserLoginDto} from '../dto/UserLoginDto';
 import {UserLoginGoogleDto} from '../dto/UserLoginGoogleDto';
+import {UserNotFoundException} from "../../../exceptions/user-not-found.exception";
+import {userEntity} from "./auth.controller.spec";
 
 const mockUserGoogle: UserLoginGoogleDto = {
     email: 'test@gmail.com',
@@ -41,6 +43,7 @@ const mockConfigService = () => ({
 const mockUserService = () => ({
     findByUsernameOrEmail: jest.fn(),
     createUserForGoogle: jest.fn(),
+    createUser: jest.fn(),
     findOne: jest.fn(),
     update: jest.fn(),
 });
@@ -61,10 +64,10 @@ describe('AuthService', () => {
         const module = await Test.createTestingModule({
             providers: [
                 AuthService,
-                { provide: JwtService, useFactory: mockJwtService },
-                { provide: ConfigService, useFactory: mockConfigService },
-                { provide: UserService, useFactory: mockUserService },
-                { provide: UtilsService, useFactory: mockUtilsService },
+                {provide: JwtService, useFactory: mockJwtService},
+                {provide: ConfigService, useFactory: mockConfigService},
+                {provide: UserService, useFactory: mockUserService},
+                {provide: UtilsService, useFactory: mockUtilsService},
             ],
         }).compile();
 
@@ -95,13 +98,24 @@ describe('AuthService', () => {
             expect(result).toEqual(expectedResult);
         });
         it('validateUser throws UserNotFoundException', async () => {
-            const errorMessage = 'User not found';
-            UtilsService.validateHash = jest
-                .fn()
-                .mockRejectedValue(new Error(errorMessage));
+            const expectedResult: UserEntity = {
+                id: '1',
+                name: 'example',
+                role: RoleType.USER,
+                email: 'example@fresco.com',
+                password: '1234',
+                verified: false,
+                googleId: null,
+                createdAt: new Date(),
+                dtoClass: UserDto,
+                toDto: () => '',
+            };
+
+            userService.findOne.mockReturnValue(undefined);
+
             await expect(
                 authService.validateUser(mockUserLoginDto),
-            ).rejects.toThrow(errorMessage);
+            ).rejects.toThrow(new UserNotFoundException());
         });
     });
 
@@ -117,6 +131,33 @@ describe('AuthService', () => {
 
             const result = await authService.createToken(mockUser);
             expect(result).toEqual(expectedResult);
+        });
+    });
+
+    describe('setAuthUser', () => {
+        it('called', async () => {
+            try {
+                AuthService.setAuthUser(userEntity)
+            } catch (e) {
+            }
+        });
+    });
+
+    describe('getAuthUser', () => {
+        it('called', async () => {
+            try {
+                AuthService.getAuthUser()
+            } catch (e) {
+            }
+        });
+    });
+
+    describe('createVerifyUser', () => {
+        it('called', async () => {
+            userService.createUser.mockReturnValue(userEntity);
+            let result = await authService.createVerifyUser(userEntity)
+
+            expect(result).toEqual(userEntity)
         });
     });
 

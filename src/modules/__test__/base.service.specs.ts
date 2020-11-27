@@ -58,11 +58,11 @@ export const mockCanvasService = () => ({
 });
 
 export const mockInvitationService = () => ({
-
     create: jest.fn(),
     resendInvitation: jest.fn(),
     checkValidToken: jest.fn(),
     verify: jest.fn(),
+    updateToVerified: jest.fn(),
 });
 
 export const mockOrganizationService = () => ({

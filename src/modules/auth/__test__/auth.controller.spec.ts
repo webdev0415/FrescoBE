@@ -15,15 +15,22 @@ import {TokenPayloadDto} from '../dto/TokenPayloadDto';
 import {UserRegisterDto} from '../dto/UserRegisterDto';
 import {InvitationService} from "../../invitation/invitation.service";
 import {mockInvitationService} from "../../__test__/base.service.specs";
+import {CreateUserInvitationDto} from "../dto/CreateUserInvitationDto";
+import {InvitationEntity} from "../../invitation/invitation.entity";
+import {PermissionEnum} from "../../../common/constants/permission";
+import {ResendConfirmationEmail} from "../dto/ResendConfirmationEmail";
 
 const mockUserService = () => ({
     checkIfExists: jest.fn(),
     createUser: jest.fn(),
     confirmEmail: jest.fn(),
+    getUserByEmail: jest.fn(),
 });
 const mockAuthService = () => ({
     validateUser: jest.fn(),
     createToken: jest.fn(),
+    createVerifyUser: jest.fn(),
+    getUserByEmail: jest.fn(),
 });
 const mockMailService = () => ({
     sendConfirmationEmail: jest.fn(),
@@ -46,6 +53,7 @@ describe('AuthController', () => {
     let authController: AuthController;
     let configService: ConfigService;
     let userService;
+    let invitationService;
     let authService;
     let mailService;
     let host: string;
@@ -65,7 +73,7 @@ describe('AuthController', () => {
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
                 { provide: InvitationService, useFactory: mockInvitationService },
-                // { provide: Cache, useFactory: mockCache },
+               //  { provide: Cache, useFactory: mockCache },
             ],
         }).compile();
 
@@ -74,6 +82,7 @@ describe('AuthController', () => {
         userService = module.get<UserService>(UserService);
         authService = module.get<AuthService>(AuthService);
         mailService = module.get<MailService>(MailService);
+        invitationService =await  module.resolve<InvitationService>(InvitationService);
         cacheManager = module.get<any>(CACHE_MANAGER);
         clientUrl = configService.get('CLIENT_URL');
     });
@@ -150,6 +159,107 @@ describe('AuthController', () => {
             expect(res.redirect).toHaveBeenLastCalledWith(url);
         });
     });
+    describe('createUser', () => {
+
+        it('createUser success', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto=new CreateUserInvitationDto()
+            createUserInvitationDto.email="test@test.com"
+            createUserInvitationDto.orgId="id";
+            createUserInvitationDto.password="password"
+            createUserInvitationDto.verified=true
+
+            let invitation=new InvitationEntity();
+            invitation.toEmail="test@test.com";
+            invitation.id="id";
+            invitation.permission=PermissionEnum.ADMIN
+
+            invitation.orgId="id";
+
+            invitationService.checkValidToken.mockResolvedValue(invitation);
+            authService.createVerifyUser.mockResolvedValue(userEntity);
+            authService.createToken.mockResolvedValue(new TokenPayloadDto({accessToken:"",expiresIn:3}));
+
+            invitationService.updateToVerified.mockImplementation(async (value) => value);
+
+            await expect(
+                await authController.createUser("",createUserInvitationDto),
+            ).toEqual(new LoginPayloadDto(userEntity.toDto(), new TokenPayloadDto({accessToken:"",expiresIn:3})))
+        });
+        it('createUser error', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto = new CreateUserInvitationDto()
+            createUserInvitationDto.email = "test@test.com"
+            createUserInvitationDto.orgId = "id";
+            createUserInvitationDto.password = "password"
+            createUserInvitationDto.verified = true
+
+            let invitation = new InvitationEntity();
+            invitation.toEmail = "test@test.com1";
+            invitation.id = "id";
+            invitation.permission = PermissionEnum.ADMIN
+
+            invitation.orgId = "id";
+
+            invitationService.checkValidToken.mockResolvedValue(invitation);
+            authService.createVerifyUser.mockResolvedValue(userEntity);
+            authService.createToken.mockResolvedValue(new TokenPayloadDto({accessToken: "", expiresIn: 3}));
+
+            invitationService.updateToVerified.mockImplementation(async (value) => value);
+
+            await expect(
+                authController.createUser("", createUserInvitationDto),
+            ).rejects.toThrow(new NotFoundException());
+        });
+    });
+    describe('resendConfirmationEmail', () => {
+
+        it('resendConfirmationEmail success', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto=new CreateUserInvitationDto()
+            createUserInvitationDto.email="test@test.com"
+            createUserInvitationDto.orgId="id";
+            createUserInvitationDto.password="password"
+            createUserInvitationDto.verified=true
+
+            let invitation=new InvitationEntity();
+            invitation.toEmail="test@test.com";
+            invitation.id="id";
+            invitation.permission=PermissionEnum.ADMIN
+
+            invitation.orgId="id";
+
+            mailService.sendConfirmationEmail.mockResolvedValue(invitation);
+            authService.getUserByEmail.mockResolvedValue(userEntity);
+
+            await expect(
+                await authController.resendConfirmationEmail(new ResendConfirmationEmail()),
+            ).toEqual(userEntity.toDto())
+        });
+
+
+        it('resendConfirmationEmail error', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto=new CreateUserInvitationDto()
+            createUserInvitationDto.email="test@test.com"
+            createUserInvitationDto.orgId="id";
+            createUserInvitationDto.password="password"
+            createUserInvitationDto.verified=true
+
+            let invitation=new InvitationEntity();
+            invitation.toEmail="test@test.com";
+            invitation.id="id";
+            invitation.permission=PermissionEnum.ADMIN
+
+            invitation.orgId="id";
+
+            mailService.sendConfirmationEmail.mockResolvedValue(invitation);
+            authService.getUserByEmail.mockResolvedValue(undefined);
+
+
+            await expect(
+                authController.resendConfirmationEmail(new ResendConfirmationEmail()),
+            ).rejects.toThrow(new NotFoundException());
+        });
+
+    });
+
 
     describe('userRegister', () => {
         const userRegisterDto: UserRegisterDto = {
@@ -174,6 +284,8 @@ describe('AuthController', () => {
             ).rejects.toThrow(error);
         });
     });
+
+
     describe('confirmEmail', () => {
         it('confirmEmail success', async () => {
             const expectedResult: UserDto = userEntity.toDto();

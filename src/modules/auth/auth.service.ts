@@ -51,7 +51,7 @@ export class AuthService {
         return await this.userService.findOne({
             email: email,
         });
-    }
+    } 
 
     static setAuthUser(user: UserEntity) {
         ContextService.set(AuthService._authUserKey, user);
