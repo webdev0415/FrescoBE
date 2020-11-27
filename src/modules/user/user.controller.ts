@@ -12,12 +12,14 @@ import {
     UseInterceptors,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { AuthUser } from '../../decorators/auth-user.decorator';
 
 import {AuthGuard} from '../../guards/auth.guard';
 import {RolesGuard} from '../../guards/roles.guard';
 import {AuthUserInterceptor} from '../../interceptors/auth-user-interceptor.service';
 import {AutoSuggestEmailDto} from './dto/AutoSuggestEmailDto';
 import {UserDto} from './dto/UserDto';
+import { UserEntity } from './user.entity';
 import {UserService} from './user.service';
 
 @Controller('users')
@@ -50,10 +52,10 @@ export class UserController {
         type: AutoSuggestEmailDto,
         description: 'search user email',
     })
-    async searchUserWithEmail(@Query() query): Promise<UserDto[]> {
-        console.log(query);
+    async searchUserWithEmail(@Query() query, @AuthUser() user: UserEntity): Promise<UserDto[]> {
         const emails = await this.userService.searchUserByKeyWord(
             query.keyword,
+            user.id
         );
         return emails;
     }

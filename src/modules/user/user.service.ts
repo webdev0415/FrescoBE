@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
-import {FindConditions} from 'typeorm';
+import {Brackets, FindConditions} from 'typeorm';
 
 import {CreateUserInvitationDto} from '../../modules/auth/dto/CreateUserInvitationDto';
 import {UserLoginGoogleDto} from '../auth/dto/UserLoginGoogleDto';
@@ -96,12 +96,15 @@ export class UserService {
         return result.map((item) => item.toDto());
     }
 
-    async searchUserByKeyWord(keyword: string): Promise<UserDto[]> {
+    async searchUserByKeyWord(keyword: string, userId: string): Promise<UserDto[]> {
         console.log()
         const users = this.userRepository
             .createQueryBuilder('user')
-            .where('user.email like :email', { email: `%${keyword}%` })
-            .orWhere('user.name like :name', { name: `%${keyword}%` })
+            .where(new Brackets(qb => {
+                qb.where('user.email like :email OR user.name like :name ', { email: `%${keyword}%`, name: `%${keyword}%`})
+            }))
+            // .orWhere('user.name like :name', { name: `%${keyword}%` })
+            .andWhere('user.id != :userId', { userId })
             .andWhere('user.verified = 1');
         const result = await users.getMany();
         return result.map((item) => item.toDto());

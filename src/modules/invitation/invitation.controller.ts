@@ -90,14 +90,18 @@ export class InvitationController {
     }
 
     @Post('type-email')
+    @UseGuards(AuthGuard)
+    @UseInterceptors(AuthUserInterceptor)
+    @ApiBearerAuth()
     @HttpCode(HttpStatus.OK)
     @ApiOkResponse({
         type: LoginPayloadDto,
         description: 'invitation type email',
     })
     async invitationEmail(
+      @AuthUser() user: UserEntity,
       @Body() listInVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
-        return this.invitationService.invitationTypeEmails(listInVitationTypeEmailDto);
+        return this.invitationService.invitationTypeEmails(user.name, listInVitationTypeEmailDto);
     }
 }

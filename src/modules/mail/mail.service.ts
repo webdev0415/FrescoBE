@@ -64,12 +64,10 @@ export class MailService {
         }
     }
 
-    async sendNotificationPeople(emails: string[], url_invite: string, message: string): Promise<any> {
+    async sendNotificationPeople(emails: string[], typeId: string, type: string, message: string, name: string): Promise<any> {
       try {
           const clientUrl = this.configService.get('CLIENT_URL');
-          const url = `${clientUrl}/${url_invite}`;
-          console.log('clientUrl', clientUrl)
-          console.log('url', url)
+          const url = `${clientUrl}/canvas/${typeId}/${type}`;
           return await this.getEmailClient().sendMultiple({
               to: emails,
               from: this.configService.get('EMAIL_FROM'),
