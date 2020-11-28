@@ -1423,13 +1423,13 @@
     lodash "4.17.20"
     path-to-regexp "3.2.0"
 
-"@nestjs/testing@^7.4.3":
-  version "7.4.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-7.4.3.tgz#2c612bb5ff9c2f93903977cb54a65814c734dcdf"
-  integrity sha512-RWV9ILA5wFQmnrV4PWdtddFC59s/qVGYnHiWoBgfICllmgW6TNnfzM0QSvn+geI45NmB8CNkmYT61ESrwdbBFA==
+"@nestjs/testing@^7.5.4":
+  version "7.5.5"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-7.5.5.tgz#510198af70e4d260907687ee7c9c98642ecfbb75"
+  integrity sha512-6CrDiwtFcMS4kjFFS1pm/0f00ji+32xOlKmojPaNLhmhPw39l5W/5R78iW9g6tFY/Qvm5zpbWz/FKaHxFJYOpQ==
   dependencies:
     optional "0.1.4"
-    tslib "2.0.1"
+    tslib "2.0.3"
 
 "@nestjs/typeorm@^7.1.1":
   version "7.1.1"
