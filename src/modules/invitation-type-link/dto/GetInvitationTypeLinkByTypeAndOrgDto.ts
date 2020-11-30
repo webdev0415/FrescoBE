@@ -8,6 +8,7 @@ import {PermissionEnum} from "../../../common/constants/permission";
 
 export class GetInvitationTypeLinkByTypeAndOrgDto {
     id: string;
+    token: string;
     orgId: string;
     createdUserId: string;
     permission: PermissionEnum;
