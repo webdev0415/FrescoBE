@@ -6,7 +6,7 @@
     "license": "MIT",
     "scripts": {
         "copy:templates": "cp -avr './src/templates/' 'dist/'",
-        "build:prod": "tsc -p tsconfig.build.json && npm run copy:templates",
+        "build:prod": "tsc -p tsconfig.build.json",
         "postbuild:prod": "copyfiles --up 1 src/**/*.json dist",
         "start:dev": "ts-node src/main.ts --inspect",
         "start:debug": "nest start --debug --watch",
