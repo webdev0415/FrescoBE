@@ -23,7 +23,6 @@ export class UploadImageService {
         uploadImageDto: CreateUploadImageDto,
         file: IFile,
     ): Promise<UploadImageEntity> {
-        // console.log(file);
         const uploadImageModel = new UploadImageEntity();
         uploadImageModel.type = uploadImageDto.type;
         uploadImageModel.createdAt = new Date();

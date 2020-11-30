@@ -5,6 +5,8 @@ import {
     Injectable,
     UnauthorizedException,
 } from '@nestjs/common';
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
+import { InvitationType } from '../../common/constants/invitation-type';
 
 import { PermissionEnum } from '../../common/constants/permission';
 import { InvitationNotValidException } from '../../exceptions/invitaion-not-found.exception';
@@ -14,10 +16,14 @@ import { MailService } from '../../modules/mail/mail.service';
 import { UserToOrgEntity } from '../../modules/user-org/user-org.entity';
 import { UserToOrgRepository } from '../user-org/user-org.repository';
 import { InvitationDto } from './dto/InvitationDto';
+import { InVitationTypeEmailDto } from './dto/InvitationTypeEmailDto';
 import { SendInvitationDto } from './dto/SendInvitationDto';
 import { VerifyTokenDto } from './dto/VerifyTokenDto';
 import { InvitationEntity } from './invitation.entity';
 import { InvitationRepository } from './invitation.repository';
+import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
+import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
 
 @Injectable()
 export class InvitationService {
@@ -26,6 +32,8 @@ export class InvitationService {
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly authService: AuthService,
         public readonly mailService: MailService, // public readonly userToOrgRepository: UserToOrgRepository
+        public readonly boardUserOrgRepository: BoardUserOrgRepository,
+        public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
     ) {}
 
     async checkPermission(fromUserId: string, orgId: string): Promise<boolean> {
@@ -56,28 +64,31 @@ export class InvitationService {
             throw new UnauthorizedException();
         }
 
-
         const isExisted = await this.invitationRepository.findOne({
             where: {
                 orgId: invitationDto.orgId,
-                toEmail: invitationDto.toEmail,verified:false
+                toEmail: invitationDto.toEmail,
+                verified: false,
             },
         });
 
         if (isExisted) {
+            await this.resendInvitation(isExisted.id);
 
-            await this.resendInvitation(isExisted.id)
-
-           // throw new ConflictException();
-            return  isExisted;
+            // throw new ConflictException();
+            return isExisted;
         }
 
-        let existingUser=await this.authService.getUserByEmail(invitationDto.toEmail);
+        let existingUser = await this.authService.getUserByEmail(
+            invitationDto.toEmail,
+        );
 
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId =existingUser? existingUser.id: invitationDto.toUserId;
+        invitationModel.toUserId = existingUser
+            ? existingUser.id
+            : invitationDto.toUserId;
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
         invitationModel.token = invitationDto.token;
@@ -107,16 +118,13 @@ export class InvitationService {
         return invitation;
     }
 
-    async resendInvitation(
-        id: string
-    ): Promise<InvitationEntity> {
+    async resendInvitation(id: string): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
                 id,
                 verified: false,
             },
         });
-
 
         invitation.verified = false;
 
@@ -142,11 +150,11 @@ export class InvitationService {
         return invitation;
     }
 
-    async checkValidToken(token: string,): Promise<InvitationEntity> {
+    async checkValidToken(token: string): Promise<InvitationEntity> {
         const invitation = await this.invitationRepository.findOne({
             where: {
-                token
-               // verified: false,
+                token,
+                // verified: false,
             },
             relations: ['userInvite'],
         });
@@ -182,5 +190,80 @@ export class InvitationService {
         });
 
         return new LoginPayloadDto(invitation.userInvite.toDto(), token);
+    }
+
+    async invitationTypeEmails(
+        name: string,
+        inVitationTypeEmailDto: InVitationTypeEmailDto,
+    ): Promise<void> {
+        const listEmailNotify = [];
+        let condition = null;
+        let repository = null;
+        let model = null;
+
+        for (const item of inVitationTypeEmailDto.invitationEmails) {
+            listEmailNotify.push(item.toEmail);
+            const userOrg = await this.userToOrgRepository.findOne({
+                where: {
+                    orgId: item.orgId,
+                    userId: item.toUserId,
+                },
+            });
+
+            if (!userOrg) {
+                const userToOrgModel = new UserToOrgEntity();
+                userToOrgModel.orgId = item.orgId;
+                userToOrgModel.userId = item.toUserId;
+                userToOrgModel.permission = item.permission;
+                await this.userToOrgRepository.save(userToOrgModel);
+            }
+
+            if (item.type === InvitationType.CANVAS) {
+                repository = this.canvasUserOrgRepository;
+                condition = `${item.type}_user_org.canvasId = :typeId`;
+                model = new CanvasUserOrgEntity();
+                model.canvasId = item.typeId;
+                model.orgId = item.orgId;
+                model.permission = item.permission;
+                model.userId = item.toUserId;
+            } else {
+                repository = this.boardUserOrgRepository;
+                condition = `${item.type}_user_org.boardId = :typeId`;
+                model = new BoardUserOrgEntity();
+                model.boardId = item.typeId;
+                model.orgId = item.orgId;
+                model.userId = item.toUserId;
+                model.permission = item.permission;
+            }
+
+            const type = await repository
+                .createQueryBuilder(`${item.type}_user_org`)
+                .where(condition, { typeId: item.typeId })
+                .andWhere(`${item.type}_user_org.orgId = :orgId`, {
+                    orgId: item.orgId,
+                })
+                .andWhere(`${item.type}_user_org.userId = :userId`, {
+                    userId: item.toUserId,
+                })
+                .getOne();
+
+            if (type) {
+                return;
+            }
+
+            await repository.save(model);
+        }
+
+        // inVitationTypeEmailDto.invitationEmails.forEach(async (item) => {});
+
+        if (listEmailNotify.length > 0) {
+            await this.mailService.sendNotificationPeople(
+                listEmailNotify,
+                inVitationTypeEmailDto.invitationEmails[0].typeId,
+                inVitationTypeEmailDto.invitationEmails[0].type,
+                inVitationTypeEmailDto.message,
+                name,
+            );
+        }
     }
 }

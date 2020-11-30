@@ -18,6 +18,7 @@ import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.se
 import { LoginPayloadDto } from '../../modules/auth/dto/LoginPayloadDto';
 import { UserEntity } from '../../modules/user/user.entity';
 import { InvitationDto } from './dto/InvitationDto';
+import { InVitationTypeEmailDto } from './dto/InvitationTypeEmailDto';
 import { SendInvitationDto } from './dto/SendInvitationDto';
 import { VerifyTokenDto } from './dto/VerifyTokenDto';
 import { InvitationService } from './invitation.service';
@@ -86,5 +87,21 @@ export class InvitationController {
         @Body() verifyTokenDto: VerifyTokenDto,
     ): Promise<LoginPayloadDto> {
         return this.invitationService.verify(verifyTokenDto);
+    }
+
+    @Post('type-email')
+    @UseGuards(AuthGuard)
+    @UseInterceptors(AuthUserInterceptor)
+    @ApiBearerAuth()
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        type: LoginPayloadDto,
+        description: 'invitation type email',
+    })
+    async invitationEmail(
+      @AuthUser() user: UserEntity,
+      @Body() listInVitationTypeEmailDto: InVitationTypeEmailDto,
+    ): Promise<void> {
+        return this.invitationService.invitationTypeEmails(user.name, listInVitationTypeEmailDto);
     }
 }

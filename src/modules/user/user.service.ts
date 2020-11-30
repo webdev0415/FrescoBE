@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
-import {FindConditions} from 'typeorm';
+import {Brackets, FindConditions} from 'typeorm';
 
 import {CreateUserInvitationDto} from '../../modules/auth/dto/CreateUserInvitationDto';
 import {UserLoginGoogleDto} from '../auth/dto/UserLoginGoogleDto';
@@ -87,12 +87,26 @@ export class UserService {
             .where('user.email like :email', { email: `%${email}%` })
             .andWhere('user.verified = 1');
 
-        if(userToOrgs && userToOrgs.length > 0){
+        if (userToOrgs && userToOrgs.length > 0) {
             emails.andWhere('user.id NOT IN (:userIds)', { userIds: userIds });
         }
 
         const result = await emails.getMany();
 
+        return result.map((item) => item.toDto());
+    }
+
+    async searchUserByKeyWord(keyword: string, userId: string): Promise<UserDto[]> {
+        console.log()
+        const users = this.userRepository
+            .createQueryBuilder('user')
+            .where(new Brackets(qb => {
+                qb.where('user.email like :email OR user.name like :name ', { email: `%${keyword}%`, name: `%${keyword}%`})
+            }))
+            // .orWhere('user.name like :name', { name: `%${keyword}%` })
+            .andWhere('user.id != :userId', { userId })
+            .andWhere('user.verified = 1');
+        const result = await users.getMany();
         return result.map((item) => item.toDto());
     }
 }
