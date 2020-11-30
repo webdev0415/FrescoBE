@@ -56,8 +56,15 @@ describe('OrganizationController', () => {
             let createOrganizationDto: CreateOrganizationDto = new CreateOrganizationDto();
             createOrganizationDto.name="test"
             let entity= new UserToOrgEntity()
-            entity.organization=new OrganizationEntity();
-            entity.organization.name="test"
+            const organizationEntity = new OrganizationEntity();
+            organizationEntity.fName="fname"
+            organizationEntity.lName="lName"
+            organizationEntity.boards=[]
+            organizationEntity.invitationTypeLinks=[]
+            organizationEntity.users=[]
+            organizationEntity.name="test"
+            entity.organization= organizationEntity;
+
             let orgToUserDto=new UserToOrgDto(entity);
             orgToUserDto.organizationName="test"
 

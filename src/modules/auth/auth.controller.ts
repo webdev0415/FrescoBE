@@ -117,6 +117,8 @@ export class AuthController {
         );
 
         if (isExists) {
+
+
             throw new ConflictException();
         }
 
