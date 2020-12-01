@@ -212,6 +212,7 @@ export class InvitationTypeLinkService {
         invitationTypeLinks.forEach((item) => {
             result.push({
                 id: item.id,
+                token: item.token,
                 orgId: item.orgId,
                 createdUserId: item.createdUserId,
                 permission: item.permission,
