@@ -15,6 +15,7 @@ import { BoardGatewayModule } from './gateway/board/board.gateway.module';
 import { contextMiddleware } from './middlewares';
 import { AuthModule } from './modules/auth/auth.module';
 import { BoardModule } from './modules/board/board.module';
+import { MessageModule } from './modules/message/message.module';
 import { CanvasModule } from './modules/canvas/canvas.module';
 import { CategoryModule } from './modules/category/category.module';
 import { DefaultTemplateModule } from './modules/default-template/default-template.module';
@@ -41,6 +42,7 @@ import { SharedModule } from './shared/shared.module';
         OrganizationModule,
         BoardGatewayModule,
         BoardModule,
+        MessageModule,
         DefaultTemplateModule,
         CanvasModule,
         UploadImageModule,
