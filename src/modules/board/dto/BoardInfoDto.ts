@@ -28,6 +28,10 @@ export class BoardInfoDto {
     @IsOptional()
     imageId: string;
 
+    @ApiPropertyOptional()
+    @IsOptional()
+    createdAt: Date;
+
     path: string;
     category: CategoryEntity;
 
