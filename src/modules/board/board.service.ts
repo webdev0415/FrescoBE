@@ -1,19 +1,24 @@
 /* eslint-disable complexity */
-import {Injectable, NotFoundException, UnauthorizedException,} from '@nestjs/common';
+import {
+    Injectable,
+    NotFoundException,
+    UnauthorizedException,
+} from '@nestjs/common';
+import { UserRepository } from '../../modules/user/user.repository';
 
-import {PermissionEnum} from '../../common/constants/permission';
-import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
-import {BoardUserOrgRepository} from '../../modules/board-user-org/board-user-org.repository';
-import {CategoryRepository} from '../../modules/category/category.repository';
-import {UploadImageRepository} from '../../modules/upload/upload-image.repository';
-import {UploadImageService} from '../../modules/upload/upload-image.service';
-import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
-import {BoardEntity} from './board.entity';
-import {BoardRepository} from './board.repository';
-import {BoardInfoDto} from './dto/BoardInfoDto';
-import {CreateBoardDto} from './dto/CreateBoardDto';
-import {DeleteBoardDto} from './dto/DeleteBoardDto';
-import {UpdateBoardDto} from './dto/UpdateBoardDto';
+import { PermissionEnum } from '../../common/constants/permission';
+import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
+import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
+import { CategoryRepository } from '../../modules/category/category.repository';
+import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
+import { UploadImageService } from '../../modules/upload/upload-image.service';
+import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
+import { BoardEntity } from './board.entity';
+import { BoardRepository } from './board.repository';
+import { BoardInfoDto } from './dto/BoardInfoDto';
+import { CreateBoardDto } from './dto/CreateBoardDto';
+import { DeleteBoardDto } from './dto/DeleteBoardDto';
+import { UpdateBoardDto } from './dto/UpdateBoardDto';
 
 @Injectable()
 export class BoardService {
@@ -22,6 +27,7 @@ export class BoardService {
         public readonly userToOrgRepository: UserToOrgRepository,
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
         public readonly uploadImageRepository: UploadImageRepository,
+        public readonly userRepository: UserRepository,
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageService: UploadImageService,
     ) {}
@@ -48,7 +54,7 @@ export class BoardService {
         // });
 
         if (!userToOrg) {
-            throw new UnauthorizedException("");
+            throw new UnauthorizedException('');
         }
         return userToOrg;
     }
@@ -109,6 +115,7 @@ export class BoardService {
             where: {
                 orgId,
             },
+            relations: ['boards'],
         });
 
         for (const board of boards) {
@@ -123,9 +130,16 @@ export class BoardService {
                 },
             });
 
+            const users = []
+            for (const item of board.boards) {
+              const user = await this.userRepository.findOne(item.userId);
+              users.push(user.toDto());
+            }
+
             const boardDto = board.toDto() as BoardInfoDto;
             boardDto.category = category?.toDto() || null;
             boardDto.path = image?.path || '';
+            boardDto.users = users;
             listBoardInfo.push(boardDto);
         }
         return listBoardInfo;
@@ -170,7 +184,7 @@ export class BoardService {
         boardDto.path = image?.path || '';
         boardDto.categoryId = createBoardDto.categoryId || '';
         boardDto.imageId = createBoardDto.imageId || '';
-        
+
         return boardDto;
     }
 
@@ -183,8 +197,12 @@ export class BoardService {
             throw new NotFoundException();
         }
 
-        if(userId !== board.createdUserId) {
-            await this.checkPermissionInBoard(userId, updateBoardDto.id, updateBoardDto.orgId)
+        if (userId !== board.createdUserId) {
+            await this.checkPermissionInBoard(
+                userId,
+                updateBoardDto.id,
+                updateBoardDto.orgId,
+            );
         }
 
         board.name = updateBoardDto.name || board.name;
@@ -212,7 +230,6 @@ export class BoardService {
     async delete({ boardId, userId, orgId }: DeleteBoardDto): Promise<void> {
         await this.isAdminOrEditor(userId, orgId);
         await this.boardUserOrgRepository.delete({
-            userId,
             boardId,
             orgId,
         });

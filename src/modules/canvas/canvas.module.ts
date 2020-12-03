@@ -1,5 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserRepository } from '../../modules/user/user.repository';
 import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
 
 import { CategoryRepository } from '../../modules/category/category.repository';
@@ -18,6 +19,7 @@ import { CanvasService } from './canvas.service';
             CategoryRepository,
             UploadImageRepository,
             CanvasUserOrgRepository,
+            UserRepository,
         ]),
         forwardRef(() => UploadImageModule),
     ],

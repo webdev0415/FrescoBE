@@ -6,6 +6,7 @@ import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { CategoryEntity } from '../../../modules/category/category.entity';
 import {CanvasUserOrgEntity} from "../../canvas-user-org/canvas-user-org.entity";
 import {BoardUserOrgEntity} from "../../board-user-org/board-user-org.entity";
+import { UserDto } from '../../../modules/user/dto/UserDto';
 
 export class BoardInfoDto {
     @ApiPropertyOptional()
@@ -36,4 +37,6 @@ export class BoardInfoDto {
     category: CategoryEntity;
 
     boards: BoardUserOrgEntity[];
+
+    users: UserDto[];
 }
