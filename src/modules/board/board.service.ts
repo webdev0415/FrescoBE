@@ -144,6 +144,8 @@ export class BoardService {
         boardModel.createdUserId = userId;
         boardModel.categoryId = createBoardDto.categoryId;
         boardModel.imageId = createBoardDto.imageId;
+        boardModel.createdAt = new Date();
+        boardModel.updatedAt = new Date();
 
         const image = await this.uploadImageService.getImageById(
             createBoardDto.imageId,
@@ -168,7 +170,7 @@ export class BoardService {
         boardDto.path = image?.path || '';
         boardDto.categoryId = createBoardDto.categoryId || '';
         boardDto.imageId = createBoardDto.imageId || '';
-
+        
         return boardDto;
     }
 
