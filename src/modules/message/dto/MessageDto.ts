@@ -3,6 +3,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 import { AbstractDto } from '../../../common/dto/AbstractDto';
+import { UserDto } from '../../user/dto/UserDto';
 import { MessageEntity } from '../message.entity';
 
 export class MessageDto extends AbstractDto {
@@ -10,14 +11,14 @@ export class MessageDto extends AbstractDto {
     boardId: string;
 
     @ApiProperty()
-    senderId: string;
+    sender: UserDto;
 
     @ApiPropertyOptional()
     message: string;
 
     constructor(messageEntity: MessageEntity) {
         super(messageEntity);
-        this.senderId = messageEntity.senderId;
+        this.sender = messageEntity.sender.toDto();
         this.boardId = messageEntity.boardId;
         this.message = messageEntity.message;
     }

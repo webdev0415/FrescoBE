@@ -5,8 +5,8 @@ import {
 } from '@nestjs/common';
 
 import { BoardUserOrgRepository } from '../board-user-org/board-user-org.repository';
+import { UserEntity } from '../user/user.entity';
 import { CreateMessageDto } from './dto/CreateMessageDto';
-import { DeleteMessageDto } from './dto/DeleteMessageDto';
 import { MessageDto } from './dto/MessageDto';
 import { MessageInfoDto } from './dto/MessageInfoDto';
 import { UpdateMessageDto } from './dto/UpdateMessageDto';
@@ -20,23 +20,39 @@ export class MessageService {
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
     ) {}
 
-    async find(boardId: string): Promise<MessageInfoDto[]> {
-        const messages = await this.messageRepository.find({
-            where: {
-                boardId,
-            },
-        });
+    async find(
+        boardId: string,
+        query: { limit: number; offset: number },
+    ): Promise<MessageInfoDto[]> {
+        const offset = query.offset ? query.offset : 0;
+        const limit = query.limit ? query.limit : 10;
+
+        const messages = await this.messageRepository
+            .createQueryBuilder('message')
+            .leftJoinAndSelect('message.sender', 'sender')
+            .where('message.boardId = :boardId', { boardId })
+            .offset(offset)
+            .limit(limit)
+            .orderBy('message.createdAt', 'DESC')
+            .getMany();
 
         return messages.map((m) => m.toDto());
     }
 
+    async getCount(boardId: string): Promise<number> {
+        return this.messageRepository
+            .createQueryBuilder()
+            .where('boardId = :boardId', { boardId })
+            .getCount();
+    }
+
     async create(
-        senderId: string,
+        sender: UserEntity,
         createMessageDto: CreateMessageDto,
     ): Promise<MessageDto> {
         const messageModel = new MessageEntity();
         messageModel.boardId = createMessageDto.boardId;
-        messageModel.senderId = senderId;
+        messageModel.sender = sender;
         messageModel.message = createMessageDto.message;
 
         const message = await this.messageRepository.save(messageModel);
@@ -45,16 +61,18 @@ export class MessageService {
     }
 
     async update(
-        userId: string,
+        sender: UserEntity,
         id: string,
         updateMessageDto: UpdateMessageDto,
     ): Promise<UpdateMessageDto> {
-        const message = await this.messageRepository.findOne(id);
+        const message = await this.messageRepository.findOne(id, {
+            relations: ['sender'],
+        });
 
         if (!message) {
             throw new NotFoundException();
         }
-        if (message.senderId !== userId) {
+        if (message.sender.id !== sender.id) {
             throw new UnauthorizedException();
         }
 
@@ -63,7 +81,19 @@ export class MessageService {
         return updatedMessage.toDto();
     }
 
-    async delete(id: string): Promise<void> {
+    async delete(id: string, sender: UserEntity): Promise<void> {
+        const message = await this.messageRepository.findOne(id, {
+            relations: ['sender'],
+        });
+
+        if (!message) {
+            throw new NotFoundException();
+        }
+
+        if (message.sender.id !== sender.id) {
+            throw new UnauthorizedException();
+        }
+
         await this.messageRepository.delete(id);
     }
 

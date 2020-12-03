@@ -3,6 +3,8 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
+import { UserDto } from '../../user/dto/UserDto';
+
 export class MessageInfoDto {
     @ApiPropertyOptional()
     @IsNotEmpty()
@@ -10,7 +12,7 @@ export class MessageInfoDto {
 
     @ApiPropertyOptional()
     @IsNotEmpty()
-    senderId: string;
+    sender: UserDto;
 
     @ApiPropertyOptional()
     @IsNotEmpty()

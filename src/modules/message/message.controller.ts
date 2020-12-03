@@ -3,13 +3,20 @@ import {
     Controller,
     Delete,
     Get,
+    HttpCode,
     Param,
     Post,
     Put,
+    Query,
     UseGuards,
     UseInterceptors,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+    ApiBearerAuth,
+    ApiNoContentResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger';
 
 import { AuthUser } from '../../decorators/auth-user.decorator';
 import { AuthGuard } from '../../guards/auth.guard';
@@ -18,10 +25,8 @@ import { AuthUserInterceptor } from '../../interceptors/auth-user-interceptor.se
 import { UserEntity } from '../user/user.entity';
 import { CreateMessageDto } from './dto/CreateMessageDto';
 import { MessageDto } from './dto/MessageDto';
-import { DeleteMessageDto } from './dto/DeleteMessageDto';
-import { UpdateMessageDto } from './dto/UpdateMessageDto';
 import { MessageInfoDto } from './dto/MessageInfoDto';
-import { MessageEntity } from './message.entity';
+import { UpdateMessageDto } from './dto/UpdateMessageDto';
 import { MessageService } from './message.service';
 
 @Controller('message')
@@ -40,9 +45,12 @@ export class MessageController {
     async find(
         @AuthUser() user: UserEntity,
         @Param('boardId') boardId: string,
-    ): Promise<MessageInfoDto[]> {
+        @Query() query: { limit: number; offset: number },
+    ): Promise<{ count: number; messages: MessageInfoDto[] }> {
         await this.messageService.checkPermission(user.id, boardId);
-        return this.messageService.find(boardId);
+        const messages = await this.messageService.find(boardId, query);
+        const count = await this.messageService.getCount(boardId);
+        return { messages, count };
     }
 
     @Post('')
@@ -54,7 +62,7 @@ export class MessageController {
         @AuthUser() user: UserEntity,
         @Body() createMessageDto: CreateMessageDto,
     ): Promise<MessageDto> {
-        return this.messageService.create(user.id, createMessageDto);
+        return this.messageService.create(user, createMessageDto);
     }
 
     @Put(':id')
@@ -67,18 +75,19 @@ export class MessageController {
         @Param('id') id: string,
         @Body() updateMessageDto: UpdateMessageDto,
     ): Promise<UpdateMessageDto> {
-        return this.messageService.update(user.id, id, updateMessageDto);
+        return this.messageService.update(user, id, updateMessageDto);
     }
 
     @Delete(':id')
-    @ApiOkResponse({
+    @ApiNoContentResponse({
         type: MessageDto,
         description: 'delete message',
     })
+    @HttpCode(204)
     async delete(
         @AuthUser() user: UserEntity,
         @Param('id') id: string,
     ): Promise<void> {
-        await this.messageService.delete(id);
+        await this.messageService.delete(id, user);
     }
 }
