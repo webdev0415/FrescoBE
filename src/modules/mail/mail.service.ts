@@ -64,25 +64,31 @@ export class MailService {
         }
     }
 
-    async sendNotificationPeople(emails: string[], typeId: string, type: string, message: string, name: string): Promise<any> {
-      try {
-          const clientUrl = this.configService.get('CLIENT_URL');
-          const url = `${clientUrl}/canvas/${typeId}/${type}`;
-          return await this.getEmailClient().sendMultiple({
-              to: emails,
-              from: this.configService.get('EMAIL_FROM'),
-              templateId: Templates.INVITATION_TEMPLATE_ID,
-              dynamicTemplateData: {
-                  url,
-                  organization: message,
-              },
-          });
-      } catch (error) {
-          this._logger.error(
-              `Failed to send Notify email to ${emails}`,
-              error.stack,
-          );
-          throw error;
-      }
-  }
+    async sendNotificationPeople(
+        emails: string[],
+        typeId: string,
+        type: string,
+        message: string,
+        name: string,
+    ): Promise<any> {
+        try {
+            const clientUrl = this.configService.get('CLIENT_URL');
+            const url = `${clientUrl}/canvas/${typeId}/${type}`;
+            return await this.getEmailClient().sendMultiple({
+                to: emails,
+                from: this.configService.get('EMAIL_FROM'),
+                templateId: Templates.INVITATION_TEMPLATE_ID,
+                dynamicTemplateData: {
+                    url,
+                    organization: message,
+                },
+            });
+        } catch (error) {
+            this._logger.error(
+                `Failed to send Notify email to ${emails}`,
+                error.stack,
+            );
+            throw error;
+        }
+    }
 }

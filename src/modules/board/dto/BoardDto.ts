@@ -24,6 +24,9 @@ export class BoardDto extends AbstractDto {
     @ApiPropertyOptional()
     imageId: string;
 
+    @ApiPropertyOptional()
+    createdAt: Date;
+
     constructor(board: BoardEntity) {
         super(board);
         this.name = board.name;
@@ -32,5 +35,6 @@ export class BoardDto extends AbstractDto {
         this.data = board.data;
         this.categoryId = board.categoryId;
         this.imageId = board.imageId;
+        this.createdAt = board.createdAt;
     }
 }
