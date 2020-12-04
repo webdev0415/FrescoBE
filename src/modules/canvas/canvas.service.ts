@@ -17,6 +17,8 @@ import { CanvasInfoDto } from './dto/CanvasInfoDto';
 import { CreateCanvasDto } from './dto/CreateCanvasDto';
 import { DeleteCanvasDto } from './dto/DeleteCanvasDto';
 import { UpdateCanvasDto } from './dto/UpdateCanvasDto';
+import { UserRepository } from '../../modules/user/user.repository';
+import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
 
 @Injectable()
 export class CanvasService {
@@ -26,7 +28,8 @@ export class CanvasService {
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageRepository: UploadImageRepository,
         public readonly uploadImageService: UploadImageService,
-        public readonly canvasUserOrgRepository: CanvasUserOrgRepository
+        public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
+        public readonly userRepository: UserRepository,
     ) {}
 
     async isAdminOrEditor(userId: string, orgId: string) {
@@ -85,7 +88,6 @@ export class CanvasService {
                 id: canvas.imageId,
             },
         });
-
         const canvasDto = canvas.toDto() as CanvasInfoDto;
         canvasDto.category = category?.toDto() || null;
         canvasDto.path = image?.path || '';
@@ -98,6 +100,7 @@ export class CanvasService {
             where: {
                 orgId,
             },
+            relations: ['canvases'],
         });
         for (const canvas of canvases) {
             const category = await this.categoryRepository.findOne({
@@ -111,9 +114,15 @@ export class CanvasService {
                 },
             });
 
+            const users = []
+            for (const item of canvas.canvases) {
+              const user = await this.userRepository.findOne(item.userId);
+              users.push(user.toDto());
+            }
             const canvasDto = canvas.toDto() as CanvasInfoDto;
             canvasDto.category = category?.toDto() || null;
             canvasDto.path = image?.path || '';
+            canvasDto.users = users;
             listCanvasInfo.push(canvasDto);
         }
         return listCanvasInfo;
@@ -131,12 +140,19 @@ export class CanvasService {
         canvasModel.data = createCanvasDto.data || '';
         canvasModel.categoryId = createCanvasDto.categoryId;
         canvasModel.imageId = createCanvasDto.imageId;
-
+        canvasModel.createdAt = new Date();
+        canvasModel.updatedAt = new Date();
         const image = await this.uploadImageService.getImageById(
             createCanvasDto.imageId,
         );
 
         const canvasCreated = await this.canvasRepository.save(canvasModel);
+
+        const canvasUserOrgModel = new CanvasUserOrgEntity();
+        canvasUserOrgModel.canvasId = canvasCreated.id;
+        canvasUserOrgModel.orgId = canvasCreated.orgId;
+        canvasUserOrgModel.userId = canvasCreated.createdUserId;
+        await this.canvasUserOrgRepository.save(canvasUserOrgModel);
 
         const canvasCreatedDto = canvasCreated.toDto() as CreateCanvasDto;
         // canvasCreatedDto.image = image.toDto();
@@ -178,6 +194,10 @@ export class CanvasService {
         { canvasId, orgId }: DeleteCanvasDto,
     ): Promise<void> {
         await this.isAdminOrEditor(userId, orgId);
+        await this.canvasUserOrgRepository.delete({
+            canvasId,
+            orgId,
+        })
         await this.canvasRepository.delete(canvasId);
     }
 }
