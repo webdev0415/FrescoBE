@@ -1,4 +1,4 @@
-import {UseFilters} from '@nestjs/common';
+import { UseFilters } from '@nestjs/common';
 import {
     ConnectedSocket,
     MessageBody,
@@ -6,12 +6,13 @@ import {
     OnGatewayDisconnect,
     SubscribeMessage,
     WebSocketGateway,
-    WebSocketServer
+    WebSocketServer,
 } from '@nestjs/websockets';
-import {Server, Socket} from 'socket.io';
-import {BoardEventEnum} from '../../common/constants/board-event';
-import {WsExceptionFilter} from '../../common/filters/ws-exception.filter';
-import {BoardEventDto} from './dto/board-event.dto';
+import { Server, Socket } from 'socket.io';
+
+import { BoardEventEnum } from '../../common/constants/board-event';
+import { WsExceptionFilter } from '../../common/filters/ws-exception.filter';
+import { BoardEventDto } from './dto/board-event.dto';
 
 // @UseGuards(SocketGuard)
 @UseFilters(new WsExceptionFilter())
@@ -21,44 +22,68 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     server: Server;
 
     @SubscribeMessage(BoardEventEnum.CREATE)
-    create(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+    create(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): void {
         this.boardcastToBoardId(client, BoardEventEnum.CREATE, data);
     }
 
     @SubscribeMessage(BoardEventEnum.JOIN_BOARD)
-    joinBoard(@ConnectedSocket() client: Socket, @MessageBody() boardId: string): void {
+    joinBoard(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() boardId: string,
+    ): void {
         client.join(boardId);
         client.emit(BoardEventEnum.JOIN_BOARD, boardId);
     }
 
     @SubscribeMessage(BoardEventEnum.LEAVE_BOARD)
-    leaveBoard(@ConnectedSocket() client: Socket, @MessageBody() boardId: string): void {
+    leaveBoard(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() boardId: string,
+    ): void {
         client.leave(boardId);
         client.emit(BoardEventEnum.LEAVE_BOARD, boardId);
     }
 
     @SubscribeMessage(BoardEventEnum.UPDATE)
-    update(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+    update(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): void {
         this.boardcastToBoardId(client, BoardEventEnum.UPDATE, data);
     }
 
     @SubscribeMessage(BoardEventEnum.MOVE)
-    move(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): void {
+    move(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): void {
         this.boardcastToBoardId(client, BoardEventEnum.MOVE, data);
     }
 
     @SubscribeMessage(BoardEventEnum.DELETE)
-    delete(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+    delete(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): any {
         this.boardcastToBoardId(client, BoardEventEnum.DELETE, data);
     }
 
     @SubscribeMessage(BoardEventEnum.UNLOCK)
-    unlock(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+    unlock(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): any {
         this.boardcastToBoardId(client, BoardEventEnum.UNLOCK, data);
     }
 
     @SubscribeMessage(BoardEventEnum.LOCK)
-    lock(@ConnectedSocket() client: Socket, @MessageBody() data: BoardEventDto): any {
+    lock(
+        @ConnectedSocket() client: Socket,
+        @MessageBody() data: BoardEventDto,
+    ): any {
         this.boardcastToBoardId(client, BoardEventEnum.LOCK, data);
     }
 
@@ -71,6 +96,10 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     boardcastToBoardId(socket: Socket, eventName: string, data: BoardEventDto) {
-        socket.broadcast.to(data.boardId).emit(eventName, data.data);
+        if (socket) {
+            socket.broadcast.to(data.boardId).emit(eventName, data.data);
+        } else {
+            this.server.to(data.boardId).emit(eventName, data.data);
+        }
     }
 }

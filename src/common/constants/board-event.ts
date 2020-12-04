@@ -8,3 +8,9 @@ export enum BoardEventEnum {
   JOIN_BOARD = 'joinBoard',
   LEAVE_BOARD = 'leaveBoard',
 }
+
+export enum BoardMessageEventEnum {
+    CREATE_MESSAGE = 'createMessage',
+    UPDATE_MESSAGE = 'updateMessage',
+    DELETE_MESSAGE = 'deleteMessage',
+}
