@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { MessageController } from './message.controller';
+import { BoardGateway } from '../../gateway/board/board.gateway';
 import { BoardUserOrgRepository } from '../board-user-org/board-user-org.repository';
+import { MessageController } from './message.controller';
 import { MessageRepository } from './message.repository';
 import { MessageService } from './message.service';
 
@@ -11,7 +12,7 @@ import { MessageService } from './message.service';
         TypeOrmModule.forFeature([MessageRepository, BoardUserOrgRepository]),
     ],
     controllers: [MessageController],
-    providers: [MessageService],
-    exports: [MessageService],
+    providers: [MessageService, BoardGateway],
+    exports: [MessageService, BoardGateway],
 })
 export class MessageModule {}
