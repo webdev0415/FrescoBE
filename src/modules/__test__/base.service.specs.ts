@@ -27,6 +27,15 @@ export const mockMailService = () => ({
 
 });
 
+export const mockMessageService = () => ({
+    find: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    checkPermission: jest.fn(),
+    getCount: jest.fn(),
+});
+
 export const mockValidatorService = () => ({
 
     isImage: jest.fn(),
