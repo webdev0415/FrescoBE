@@ -36,7 +36,7 @@ export class MessageService {
             .where('message.boardId = :boardId', { boardId })
             .offset(offset)
             .limit(limit)
-            .orderBy('message.createdAt', 'ASC')
+            .orderBy('message.createdAt', 'DESC')
             .getMany();
 
         return messages.map((m) => m.toDto());
