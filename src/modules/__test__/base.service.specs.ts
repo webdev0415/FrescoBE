@@ -27,6 +27,15 @@ export const mockMailService = () => ({
 
 });
 
+export const mockDefaultTemplateService = () => ({
+
+    get: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+});
+
+
 export const mockMessageService = () => ({
     find: jest.fn(),
     create: jest.fn(),
@@ -81,11 +90,4 @@ export const mockOrganizationService = () => ({
     create: jest.fn(),
     getOrganizationByUserId: jest.fn(),
     getOrganizationByUserAndOrgId: jest.fn(),
-});
-export const mockDefaultTemplateService = () => ({
-
-    get: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn(),
 });

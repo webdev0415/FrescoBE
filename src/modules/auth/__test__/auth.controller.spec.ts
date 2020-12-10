@@ -69,10 +69,10 @@ describe('AuthController', () => {
             providers: [
                 AuthController,
                 ConfigService,
+                { provide: InvitationService, useFactory: mockInvitationService },
                 { provide: UserService, useFactory: mockUserService },
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
-                { provide: InvitationService, useFactory: mockInvitationService },
                //  { provide: Cache, useFactory: mockCache },
             ],
         }).compile();

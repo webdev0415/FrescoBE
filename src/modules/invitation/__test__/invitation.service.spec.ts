@@ -5,6 +5,7 @@ import {UploadImageService} from "../../upload/upload-image.service";
 
 import {UnauthorizedException} from "@nestjs/common";
 import {
+    mockBoardUserOrgRepository, mockCanvasUserOrgRepository,
     mockCategoryRepository,
     mockInvitationRepository,
     mockUserToOrgRepository
@@ -23,6 +24,8 @@ import {InvitationNotValidException} from "../../../exceptions/invitaion-not-fou
 import {VerifyTokenDto} from "../dto/VerifyTokenDto";
 import {LoginPayloadDto} from "../../auth/dto/LoginPayloadDto";
 import {mockAuthService, mockMailService, mockUploadImageService} from "../../__test__/base.service.specs";
+import {BoardUserOrgRepository} from "../../board-user-org/board-user-org.repository";
+import {CanvasUserOrgRepository} from "../../canvas-user-org/canvas-user-org.repository";
 
 
 describe('Invitation Service', () => {
@@ -44,6 +47,9 @@ describe('Invitation Service', () => {
                 {provide: UserToOrgRepository, useFactory: mockUserToOrgRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: AuthService, useFactory: mockAuthService},
+                {provide: MailService, useFactory: mockMailService},
+                {provide: BoardUserOrgRepository, useFactory: mockBoardUserOrgRepository},
+                {provide: CanvasUserOrgRepository, useFactory: mockCanvasUserOrgRepository},
                 {provide: MailService, useFactory: mockMailService},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
                 InvitationService

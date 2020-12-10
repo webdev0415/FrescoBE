@@ -24,8 +24,8 @@ describe('CategoryController', () => {
             ],
         }).compile();
 
-        categoryController = module.get<CategoryController>(CategoryController);
         categoryService = module.get<CategoryService>(CategoryService);
+        categoryController = module.get<CategoryController>(CategoryController);
 
     });
 

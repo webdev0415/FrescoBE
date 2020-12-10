@@ -25,6 +25,7 @@ export const mockCategoryRepository = () => ({
 export const mockBoardRepository = mockCategoryRepository
 
 export const mockUserToOrgRepository = mockCategoryRepository
+export const MockUserRepository = mockCategoryRepository
 
 export const mockBoardUserOrgRepository = mockCategoryRepository
 

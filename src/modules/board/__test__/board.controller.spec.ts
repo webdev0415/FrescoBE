@@ -20,8 +20,9 @@ describe('BoardController', () => {
         const module = await Test.createTestingModule({
 
             providers: [
-                BoardController,
+
                 { provide: BoardService, useFactory: mockBoardService },
+                BoardController,
             ],
         }).compile();
 

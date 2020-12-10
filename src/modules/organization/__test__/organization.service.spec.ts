@@ -25,9 +25,9 @@ describe('Organization Service', () => {
                 OrganizationService
             ],
         }).compile();
+        organizationService = module.get<OrganizationService>(OrganizationService);
         userToOrgRepository = module.get<UserToOrgRepository>(UserToOrgRepository);
         organizationRepository = module.get<OrganizationRepository>(OrganizationRepository);
-        organizationService = module.get<OrganizationService>(OrganizationService);
     });
 
 

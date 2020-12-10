@@ -30,8 +30,9 @@ describe('OrganizationController', () => {
             ],
         }).compile();
 
-        organizationController = module.get<OrganizationController>(OrganizationController);
         organizationService = module.get<OrganizationService>(OrganizationService);
+
+        organizationController = module.get<OrganizationController>(OrganizationController);
 
     });
     describe('get list Organization ', () => {

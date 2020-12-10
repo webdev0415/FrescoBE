@@ -1,3 +1,5 @@
+
+
 'use strict';
 
 import {ApiPropertyOptional} from '@nestjs/swagger';
@@ -24,8 +26,8 @@ export class CanvasDto extends AbstractDto {
     @ApiPropertyOptional()
     categoryId: string;
 
-    @ApiPropertyOptional()    
-    createdAt: Date;
+    @ApiPropertyOptional()
+    createdAt?: Date;
 
     constructor(canvasEntity: CanvasEntity) {
         super(canvasEntity);

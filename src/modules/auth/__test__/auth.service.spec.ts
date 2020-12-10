@@ -64,10 +64,10 @@ describe('AuthService', () => {
         const module = await Test.createTestingModule({
             providers: [
                 AuthService,
-                {provide: JwtService, useFactory: mockJwtService},
-                {provide: ConfigService, useFactory: mockConfigService},
                 {provide: UserService, useFactory: mockUserService},
                 {provide: UtilsService, useFactory: mockUtilsService},
+                {provide: JwtService, useFactory: mockJwtService},
+                {provide: ConfigService, useFactory: mockConfigService},
             ],
         }).compile();
 
