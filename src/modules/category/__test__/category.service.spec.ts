@@ -13,7 +13,7 @@ import {
     mockBoardRepository,
     mockBoardUserOrgRepository,
     mockCategoryRepository,
-    mockUploadImageRepository,
+    mockUploadImageRepository, MockUserRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
 import {mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
@@ -23,6 +23,7 @@ import {CreateCategoryDto} from "../dto/CreateCategoryDto";
 import {UpdateCategoryDto} from "../dto/UpdateCategoryDto";
 import {DeleteCategoryDto} from "../dto/DeleteCategoryDto";
 import {globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
+import {UserRepository} from "../../user/user.repository";
 
 
 export const mockCreateCategoryDto:CreateCategoryDto={
@@ -50,8 +51,9 @@ describe('CategoryService', () => {
                 {provide: UploadImageRepository, useFactory: mockUploadImageRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
+                {provide: UserRepository, useFactory: MockUserRepository},
 
-                 BoardService,CategoryService
+                BoardService,CategoryService
             ],
         }).compile();
 
