@@ -29,6 +29,7 @@ import {UpdateCanvasDto} from "../dto/UpdateCanvasDto";
 import {dateValue, globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 import {CanvasUserOrgRepository} from "../../canvas-user-org/canvas-user-org.repository";
 import {UserRepository} from "../../user/user.repository";
+import {userEntity} from "../../auth/__test__/auth.controller.spec";
 
 export const mockCanvasEntity: CanvasEntity = {
     id: "id",
@@ -48,7 +49,7 @@ export const mockCanvasEntity: CanvasEntity = {
     imageId: "image",
     orgId: "org",
     updatedAt: dateValue,
-    dtoClass: BoardDto
+    dtoClass: BoardDto,canvases:[{userId:""} as any]
 
 }
 export const mockCreateCanvasDto:CreateCanvasDto={
@@ -68,6 +69,7 @@ describe('CanvasService', () => {
     let categoryRepository;
     let uploadImageService;
     let canvasRepository;
+    let userRepository;
     let boardService: BoardService;
     let canvasService: CanvasService;
     beforeEach(async () => {
@@ -96,6 +98,7 @@ describe('CanvasService', () => {
         canvasRepository = module.get<CanvasRepository>(CanvasRepository);
         boardService = module.get<BoardService>(BoardService);
         canvasService = module.get<CanvasService>(CanvasService);
+        userRepository = module.get<UserRepository>(UserRepository);
     });
 
     describe('isAdminOrEditor', () => {
@@ -173,6 +176,7 @@ describe('CanvasService', () => {
             canvasRepository.find.mockReturnValue([mockCanvasEntity]);
             categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
+            userRepository.findOne.mockReturnValue(userEntity);
 
             const result = await canvasService.getByOrgId("id")
 

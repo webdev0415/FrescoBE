@@ -17,6 +17,9 @@ import {UploadImageEntity} from "../../upload/upload-image.entity";
 import {CategoryDto} from "../../category/dto/CategoryDto";
 import {UploadImageDto} from "../../upload/dto/UploadImageDto";
 import {BoardDto} from "../dto/BoardDto";
+import {UserRepository} from "../../user/user.repository";
+import {MockUserRepository} from "../../__test__/base.repository.spec";
+import {userEntity} from "../../auth/__test__/auth.controller.spec";
 
 
 export const mockCreateBoard: CreateBoardDto = {
@@ -90,7 +93,7 @@ export const mockBoardEntity: BoardEntity = {
     imageId: "image",
     orgId: "org",
     updatedAt: dateValue,
-    dtoClass: BoardDto
+    dtoClass: BoardDto,boards:[{userId:""} as any]
 
 }
 
@@ -135,6 +138,7 @@ describe('BoardService', () => {
     let uploadImageRepository;
     let categoryRepository;
     let uploadImageService;
+    let userRepository;
     let boardService: BoardService;
     beforeEach(async () => {
         UtilsService.validateHash = jest.fn().mockResolvedValue(true);
@@ -147,6 +151,8 @@ describe('BoardService', () => {
                 {provide: UploadImageRepository, useFactory: mockUploadImageRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
+                {provide: UserRepository, useFactory: MockUserRepository},
+
                 // { provide: BoardService, useFactory: mockBoardService },
                 BoardService
             ],
@@ -159,6 +165,7 @@ describe('BoardService', () => {
         uploadImageRepository = module.get<UploadImageRepository>(UploadImageRepository);
         categoryRepository = module.get<CategoryRepository>(CategoryRepository);
         uploadImageService = module.get<UploadImageService>(UploadImageService);
+        userRepository = module.get<UserRepository>(UserRepository);
         boardService = module.get<BoardService>(BoardService);
     });
 
@@ -233,6 +240,7 @@ describe('BoardService', () => {
             boardRepository.find.mockReturnValue([mockBoardEntity]);
             categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
+            userRepository.findOne.mockReturnValue(userEntity);
 
             const result = await boardService.getByOrgId("id")
 
