@@ -116,8 +116,8 @@ export class CanvasService {
 
             const users = []
             for (const item of canvas.canvases) {
-              const user = await this.userRepository.findOne(item.userId);
-              users.push(user.toDto());
+                const user = await this.userRepository.findOne(item.userId);
+                users.push(user.toDto());
             }
             const canvasDto = canvas.toDto() as CanvasInfoDto;
             canvasDto.category = category?.toDto() || null;
@@ -171,9 +171,9 @@ export class CanvasService {
             throw new NotFoundException();
         }
         if(userId !== canvas.createdUserId) {
-          await this.checkPermissionInBoard(userId, updateCanvasDto.id, updateCanvasDto.orgId)
+            await this.checkPermissionInBoard(userId, updateCanvasDto.id, updateCanvasDto.orgId)
         }
-        
+
         canvas.name = updateCanvasDto.name || canvas.name;
         canvas.data = updateCanvasDto.data || canvas.data;
         canvas.categoryId = updateCanvasDto.categoryId || canvas.categoryId;

@@ -29,8 +29,8 @@ describe('CanvasController', () => {
             ],
         }).compile();
 
-        canvasController = module.get<CanvasController>(CanvasController);
         canvasService = module.get<CanvasService>(CanvasService);
+        canvasController = module.get<CanvasController>(CanvasController);
 
     });
 
