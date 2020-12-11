@@ -95,24 +95,24 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
         this.boardcastToBoardId(client, BoardEventEnum.LOCK, data);
     }
 
-    async handleConnection(client: Socket) {
-        try {
-            const token: string = client.handshake?.query?.token;
-            if (!token) {
-                throw new WsException('Missing token');
-            }
-            const decoded = jwt.verify(
-                token,
-                this._configService.get('JWT_SECRET_KEY'),
-            ) as any;
-
-            const user = await this._userService.findOne(decoded.id);
-            if (!user) {
-                throw new WsException('Token not valid');
-            }
-        } catch (err) {
-            throw new WsException(err.message);
-        }
+    handleConnection() {
+        // try {
+        //     const token: string = client.handshake?.query?.token;
+        //     if (!token) {
+        //         throw new WsException('Missing token');
+        //     }
+        //     const decoded = jwt.verify(
+        //         token,
+        //         this._configService.get('JWT_SECRET_KEY'),
+        //     ) as any;
+        //
+        //     const user = await this._userService.findOne(decoded.id);
+        //     if (!user) {
+        //         throw new WsException('Token not valid');
+        //     }
+        // } catch (err) {
+        //     throw new WsException(err.message);
+        // }
         console.log('connected');
     }
 
