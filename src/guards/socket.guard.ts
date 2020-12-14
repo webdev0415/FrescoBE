@@ -17,7 +17,7 @@ export class SocketGuard implements CanActivate {
         try {
             const client = context.switchToWs().getClient<Socket>();
             const token: string = client.handshake?.query?.token;
-            if (token || token === undefined) {
+            if (!token) {
                 throw new WsException('Missing token');
             }
             const decoded = jwt.verify(
