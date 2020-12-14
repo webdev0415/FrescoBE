@@ -29,7 +29,7 @@ export class BoardController {
         description: 'get list board by orgId',
     })
     async getById(@Param('id') id: string): Promise<BoardInfoDto> {
-        const board = await this.boardService.getById(id);
+        const board = await this.boardService.getById(id)
         return board;
     }
 

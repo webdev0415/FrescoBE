@@ -36,7 +36,12 @@ export class BoardInfoDto {
     path: string;
     category: CategoryEntity;
 
+
+    @ApiPropertyOptional({type:BoardUserOrgEntity,isArray:true})
+
     boards: BoardUserOrgEntity[];
 
+
+    @ApiPropertyOptional({type:UserDto,isArray:true})
     users: UserDto[];
 }
