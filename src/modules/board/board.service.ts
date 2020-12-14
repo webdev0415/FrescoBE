@@ -86,7 +86,9 @@ export class BoardService {
             where: {
                 id,
             },
+            relations:["boards"]
         });
+
 
         if (!board) {
             throw new NotFoundException();
@@ -103,9 +105,16 @@ export class BoardService {
             },
         });
 
+        const users = []
+        for (const item of board.boards) {
+            const user = await this.userRepository.findOne(item.userId);
+            users.push(user.toDto());
+        }
         const boardDto = board.toDto() as BoardInfoDto;
         boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
+        boardDto.users=users
+
         return boardDto;
     }
 
