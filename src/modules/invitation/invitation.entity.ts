@@ -16,6 +16,10 @@ export class InvitationEntity extends AbstractEntity<InvitationDto> {
     @Column({ nullable: false, name: 'fromUserId' })
     fromUserId: string;
 
+    @Column({ nullable: true, name: 'board' })
+    board?: string;
+
+
     @Column({ name: 'toUserId' })
     toUserId: string;
 

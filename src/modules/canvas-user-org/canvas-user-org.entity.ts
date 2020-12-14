@@ -15,8 +15,11 @@ export class CanvasUserOrgEntity extends AbstractEntity<CanvasUserOrgDto> {
     @Column({ name: 'orgId' })
     orgId: string;
 
-    @Column({ name: 'userId' })
+    @Column({nullable:true,  name: 'userId' })
     userId: string;
+
+    @Column({ name: 'email' })
+    email: string;
 
     @Column({
         type: 'enum',

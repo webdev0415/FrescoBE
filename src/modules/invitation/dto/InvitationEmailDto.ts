@@ -1,5 +1,5 @@
 import { ApiProperty} from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty,  IsString } from 'class-validator';
+import {IsEnum, IsNotEmpty, IsOptional, IsString} from 'class-validator';
 import { InvitationType } from '../../../common/constants/invitation-type';
 import { PermissionEnum } from '../../../common/constants/permission';
 
@@ -9,10 +9,10 @@ export class InVitationEmailDto {
     @ApiProperty()
     orgId: string;
 
-    @IsString()
-    @IsNotEmpty({ message: 'toUserId is required' })
-    @ApiProperty()
-    toUserId: string;
+    // @IsString()
+    // @IsOptional({ message: 'toUserId is optional' })
+    // @ApiProperty()
+    // toUserId: string;
 
     @IsString()
     @IsNotEmpty({ message: 'toEmail is required' })
