@@ -19,6 +19,11 @@ export class InvitationEntity extends AbstractEntity<InvitationDto> {
     @Column({ nullable: true, name: 'board' })
     board?: string;
 
+    @Column({
+        type: 'enum',
+        enum: PermissionEnum,
+    })
+    public boardPermission: PermissionEnum;
 
     @Column({ name: 'toUserId' })
     toUserId: string;
@@ -39,7 +44,7 @@ export class InvitationEntity extends AbstractEntity<InvitationDto> {
     public permission: PermissionEnum;
 
     @OneToOne((user) => UserEntity)
-    @JoinColumn({ name: 'fromUserId' })
+    @JoinColumn({ name: 'fromUserId',referencedColumnName:"email" })
     fromUser?: UserEntity;
 
     @OneToOne((user) => UserEntity)

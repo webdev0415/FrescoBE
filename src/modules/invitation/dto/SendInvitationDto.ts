@@ -1,9 +1,9 @@
 'use strict';
 
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import {ApiPropertyOptional} from '@nestjs/swagger';
+import {IsEnum, IsNotEmpty, IsOptional, IsString} from 'class-validator';
 
-import { PermissionEnum } from '../../../common/constants/permission';
+import {PermissionEnum} from '../../../common/constants/permission';
 
 export class SendInvitationDto {
     @IsString()
@@ -11,24 +11,32 @@ export class SendInvitationDto {
     @ApiPropertyOptional()
     orgId: string;
 
+
     @IsString()
-    @ApiProperty()
-    toUserId: string;
+    @IsNotEmpty()
+    @IsOptional()
+    @ApiPropertyOptional()
+    boardId: string;
+
+
+    // @IsString()
+    // @ApiProperty()
+    // toUserId: string;
 
     @IsString()
     @IsNotEmpty()
     @ApiPropertyOptional()
     toEmail: string;
-
-    @IsString()
-    @ApiPropertyOptional()
-    token: string;
+    //
+    // @IsString()
+    // @ApiPropertyOptional()
+    // token: string;
 
     @IsEnum(PermissionEnum)
     @ApiPropertyOptional()
     permission: PermissionEnum;
-
-    name?: string;
-
-    organizationName?: string;
+    //
+    // name?: string;
+    //
+    // organizationName?: string;
 }

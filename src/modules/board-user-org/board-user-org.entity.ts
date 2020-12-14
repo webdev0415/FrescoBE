@@ -28,6 +28,8 @@ export class BoardUserOrgEntity extends AbstractEntity<BoardUserOrgDto> {
     })
     public permission: PermissionEnum;
 
+
+
     @ManyToOne(() => BoardEntity, (boardEntity) => boardEntity.boards)
     @JoinColumn({ name: 'boardId' })
     public board!: BoardEntity;

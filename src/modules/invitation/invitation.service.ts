@@ -20,6 +20,7 @@ import {CanvasUserOrgRepository} from '../../modules/canvas-user-org/canvas-user
 import {CanvasUserOrgEntity} from '../../modules/canvas-user-org/canvas-user-org.entity';
 import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
 import {UserRepository} from "../user/user.repository";
+import {v4 as uuidv4} from 'uuid';
 
 @Injectable()
 export class InvitationService {
@@ -84,12 +85,11 @@ export class InvitationService {
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId = existingUser
-            ? existingUser.id
-            : invitationDto.toUserId;
+        invitationModel.toUserId = existingUser.id
+        invitationModel.board = invitationDto.boardId
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
-        invitationModel.token = invitationDto.token;
+        invitationModel.token = uuidv4();
         invitationModel.verified = false;
 
         const invitation = await this.invitationRepository.save(
@@ -111,7 +111,7 @@ export class InvitationService {
                 email: invitationOrg.toEmail,
                 organizationName: invitationOrg.organization?.name,
             },
-            invitationDto.token,
+            invitationModel.token,
         );
         return invitation;
     }
@@ -183,6 +183,15 @@ export class InvitationService {
         verifyTokenDto.id = invitation.id;
         await this.updateToVerified(verifyTokenDto);
 
+        if(invitation.board){
+            //create board join
+            let model = new BoardUserOrgEntity();
+            model.boardId = invitation.board;
+            model.orgId = invitation.orgId;
+            model.userId = verifyTokenDto.userId;
+            model.permission = invitation.boardPermission;
+        }
+
         const token = await this.authService.createToken({
             id: verifyTokenDto.userId,
         });
@@ -202,7 +211,7 @@ export class InvitationService {
         for (const item of inVitationTypeEmailDto.invitationEmails) {
             listEmailNotify.push(item.toEmail);
 
-            let user = await this.userRepository.findOne({email: item.toEmail})
+            let user = await this.authService.getUserByEmail(item.toEmail,);
 
             if (!user) {
                 nonRegisteredUsers.push(item.toEmail)
@@ -232,7 +241,6 @@ export class InvitationService {
                 model.orgId = item.orgId;
                 model.permission = item.permission;
                 model.userId = user.id;
-                model.permission = item.toEmail;
             } else {
                 repository = this.boardUserOrgRepository;
                 condition = `${item.type}_user_org.boardId = :typeId`;
@@ -241,7 +249,7 @@ export class InvitationService {
                 model.orgId = item.orgId;
                 model.userId = user.id;
                 model.permission = item.permission;
-                model.permission = item.toEmail;
+
             }
 
             const type = await repository
