@@ -1,4 +1,4 @@
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UseGuards } from '@nestjs/common';
 import {
     ConnectedSocket,
     MessageBody,
@@ -7,18 +7,17 @@ import {
     SubscribeMessage,
     WebSocketGateway,
     WebSocketServer,
-    WsException,
 } from '@nestjs/websockets';
-import * as jwt from 'jsonwebtoken';
 import { Server, Socket } from 'socket.io';
 
 import { BoardEventEnum } from '../../common/constants/board-event';
 import { WsExceptionFilter } from '../../common/filters/ws-exception.filter';
+import { SocketGuard } from '../../guards/socket.guard';
 import { UserService } from '../../modules/user/user.service';
 import { ConfigService } from '../../shared/services/config.service';
 import { BoardEventDto } from './dto/board-event.dto';
 
-// @UseGuards(SocketGuard)
+@UseGuards(SocketGuard)
 @UseFilters(new WsExceptionFilter())
 @WebSocketGateway({ namespace: '/board', transports: ['websocket'] })
 export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
@@ -96,23 +95,6 @@ export class BoardGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     handleConnection() {
-        // try {
-        //     const token: string = client.handshake?.query?.token;
-        //     if (!token) {
-        //         throw new WsException('Missing token');
-        //     }
-        //     const decoded = jwt.verify(
-        //         token,
-        //         this._configService.get('JWT_SECRET_KEY'),
-        //     ) as any;
-        //
-        //     const user = await this._userService.findOne(decoded.id);
-        //     if (!user) {
-        //         throw new WsException('Token not valid');
-        //     }
-        // } catch (err) {
-        //     throw new WsException(err.message);
-        // }
         console.log('connected');
     }
 
