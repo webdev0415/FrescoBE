@@ -19,8 +19,7 @@ export class BoardUserOrgEntity extends AbstractEntity<BoardUserOrgDto> {
     @Column({nullable:true,  name: 'userId' })
     userId: string;
 
-    @Column({ name: 'email' })
-    email: string;
+
 
     @Column({
         type: 'enum',
