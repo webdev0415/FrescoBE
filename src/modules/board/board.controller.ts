@@ -38,8 +38,8 @@ export class BoardController {
         type: BoardDto,
         description: 'get list board by orgId',
     })
-    async getByOrgId(@Param('orgId') orgId: string): Promise<BoardDto[]> {
-        const boards = await this.boardService.getByOrgId(orgId);
+    async getByOrgId(  @AuthUser() user: UserEntity,@Param('orgId') orgId: string): Promise<BoardInfoDto[]> {
+        const boards = await this.boardService.getByOrgIdAndUserId(user.id,orgId);
         return boards;
     }
 

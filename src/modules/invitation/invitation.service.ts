@@ -1,29 +1,28 @@
 /* eslint-disable @typescript-eslint/tslint/config */
 /* eslint-disable no-self-assign */
-import {
-    ConflictException,
-    Injectable,
-    UnauthorizedException,
-} from '@nestjs/common';
-import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
-import { InvitationType } from '../../common/constants/invitation-type';
+import {Injectable, UnauthorizedException,} from '@nestjs/common';
+import {BoardUserOrgRepository} from '../../modules/board-user-org/board-user-org.repository';
+import {InvitationType} from '../../common/constants/invitation-type';
 
-import { PermissionEnum } from '../../common/constants/permission';
-import { InvitationNotValidException } from '../../exceptions/invitaion-not-found.exception';
-import { AuthService } from '../../modules/auth/auth.service';
-import { LoginPayloadDto } from '../../modules/auth/dto/LoginPayloadDto';
-import { MailService } from '../../modules/mail/mail.service';
-import { UserToOrgEntity } from '../../modules/user-org/user-org.entity';
-import { UserToOrgRepository } from '../user-org/user-org.repository';
-import { InvitationDto } from './dto/InvitationDto';
-import { InVitationTypeEmailDto } from './dto/InvitationTypeEmailDto';
-import { SendInvitationDto } from './dto/SendInvitationDto';
-import { VerifyTokenDto } from './dto/VerifyTokenDto';
-import { InvitationEntity } from './invitation.entity';
-import { InvitationRepository } from './invitation.repository';
-import { CanvasUserOrgRepository } from '../../modules/canvas-user-org/canvas-user-org.repository';
-import { CanvasUserOrgEntity } from '../../modules/canvas-user-org/canvas-user-org.entity';
-import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
+import {PermissionEnum} from '../../common/constants/permission';
+import {InvitationNotValidException} from '../../exceptions/invitaion-not-found.exception';
+import {AuthService} from '../../modules/auth/auth.service';
+import {LoginPayloadDto} from '../../modules/auth/dto/LoginPayloadDto';
+import {MailService} from '../../modules/mail/mail.service';
+import {UserToOrgEntity} from '../../modules/user-org/user-org.entity';
+import {UserToOrgRepository} from '../user-org/user-org.repository';
+import {InVitationTypeEmailDto} from './dto/InvitationTypeEmailDto';
+import {SendInvitationDto} from './dto/SendInvitationDto';
+import {VerifyTokenDto} from './dto/VerifyTokenDto';
+import {InvitationEntity} from './invitation.entity';
+import {InvitationRepository} from './invitation.repository';
+import {CanvasUserOrgRepository} from '../../modules/canvas-user-org/canvas-user-org.repository';
+import {CanvasUserOrgEntity} from '../../modules/canvas-user-org/canvas-user-org.entity';
+import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
+
+import {v4 as uuidv4} from 'uuid';
+import {InVitationEmailDto} from "./dto/InvitationEmailDto";
+import {UserEntity} from "../user/user.entity";
 
 @Injectable()
 export class InvitationService {
@@ -34,7 +33,9 @@ export class InvitationService {
         public readonly mailService: MailService, // public readonly userToOrgRepository: UserToOrgRepository
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
         public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
-    ) {}
+
+    ) {
+    }
 
     async checkPermission(fromUserId: string, orgId: string): Promise<boolean> {
         // To do : check what is the permission in userToOrg
@@ -53,7 +54,7 @@ export class InvitationService {
     // eslint-disable-next-line complexity
     async create(
         fromUserId: string,
-        invitationDto: SendInvitationDto,
+        invitationDto: SendInvitationDto & {boardPermission?:PermissionEnum},
     ): Promise<InvitationEntity> {
         const isValid = await this.checkPermission(
             fromUserId,
@@ -86,12 +87,12 @@ export class InvitationService {
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId = existingUser
-            ? existingUser.id
-            : invitationDto.toUserId;
+        invitationModel.toUserId = existingUser.id
+        invitationModel.board = invitationDto.boardId
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
-        invitationModel.token = invitationDto.token;
+        invitationModel.boardPermission=invitationDto.boardPermission;
+        invitationModel.token = uuidv4();
         invitationModel.verified = false;
 
         const invitation = await this.invitationRepository.save(
@@ -113,7 +114,7 @@ export class InvitationService {
                 email: invitationOrg.toEmail,
                 organizationName: invitationOrg.organization?.name,
             },
-            invitationDto.token,
+            invitationModel.token,
         );
         return invitation;
     }
@@ -185,6 +186,8 @@ export class InvitationService {
         verifyTokenDto.id = invitation.id;
         await this.updateToVerified(verifyTokenDto);
 
+
+
         const token = await this.authService.createToken({
             id: verifyTokenDto.userId,
         });
@@ -193,57 +196,69 @@ export class InvitationService {
     }
 
     async invitationTypeEmails(
-        name: string,
+        user: UserEntity,
         inVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
         const listEmailNotify = [];
         let condition = null;
         let repository = null;
         let model = null;
-
+        const nonRegisteredUsers: InVitationEmailDto[] = []
         for (const item of inVitationTypeEmailDto.invitationEmails) {
             listEmailNotify.push(item.toEmail);
+
+            let user = await this.authService.getUserByEmail(item.toEmail,);
+
+            if (!user) {
+                nonRegisteredUsers.push(item)
+                continue
+            }
+
             const userOrg = await this.userToOrgRepository.findOne({
                 where: {
                     orgId: item.orgId,
-                    userId: item.toUserId,
+                    userId: user.id,
                 },
             });
 
             if (!userOrg) {
                 const userToOrgModel = new UserToOrgEntity();
                 userToOrgModel.orgId = item.orgId;
-                userToOrgModel.userId = item.toUserId;
+                userToOrgModel.userId = user.id;
                 userToOrgModel.permission = item.permission;
                 await this.userToOrgRepository.save(userToOrgModel);
             }
 
             if (item.type === InvitationType.CANVAS) {
+
                 repository = this.canvasUserOrgRepository;
                 condition = `${item.type}_user_org.canvasId = :typeId`;
                 model = new CanvasUserOrgEntity();
                 model.canvasId = item.typeId;
                 model.orgId = item.orgId;
                 model.permission = item.permission;
-                model.userId = item.toUserId;
+                model.userId = user.id;
+
             } else {
+
                 repository = this.boardUserOrgRepository;
                 condition = `${item.type}_user_org.boardId = :typeId`;
                 model = new BoardUserOrgEntity();
                 model.boardId = item.typeId;
                 model.orgId = item.orgId;
-                model.userId = item.toUserId;
+                model.userId = user.id;
                 model.permission = item.permission;
+
             }
 
             const type = await repository
                 .createQueryBuilder(`${item.type}_user_org`)
-                .where(condition, { typeId: item.typeId })
+                .where(condition, {typeId: item.typeId})
                 .andWhere(`${item.type}_user_org.orgId = :orgId`, {
                     orgId: item.orgId,
                 })
                 .andWhere(`${item.type}_user_org.userId = :userId`, {
-                    userId: item.toUserId,
+                    userId: user.id,
                 })
                 .getOne();
 
@@ -262,8 +277,28 @@ export class InvitationService {
                 inVitationTypeEmailDto.invitationEmails[0].typeId,
                 inVitationTypeEmailDto.invitationEmails[0].type,
                 inVitationTypeEmailDto.message,
-                name,
+                user.name,
             );
+        }
+
+        if (nonRegisteredUsers.length > 0) {
+
+            for (const item of nonRegisteredUsers){
+
+                this.create(user.id,{boardId:item.typeId,toEmail:item.toEmail,orgId:item.orgId,permission:PermissionEnum.LIMITED,boardPermission:item.permission})
+
+            }
+
+
+            //invite to org and board
+
+            // await this.mailService.sendNotificationPeople(
+            //     listEmailNotify,
+            //     inVitationTypeEmailDto.invitationEmails[0].typeId,
+            //     inVitationTypeEmailDto.invitationEmails[0].type,
+            //     inVitationTypeEmailDto.message,
+            //     name,
+            // );
         }
     }
 }

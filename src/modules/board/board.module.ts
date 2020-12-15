@@ -10,6 +10,8 @@ import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
 import {BoardController} from './board.controller';
 import {BoardRepository} from './board.repository';
 import {BoardService} from './board.service';
+import {UserToOrgModule} from "../user-org/user-org.module";
+import {BoardUserOrgModule} from "../board-user-org/board-user-org.module";
 
 @Module({
     imports: [
@@ -22,6 +24,8 @@ import {BoardService} from './board.service';
             UserRepository
         ]),
         forwardRef(() => UploadImageModule),
+        forwardRef(() => UserToOrgModule),
+        forwardRef(() => BoardUserOrgModule),
     ],
     controllers: [BoardController],
     providers: [BoardService],

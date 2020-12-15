@@ -37,6 +37,7 @@ import {TokenPayloadDto} from './dto/TokenPayloadDto';
 import {UserLoginDto} from './dto/UserLoginDto';
 import {UserRegisterDto} from './dto/UserRegisterDto';
 import {ResendConfirmationEmail} from "./dto/ResendConfirmationEmail";
+import {BoardUserOrgService} from "../board-user-org/board-user-org.service";
 
 @Controller('auth')
 @ApiTags('auth')
@@ -47,8 +48,10 @@ export class AuthController {
         public readonly mailService: MailService,
         public readonly configService: ConfigService,
         public readonly invitationService: InvitationService,
+        public readonly boardUserOrgService: BoardUserOrgService,
         @Inject(CACHE_MANAGER) private _cacheManager: Cache,
-    ) {}
+    ) {
+    }
 
     @Post('login')
     @HttpCode(HttpStatus.OK)
@@ -102,6 +105,10 @@ export class AuthController {
             userId: createdUser.id,
         });
 
+        if (isValidToken.board) {
+            await this.boardUserOrgService.AddCollaborator(isValidToken.board, isValidToken.orgId, createdUser.id, isValidToken.boardPermission)
+        }
+
         const jwtToken = await this.authService.createToken(createdUser);
         return new LoginPayloadDto(createdUser.toDto(), jwtToken);
     }
@@ -128,7 +135,7 @@ export class AuthController {
         );
 
         const code = v4();
-        await this._cacheManager.set(code, createdUser.id, { ttl: 3600 });
+        await this._cacheManager.set(code, createdUser.id, {ttl: 3600});
 
         await this.mailService.sendConfirmationEmail(createdUser, code);
         return createdUser.toDto();
@@ -150,9 +157,8 @@ export class AuthController {
         }
 
 
-
         const code = v4();
-        await this._cacheManager.set(code, isExists.id, { ttl: 3600 });
+        await this._cacheManager.set(code, isExists.id, {ttl: 3600});
 
         await this.mailService.sendConfirmationEmail(isExists, code);
 
@@ -166,7 +172,7 @@ export class AuthController {
     @UseGuards(AuthGuard)
     @UseInterceptors(AuthUserInterceptor)
     @ApiBearerAuth()
-    @ApiOkResponse({ type: UserDto, description: 'current user info' })
+    @ApiOkResponse({type: UserDto, description: 'current user info'})
     getCurrentUser(@AuthUser() user: UserEntity) {
         return user.toDto();
     }
