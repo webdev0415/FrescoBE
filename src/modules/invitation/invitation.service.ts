@@ -87,7 +87,7 @@ export class InvitationService {
         const invitationModel = new InvitationEntity();
         invitationModel.orgId = invitationDto.orgId;
         invitationModel.fromUserId = fromUserId;
-        invitationModel.toUserId = existingUser.id
+        invitationModel.toUserId = existingUser?.id
         invitationModel.board = invitationDto.boardId
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
@@ -205,7 +205,6 @@ export class InvitationService {
         let model = null;
         const nonRegisteredUsers: InVitationEmailDto[] = []
         for (const item of inVitationTypeEmailDto.invitationEmails) {
-            listEmailNotify.push(item.toEmail);
 
             let user = await this.authService.getUserByEmail(item.toEmail,);
 
@@ -213,6 +212,7 @@ export class InvitationService {
                 nonRegisteredUsers.push(item)
                 continue
             }
+            listEmailNotify.push(item.toEmail);
 
             const userOrg = await this.userToOrgRepository.findOne({
                 where: {
@@ -285,7 +285,7 @@ export class InvitationService {
 
             for (const item of nonRegisteredUsers){
 
-                this.create(user.id,{boardId:item.typeId,toEmail:item.toEmail,orgId:item.orgId,permission:PermissionEnum.LIMITED,boardPermission:item.permission})
+              await  this.create(user.id,{boardId:item.typeId,toEmail:item.toEmail,orgId:item.orgId,permission:PermissionEnum.LIMITED,boardPermission:item.permission})
 
             }
 
