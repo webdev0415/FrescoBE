@@ -111,7 +111,7 @@ export class InvitationService {
         // send mail
         await this.mailService.sendInvitationEmail(
             {
-                email: invitationOrg.toEmail,
+                email: invitationModel.toEmail,
                 organizationName: invitationOrg.organization?.name,
             },
             invitationModel.token,
