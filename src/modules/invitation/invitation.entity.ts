@@ -21,9 +21,9 @@ export class InvitationEntity extends AbstractEntity<InvitationDto> {
 
     @Column({
         type: 'enum',
-        enum: PermissionEnum,
+        enum: PermissionEnum,name:"boardPermission"
     })
-    public boardPermission: PermissionEnum;
+    boardPermission: PermissionEnum;
 
     @Column({ name: 'toUserId' })
     toUserId: string;
