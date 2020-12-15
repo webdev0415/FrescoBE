@@ -19,8 +19,10 @@ import {InvitationRepository} from './invitation.repository';
 import {CanvasUserOrgRepository} from '../../modules/canvas-user-org/canvas-user-org.repository';
 import {CanvasUserOrgEntity} from '../../modules/canvas-user-org/canvas-user-org.entity';
 import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
-import {UserRepository} from "../user/user.repository";
+
 import {v4 as uuidv4} from 'uuid';
+import {InVitationEmailDto} from "./dto/InvitationEmailDto";
+import {UserEntity} from "../user/user.entity";
 
 @Injectable()
 export class InvitationService {
@@ -31,7 +33,7 @@ export class InvitationService {
         public readonly mailService: MailService, // public readonly userToOrgRepository: UserToOrgRepository
         public readonly boardUserOrgRepository: BoardUserOrgRepository,
         public readonly canvasUserOrgRepository: CanvasUserOrgRepository,
-        public readonly userRepository: UserRepository,
+
     ) {
     }
 
@@ -52,7 +54,7 @@ export class InvitationService {
     // eslint-disable-next-line complexity
     async create(
         fromUserId: string,
-        invitationDto: SendInvitationDto,
+        invitationDto: SendInvitationDto & {boardPermission?:PermissionEnum},
     ): Promise<InvitationEntity> {
         const isValid = await this.checkPermission(
             fromUserId,
@@ -89,6 +91,7 @@ export class InvitationService {
         invitationModel.board = invitationDto.boardId
         invitationModel.toEmail = invitationDto.toEmail;
         invitationModel.permission = invitationDto.permission;
+        invitationModel.boardPermission=invitationDto.boardPermission;
         invitationModel.token = uuidv4();
         invitationModel.verified = false;
 
@@ -183,14 +186,7 @@ export class InvitationService {
         verifyTokenDto.id = invitation.id;
         await this.updateToVerified(verifyTokenDto);
 
-        if(invitation.board){
-            //create board join
-            let model = new BoardUserOrgEntity();
-            model.boardId = invitation.board;
-            model.orgId = invitation.orgId;
-            model.userId = verifyTokenDto.userId;
-            model.permission = invitation.boardPermission;
-        }
+
 
         const token = await this.authService.createToken({
             id: verifyTokenDto.userId,
@@ -200,21 +196,21 @@ export class InvitationService {
     }
 
     async invitationTypeEmails(
-        name: string,
+        user: UserEntity,
         inVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
         const listEmailNotify = [];
         let condition = null;
         let repository = null;
         let model = null;
-        const nonRegisteredUsers: string[] = []
+        const nonRegisteredUsers: InVitationEmailDto[] = []
         for (const item of inVitationTypeEmailDto.invitationEmails) {
             listEmailNotify.push(item.toEmail);
 
             let user = await this.authService.getUserByEmail(item.toEmail,);
 
             if (!user) {
-                nonRegisteredUsers.push(item.toEmail)
+                nonRegisteredUsers.push(item)
                 continue
             }
 
@@ -234,6 +230,7 @@ export class InvitationService {
             }
 
             if (item.type === InvitationType.CANVAS) {
+
                 repository = this.canvasUserOrgRepository;
                 condition = `${item.type}_user_org.canvasId = :typeId`;
                 model = new CanvasUserOrgEntity();
@@ -241,7 +238,9 @@ export class InvitationService {
                 model.orgId = item.orgId;
                 model.permission = item.permission;
                 model.userId = user.id;
+
             } else {
+
                 repository = this.boardUserOrgRepository;
                 condition = `${item.type}_user_org.boardId = :typeId`;
                 model = new BoardUserOrgEntity();
@@ -278,11 +277,21 @@ export class InvitationService {
                 inVitationTypeEmailDto.invitationEmails[0].typeId,
                 inVitationTypeEmailDto.invitationEmails[0].type,
                 inVitationTypeEmailDto.message,
-                name,
+                user.name,
             );
         }
 
         if (nonRegisteredUsers.length > 0) {
+
+            for (const item of nonRegisteredUsers){
+
+                this.create(user.id,{boardId:item.typeId,toEmail:item.toEmail,orgId:item.orgId,permission:PermissionEnum.LIMITED,boardPermission:item.permission})
+
+            }
+
+
+            //invite to org and board
+
             // await this.mailService.sendNotificationPeople(
             //     listEmailNotify,
             //     inVitationTypeEmailDto.invitationEmails[0].typeId,

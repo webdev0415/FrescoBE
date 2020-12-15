@@ -102,6 +102,6 @@ export class InvitationController {
       @AuthUser() user: UserEntity,
       @Body() listInVitationTypeEmailDto: InVitationTypeEmailDto,
     ): Promise<void> {
-        return this.invitationService.invitationTypeEmails(user.name, listInVitationTypeEmailDto);
+        return this.invitationService.invitationTypeEmails(user, listInVitationTypeEmailDto);
     }
 }

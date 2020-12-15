@@ -8,10 +8,12 @@ import {AuthController} from './auth.controller';
 import {AuthService} from './auth.service';
 import {GoogleStrategy} from './google.strategy';
 import {JwtStrategy} from './jwt.strategy';
+import {BoardUserOrgModule} from "../board-user-org/board-user-org.module";
 
 @Module({
     imports: [
         forwardRef(() => UserModule),
+        forwardRef(() => BoardUserOrgModule),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         forwardRef(() => MailModule),
         forwardRef(() => InvitationModule),

@@ -27,6 +27,7 @@ import { UploadImageModule } from './modules/upload/upload-image.module';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from './shared/services/config.service';
 import { SharedModule } from './shared/shared.module';
+import {BoardUserOrgModule} from "./modules/board-user-org/board-user-org.module";
 @Module({
     imports: [
         CacheModule.registerAsync({
@@ -48,6 +49,7 @@ import { SharedModule } from './shared/shared.module';
         MessageModule,
         CategoryModule,
         InvitationTypeLinkModule,
+        BoardUserOrgModule,
         MulterModule.register({
             dest: './upload',
         }),

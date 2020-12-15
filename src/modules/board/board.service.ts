@@ -1,24 +1,21 @@
 /* eslint-disable complexity */
-import {
-    Injectable,
-    NotFoundException,
-    UnauthorizedException,
-} from '@nestjs/common';
-import { UserRepository } from '../../modules/user/user.repository';
+import {Injectable, NotFoundException, UnauthorizedException,} from '@nestjs/common';
+import {UserRepository} from '../../modules/user/user.repository';
 
-import { PermissionEnum } from '../../common/constants/permission';
-import { BoardUserOrgEntity } from '../../modules/board-user-org/board-user-org.entity';
-import { BoardUserOrgRepository } from '../../modules/board-user-org/board-user-org.repository';
-import { CategoryRepository } from '../../modules/category/category.repository';
-import { UploadImageRepository } from '../../modules/upload/upload-image.repository';
-import { UploadImageService } from '../../modules/upload/upload-image.service';
-import { UserToOrgRepository } from '../../modules/user-org/user-org.repository';
-import { BoardEntity } from './board.entity';
-import { BoardRepository } from './board.repository';
-import { BoardInfoDto } from './dto/BoardInfoDto';
-import { CreateBoardDto } from './dto/CreateBoardDto';
-import { DeleteBoardDto } from './dto/DeleteBoardDto';
-import { UpdateBoardDto } from './dto/UpdateBoardDto';
+import {PermissionEnum} from '../../common/constants/permission';
+import {BoardUserOrgEntity} from '../../modules/board-user-org/board-user-org.entity';
+import {BoardUserOrgRepository} from '../../modules/board-user-org/board-user-org.repository';
+import {CategoryRepository} from '../../modules/category/category.repository';
+import {UploadImageRepository} from '../../modules/upload/upload-image.repository';
+import {UploadImageService} from '../../modules/upload/upload-image.service';
+import {UserToOrgRepository} from '../../modules/user-org/user-org.repository';
+import {BoardEntity} from './board.entity';
+import {BoardRepository} from './board.repository';
+import {BoardInfoDto} from './dto/BoardInfoDto';
+import {CreateBoardDto} from './dto/CreateBoardDto';
+import {DeleteBoardDto} from './dto/DeleteBoardDto';
+import {UpdateBoardDto} from './dto/UpdateBoardDto';
+import {BoardUserOrgService} from "../board-user-org/board-user-org.service";
 
 @Injectable()
 export class BoardService {
@@ -30,16 +27,18 @@ export class BoardService {
         public readonly userRepository: UserRepository,
         public readonly categoryRepository: CategoryRepository,
         public readonly uploadImageService: UploadImageService,
-    ) {}
+        public readonly boardUserOrgService: BoardUserOrgService,
+    ) {
+    }
 
     async isAdminOrEditor(userId: string, orgId: string) {
         const userToOrg = await this.userToOrgRepository
             .createQueryBuilder('userToOrg')
-            .where('userToOrg.userId = :userId', { userId })
-            .andWhere('userToOrg.orgId = :orgId', { orgId })
+            .where('userToOrg.userId = :userId', {userId})
+            .andWhere('userToOrg.orgId = :orgId', {orgId})
             .andWhere(
                 'userToOrg.permission = :admin Or userToOrg.permission = :editor',
-                { admin: PermissionEnum.ADMIN, editor: PermissionEnum.EDITOR },
+                {admin: PermissionEnum.ADMIN, editor: PermissionEnum.EDITOR},
             )
             .getOne();
         // const userToOrg = await this.userToOrgRepository.find({
@@ -66,9 +65,9 @@ export class BoardService {
     ) {
         const boardUserOrg = await this.boardUserOrgRepository
             .createQueryBuilder('boardUserOrgEntity')
-            .where('boardUserOrgEntity.userId = :userId', { userId })
-            .andWhere('boardUserOrgEntity.orgId = :orgId', { orgId })
-            .andWhere('boardUserOrgEntity.boardId = :boardId', { boardId })
+            .where('boardUserOrgEntity.userId = :userId', {userId})
+            .andWhere('boardUserOrgEntity.orgId = :orgId', {orgId})
+            .andWhere('boardUserOrgEntity.boardId = :boardId', {boardId})
             .andWhere('boardUserOrgEntity.permission != :viewer', {
                 viewer: PermissionEnum.VIEW,
             })
@@ -86,7 +85,7 @@ export class BoardService {
             where: {
                 id,
             },
-            relations:["boards"]
+            relations: ["boards"]
         });
 
 
@@ -113,45 +112,31 @@ export class BoardService {
         const boardDto = board.toDto() as BoardInfoDto;
         boardDto.category = category?.toDto() || null;
         boardDto.path = image?.path || '';
-        boardDto.users=users
+        boardDto.users = users
 
         return boardDto;
     }
 
-    async getByOrgId(orgId: string): Promise<BoardEntity[]> {
-        const listBoardInfo = [];
+    async getByOrgIdAndUserId(userId: string, orgId: string) {
+
+        let orgRelation = await this.userToOrgRepository.findOne({where: {userId: userId, orgId: orgId}})
+        if (orgRelation.permission == PermissionEnum.LIMITED) {
+            let boardRelations = await this.boardUserOrgService.GetAllBoards(userId, orgId);
+            return this.ComposeBoardInfoFromBoards(boardRelations.map(item => item.board))
+        } else {
+            return await this.getByOrgId(orgId);
+        }
+    }
+
+    async getByOrgId(orgId: string): Promise<BoardInfoDto[]> {
+
         const boards = await this.boardRepository.find({
             where: {
                 orgId,
             },
             relations: ['boards'],
         });
-
-        for (const board of boards) {
-            const category = await this.categoryRepository.findOne({
-                where: {
-                    id: board.categoryId,
-                },
-            });
-            const image = await this.uploadImageRepository.findOne({
-                where: {
-                    id: board.imageId,
-                },
-            });
-
-            const users = []
-            for (const item of board.boards) {
-              const user = await this.userRepository.findOne(item.userId);
-              users.push(user.toDto());
-            }
-
-            const boardDto = board.toDto() as BoardInfoDto;
-            boardDto.category = category?.toDto() || null;
-            boardDto.path = image?.path || '';
-            boardDto.users = users;
-            listBoardInfo.push(boardDto);
-        }
-        return listBoardInfo;
+        return this.ComposeBoardInfoFromBoards(boards);
     }
 
     async create(
@@ -236,12 +221,41 @@ export class BoardService {
         return boardDto;
     }
 
-    async delete({ boardId, userId, orgId }: DeleteBoardDto): Promise<void> {
+    async delete({boardId, userId, orgId}: DeleteBoardDto): Promise<void> {
         await this.isAdminOrEditor(userId, orgId);
         await this.boardUserOrgRepository.delete({
             boardId,
             orgId,
         });
         await this.boardRepository.delete(boardId);
+    }
+
+    private async ComposeBoardInfoFromBoards(boards: BoardEntity[]) {
+        const listBoardInfo: BoardInfoDto[] = [];
+        for (const board of boards) {
+            const category = await this.categoryRepository.findOne({
+                where: {
+                    id: board.categoryId,
+                },
+            });
+            const image = await this.uploadImageRepository.findOne({
+                where: {
+                    id: board.imageId,
+                },
+            });
+
+            const users = []
+            for (const item of board.boards) {
+                const user = await this.userRepository.findOne(item.userId);
+                users.push(user.toDto());
+            }
+
+            const boardDto = board.toDto() as BoardInfoDto;
+            boardDto.category = category?.toDto() || null;
+            boardDto.path = image?.path || '';
+            boardDto.users = users;
+            listBoardInfo.push(boardDto);
+        }
+        return listBoardInfo;
     }
 }
