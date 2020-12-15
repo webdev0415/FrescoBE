@@ -106,7 +106,7 @@ export class AuthController {
         });
 
         if (isValidToken.board) {
-            await this.boardUserOrgService.AddCollaborator(isValidToken.board, isValidToken.orgId, createdUser.id, isValidToken.boardPermission)
+           let relation= await this.boardUserOrgService.AddCollaborator(isValidToken.board, isValidToken.orgId, createdUser.id, isValidToken.boardPermission)
         }
 
         const jwtToken = await this.authService.createToken(createdUser);

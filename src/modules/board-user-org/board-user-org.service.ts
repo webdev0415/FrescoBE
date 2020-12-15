@@ -27,7 +27,7 @@ export class BoardUserOrgService {
             model.orgId = orgId;
             model.userId = userId;
             model.permission = permission;
-            return this.boardUserOrgRepository.create(model)
+            return this.boardUserOrgRepository.save(model)
 
         }
 
@@ -71,7 +71,7 @@ export class BoardUserOrgService {
         return  this.boardUserOrgRepository.find({
             where: {
                 userId: userId,orgId:orgId
-            },relations:["board"]
+            },relations:["board","board.boards"]
         })
     }
 
