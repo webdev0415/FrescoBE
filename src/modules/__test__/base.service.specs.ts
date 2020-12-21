@@ -62,6 +62,7 @@ export const mockBoardService = () => ({
 
     getById: jest.fn(),
     getByOrgId: jest.fn(),
+    getByOrgIdAndUserId: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),

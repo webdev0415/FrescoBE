@@ -19,6 +19,9 @@ import {CreateUserInvitationDto} from "../dto/CreateUserInvitationDto";
 import {InvitationEntity} from "../../invitation/invitation.entity";
 import {PermissionEnum} from "../../../common/constants/permission";
 import {ResendConfirmationEmail} from "../dto/ResendConfirmationEmail";
+import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
+import {mockBoardUserOrgRepository} from "../../__test__/base.repository.spec";
+import {BoardUserOrgRepository} from "../../board-user-org/board-user-org.repository";
 
 const mockUserService = () => ({
     checkIfExists: jest.fn(),
@@ -73,6 +76,8 @@ describe('AuthController', () => {
                 { provide: UserService, useFactory: mockUserService },
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
+                { provide: BoardUserOrgRepository , useFactory: mockBoardUserOrgRepository },
+                BoardUserOrgService,
                //  { provide: Cache, useFactory: mockCache },
             ],
         }).compile();
@@ -296,13 +301,16 @@ describe('AuthController', () => {
             const result = await authController.confirmEmail(code);
             expect(result).toEqual(expectedResult);
         });
-        it('confirmEmail error', () => {
+        it('confirmEmail error', async () => {
             const code = '2321';
             cacheManager.get = jest.fn();
             cacheManager.get.mockResolvedValue('');
-            const error = new NotFoundException();
-            void expect(authController.confirmEmail(code)).rejects.toThrow(
-                error,
+            // eslint-disable-next-line @typescript-eslint/require-await
+            userService.confirmEmail.mockImplementation(async () => {
+                throw new NotFoundException();
+            });
+            await expect(authController.confirmEmail(code)).rejects.toThrow(
+                NotFoundException,
             );
         });
     });

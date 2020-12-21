@@ -208,7 +208,12 @@ describe('UserService', () => {
 
     it('validateUser throws UserNotFoundException', () => {
         const expectedResult = new NotFoundException();
+        // eslint-disable-next-line @typescript-eslint/require-await
+        userRepository.save.mockImplementation(async () => {
+            throw new NotFoundException();
+        });
+
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        expect(userService.update(new  UserLoginGoogleDto())).rejects.toThrow(expectedResult);
+        expect(userService.update(new UserLoginGoogleDto())).rejects.toThrow(expectedResult);
     });
 });

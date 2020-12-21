@@ -20,6 +20,10 @@ import {BoardDto} from "../dto/BoardDto";
 import {UserRepository} from "../../user/user.repository";
 import {MockUserRepository} from "../../__test__/base.repository.spec";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
+import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
+import {UserEntity} from "../../user/user.entity";
+import {UserDto} from "../../user/dto/UserDto";
+import {RoleType} from "../../../common/constants/role-type";
 
 
 export const mockCreateBoard: CreateBoardDto = {
@@ -54,6 +58,23 @@ export const mockUpdateBoardDto: UpdateBoardDto = {
 
 }
 
+export const createMockUserEntity = (): UserEntity => {
+    const user: UserEntity = {
+        id: 'id',
+        name: 'John',
+        createdAt: new Date(),
+        email: 'johndoe@gmail.com',
+        verified: true,
+        password: '12345',
+        googleId: 'goog132',
+        role: RoleType.USER,
+        dtoClass: UserDto,
+        toDto: null,
+    };
+
+    user.toDto = UserEntity.prototype.toDto.bind(user);
+    return user;
+};
 
 const dateValue = new Date();
 
@@ -128,6 +149,10 @@ const mockUploadImageService = () => ({
 
 });
 
+const mockBoardUserOrgService = () => ({
+
+});
+
 
 const globalMockExpectedResult = {};
 
@@ -152,6 +177,7 @@ describe('BoardService', () => {
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
                 {provide: UserRepository, useFactory: MockUserRepository},
+                BoardUserOrgService,
 
                 // { provide: BoardService, useFactory: mockBoardService },
                 BoardService
@@ -190,14 +216,10 @@ describe('BoardService', () => {
                 where: jest.fn().mockReturnThis(),
                 getOne: jest.fn().mockReturnValue(null),
             }));
-            try {
 
-                await boardService.isAdminOrEditor("testUser", "testOrg");
-            } catch (e) {
-                console.log(e)
-                await expect(e).toEqual(new UnauthorizedException())
-            }
-
+            await expect(
+                boardService.isAdminOrEditor('testUser', 'testOrg'),
+            ).rejects.toThrow(UnauthorizedException);
         });
 
 
@@ -209,6 +231,7 @@ describe('BoardService', () => {
         it(' return BoardInfoDto and not undefined ', async () => {
 
             boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            userRepository.findOne.mockReturnValue(createMockUserEntity());
             categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
 
@@ -321,17 +344,9 @@ describe('BoardService', () => {
             boardUserOrgRepository.save.mockImplementation(async (value) => value)
             boardRepository.findOne.mockReturnValue(undefined);
 
-            let result = boardService.update("id", mockUpdateBoardDto)
-            let rejected = false
-            try {
-                const response = await result;
-
-            } catch (e) {
-                rejected = true;
-                expect(e).toEqual(new NotFoundException())
-            }
-            expect(rejected).toBeTruthy();
-
+            await expect(
+                boardService.update('id', mockUpdateBoardDto),
+            ).rejects.toThrow(NotFoundException);
         });
     });
 

@@ -30,6 +30,7 @@ import {dateValue, globalMockExpectedResult, mockUploadImageService} from "../..
 import {CanvasUserOrgRepository} from "../../canvas-user-org/canvas-user-org.repository";
 import {UserRepository} from "../../user/user.repository";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
+import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
 
 export const mockCanvasEntity: CanvasEntity = {
     id: "id",
@@ -85,7 +86,7 @@ describe('CanvasService', () => {
                 {provide: CanvasRepository, useFactory: mockCanvasRepository},
                 {provide: CanvasUserOrgRepository, useFactory: mockCanvasUserOrgRepository},
                 {provide: UserRepository, useFactory: MockUserRepository},
-                CanvasService, BoardService
+                CanvasService, BoardService, BoardUserOrgService,
             ],
         }).compile();
 

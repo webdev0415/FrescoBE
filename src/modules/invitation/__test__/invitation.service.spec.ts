@@ -167,7 +167,7 @@ describe('Invitation Service', () => {
             authService.getUserByEmail.mockReturnValue(new UserEntity());
 
             const result = await invitationService.create("id", new SendInvitationDto())
-            expect(result).toEqual({...invitationEntity, fromUserId: "id"})
+            expect(result).toHaveProperty('token');
 
         });
 
