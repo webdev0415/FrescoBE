@@ -149,6 +149,17 @@
         "coverageDirectory": "../coverage",
         "testEnvironment": "node",
         "collectCoverage": true,
+        "collectCoverageFrom": [
+            "src/**/*.ts",
+            "!src/main.ts",
+            "!src/**/*.module.ts",
+            "!src/**/*.entity.ts",
+            "!src/**/*.repository.ts",
+            "!src/exceptions/*.ts",
+            "!src/**/dto/**/*",
+            "!src/migrations/*",
+            "!src/**/__test__/**/*"
+        ],
         "verbose": true
     },
     "lint-staged": {
