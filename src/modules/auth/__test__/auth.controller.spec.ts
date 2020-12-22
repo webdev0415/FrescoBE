@@ -38,6 +38,9 @@ const mockAuthService = () => ({
 const mockMailService = () => ({
     sendConfirmationEmail: jest.fn(),
 });
+const mockBoardUserOrgService = () => ({
+    AddCollaborator: jest.fn(),
+});
 const mockCache = () => ({});
 export const userEntity: UserEntity = {
     id: '1',
@@ -77,7 +80,7 @@ describe('AuthController', () => {
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
                 { provide: BoardUserOrgRepository , useFactory: mockBoardUserOrgRepository },
-                BoardUserOrgService,
+                { provide: BoardUserOrgService, useFactory: mockBoardUserOrgService },
                //  { provide: Cache, useFactory: mockCache },
             ],
         }).compile();
@@ -177,6 +180,31 @@ describe('AuthController', () => {
             invitation.toEmail="test@test.com";
             invitation.id="id";
             invitation.permission=PermissionEnum.ADMIN
+
+            invitation.orgId="id";
+
+            invitationService.checkValidToken.mockResolvedValue(invitation);
+            authService.createVerifyUser.mockResolvedValue(userEntity);
+            authService.createToken.mockResolvedValue(new TokenPayloadDto({accessToken:"",expiresIn:3}));
+
+            invitationService.updateToVerified.mockImplementation(async (value) => value);
+
+            await expect(
+                await authController.createUser("",createUserInvitationDto),
+            ).toEqual(new LoginPayloadDto(userEntity.toDto(), new TokenPayloadDto({accessToken:"",expiresIn:3})))
+        });
+        it('createUser success including board', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto=new CreateUserInvitationDto()
+            createUserInvitationDto.email="test@test.com"
+            createUserInvitationDto.orgId="id";
+            createUserInvitationDto.password="password"
+            createUserInvitationDto.verified=true
+
+            let invitation=new InvitationEntity();
+            invitation.toEmail="test@test.com";
+            invitation.id="id";
+            invitation.permission=PermissionEnum.ADMIN
+            invitation.board = 'boardId';
 
             invitation.orgId="id";
 
