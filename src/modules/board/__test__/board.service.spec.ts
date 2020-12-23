@@ -24,6 +24,7 @@ import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
 import {UserEntity} from "../../user/user.entity";
 import {UserDto} from "../../user/dto/UserDto";
 import {RoleType} from "../../../common/constants/role-type";
+import {PermissionEnum} from "../../../common/constants/permission";
 
 
 export const mockCreateBoard: CreateBoardDto = {
@@ -150,9 +151,22 @@ const mockUploadImageService = () => ({
 });
 
 const mockBoardUserOrgService = () => ({
-
+    GetAllBoards: jest.fn(),
 });
 
+const mockEditorUserToOrgEntity = {
+    id: 'id',
+    userId: 'userId1',
+    orgId: 'orgId',
+    permission: PermissionEnum.EDITOR,
+};
+
+const mockLimitedUserToOrgEntity = {
+    id: 'id',
+    userId: 'userId2',
+    orgId: 'orgId',
+    permission: PermissionEnum.LIMITED,
+};
 
 const globalMockExpectedResult = {};
 
@@ -165,6 +179,8 @@ describe('BoardService', () => {
     let uploadImageService;
     let userRepository;
     let boardService: BoardService;
+    let boardUserOrgService;
+
     beforeEach(async () => {
         UtilsService.validateHash = jest.fn().mockResolvedValue(true);
         const module = await Test.createTestingModule({
@@ -177,7 +193,7 @@ describe('BoardService', () => {
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
                 {provide: UserRepository, useFactory: MockUserRepository},
-                BoardUserOrgService,
+                {provide: BoardUserOrgService, useFactory: mockBoardUserOrgService},
 
                 // { provide: BoardService, useFactory: mockBoardService },
                 BoardService
@@ -193,6 +209,7 @@ describe('BoardService', () => {
         uploadImageService = module.get<UploadImageService>(UploadImageService);
         userRepository = module.get<UserRepository>(UserRepository);
         boardService = module.get<BoardService>(BoardService);
+        boardUserOrgService = module.get(BoardUserOrgService);
     });
 
     describe('isAdminOrEditor', () => {
@@ -286,6 +303,50 @@ describe('BoardService', () => {
         });
     });
 
+    describe('getByOrgIdAndUserId', () => {
+        it('return all of organization boards for access user', async () => {
+            userToOrgRepository.findOne.mockReturnValue(
+                mockEditorUserToOrgEntity,
+            );
+            boardRepository.find.mockReturnValue([mockBoardEntity]);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
+            userRepository.findOne.mockReturnValue(userEntity);
+
+            const result = await boardService.getByOrgIdAndUserId(
+                'userId',
+                'orgId',
+            );
+
+            expect(result).not.toBeUndefined();
+            expect(result.length).toEqual(1);
+            expect(result[0].categoryId).toEqual(mockCategoryEntity.id);
+            expect(result[0].path).toEqual(mockImageEntity.path);
+        });
+
+        it('return only boards with access for limited user', async () => {
+            userToOrgRepository.findOne.mockReturnValue(
+                mockLimitedUserToOrgEntity,
+            );
+            boardUserOrgService.GetAllBoards.mockReturnValue([
+                { board: mockBoardEntity },
+            ]);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
+            userRepository.findOne.mockReturnValue(userEntity);
+
+            const result = await boardService.getByOrgIdAndUserId(
+                'userId2',
+                'orgId',
+            );
+
+            expect(result).not.toBeUndefined();
+            expect(result.length).toEqual(1);
+            expect(result[0].categoryId).toEqual(mockCategoryEntity.id);
+            expect(result[0].path).toEqual(mockImageEntity.path);
+        });
+    });
+
     describe('create', () => {
 
 
@@ -348,6 +409,29 @@ describe('BoardService', () => {
                 boardService.update('id', mockUpdateBoardDto),
             ).rejects.toThrow(NotFoundException);
         });
+
+        it('update board that is not owner', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+            boardUserOrgRepository.createQueryBuilder = jest
+                .fn()
+                .mockReturnValue({
+                    where: jest.fn().mockReturnThis(),
+                    andWhere: jest.fn().mockReturnThis(),
+                    getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+                });
+            boardRepository.save.mockImplementation(async (value) => value);
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(mockImageEntity);
+            boardUserOrgRepository.save.mockImplementation(async (value) => value)
+            boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            const result = await boardService.update('otherId', mockUpdateBoardDto)
+
+            expect(result).not.toBeUndefined();
+        })
     });
 
     describe('delete', () => {
@@ -373,4 +457,40 @@ describe('BoardService', () => {
 
     });
 
+    describe('checkPermissionInBoard', () => {
+        it('return relation if permission granted', async () => {
+            const boardUserOrg = {
+                userId: 'userId',
+                orgId: 'orgId',
+            };
+
+            boardUserOrgRepository.createQueryBuilder.mockReturnValue({
+                where: jest.fn().mockReturnThis(),
+                andWhere: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(boardUserOrg),
+            });
+
+            const result = boardService.checkPermissionInBoard(
+                'userId',
+                'boardId',
+                'orgId',
+            );
+            await expect(result).resolves.toEqual(boardUserOrg);
+        });
+
+        it('throw UnauthorizedException if permission not granted', async () => {
+            boardUserOrgRepository.createQueryBuilder.mockReturnValue({
+                where: jest.fn().mockReturnThis(),
+                andWhere: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(null),
+            });
+
+            const result = boardService.checkPermissionInBoard(
+                'userId',
+                'boardId',
+                'orgId',
+            );
+            await expect(result).rejects.toThrow(UnauthorizedException);
+        });
+    });
 });
