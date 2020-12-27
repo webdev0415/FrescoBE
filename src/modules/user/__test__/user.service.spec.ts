@@ -1,15 +1,18 @@
-import {NotFoundException} from '@nestjs/common';
-import {Test} from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
+import { Test } from '@nestjs/testing';
 
-import {RoleType} from '../../../common/constants/role-type';
-import {UserLoginGoogleDto} from '../../auth/dto/UserLoginGoogleDto';
-import {UserRepository} from '../../user/user.repository';
-import {UserDto} from '../dto/UserDto';
-import {UserEntity} from '../user.entity';
-import {UserService} from '../user.service';
-import {UserToOrgRepository} from "../../user-org/user-org.repository";
-import {mockUserToOrgRepository} from "../../__test__/base.repository.spec";
-import {UserRegisterDto} from "../../auth/dto/UserRegisterDto";
+import { RoleType } from '../../../common/constants/role-type';
+import { UserLoginGoogleDto } from '../../auth/dto/UserLoginGoogleDto';
+import { UserRepository } from '../../user/user.repository';
+import { UserDto } from '../dto/UserDto';
+import { UserEntity } from '../user.entity';
+import { UserService } from '../user.service';
+import { UserToOrgRepository } from '../../user-org/user-org.repository';
+import { mockUserToOrgRepository } from '../../__test__/base.repository.spec';
+import { UserRegisterDto } from '../../auth/dto/UserRegisterDto';
+import { Brackets } from 'typeorm';
+import { UserToOrgEntity } from '../../user-org/user-org.entity';
+import Mocked = jest.Mocked;
 
 const mockUserRepository = () => ({
     findOne: jest.fn(),
@@ -30,6 +33,8 @@ const mockUserRepository = () => ({
 describe('UserService', () => {
     let userRepository;
     let userService:UserService;
+    let userToOrgRepository: Mocked<UserToOrgRepository>;
+
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             providers: [
@@ -41,6 +46,7 @@ describe('UserService', () => {
 
         userRepository = module.get<UserRepository>(UserRepository);
         userService = module.get<UserService>(UserService);
+        userToOrgRepository = module.get(UserToOrgRepository);
     });
 
     it('findOne', () => {
@@ -215,5 +221,91 @@ describe('UserService', () => {
 
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         expect(userService.update(new UserLoginGoogleDto())).rejects.toThrow(expectedResult);
+    });
+
+    it('should confirm email', async () => {
+        const user = {
+            name: 'john',
+            role: RoleType.USER,
+            email: 'john@site.com',
+        };
+
+        userRepository.findOne.mockResolvedValue(user);
+
+        await expect(userService.confirmEmail('userId')).resolves.toEqual(
+            new UserDto(user as any),
+        );
+
+        expect(userRepository.update).toBeCalledWith(
+            { id: 'userId' },
+            { verified: true },
+        );
+    });
+
+    it('should return not found exception when userId not provided to confirmEmail', async () => {
+        await expect(userService.confirmEmail(null)).rejects.toThrow(
+            NotFoundException,
+        );
+    });
+
+    it('should suggest email', async () => {
+        const items = Array(10)
+            .fill(0)
+            .map((_, idx) => ({
+                id: `id#${idx}`,
+                name: `user#${idx}`,
+                toDto() {
+                    return {
+                        id: this.id,
+                        name: this.name,
+                    };
+                },
+            }));
+
+        userToOrgRepository.find.mockResolvedValue([
+            ({ userId: 'userId1' } as unknown) as UserToOrgEntity,
+            ({ userId: 'userId2' } as unknown) as UserToOrgEntity,
+        ]);
+        userRepository.createQueryBuilder.mockReturnValue({
+            where: jest.fn().mockReturnThis(),
+            andWhere: jest.fn().mockReturnThis(),
+            getMany: jest.fn(() => items),
+        });
+
+        await expect(
+            userService.suggestEmail('john@site.com', 'orgId'),
+        ).resolves.toEqual(items.map((item) => item.toDto()));
+    });
+
+    it('should search user by keyword', async () => {
+        const items = Array(10)
+            .fill(0)
+            .map((_, idx) => ({
+                id: `id#${idx}`,
+                name: `user#${idx}`,
+                toDto() {
+                    return {
+                        id: this.id,
+                        name: this.name,
+                    };
+                },
+            }));
+
+        userRepository.createQueryBuilder.mockReturnValue({
+            where: jest.fn(function (exp: string | Brackets) {
+                if (exp instanceof Brackets) {
+                    // eslint-disable-next-line no-invalid-this
+                    exp.whereFactory(this);
+                }
+                // eslint-disable-next-line no-invalid-this
+                return this;
+            }),
+            andWhere: jest.fn().mockReturnThis(),
+            getMany: jest.fn().mockResolvedValue(items),
+        } as any);
+
+        await expect(
+            userService.searchUserByKeyWord('john', 'id'),
+        ).resolves.toEqual(items.map((item) => item.toDto()));
     });
 });

@@ -9,6 +9,8 @@ export const mockGeneratorService = () => ({
 export const mockConfigService = () => ({
 
     awsS3Config: jest.fn(),
+    getNumber: jest.fn(),
+    get: jest.fn(),
 
 });
 export function moduleHotAccept(mod) {

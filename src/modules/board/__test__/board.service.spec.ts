@@ -18,7 +18,7 @@ import {CategoryDto} from "../../category/dto/CategoryDto";
 import {UploadImageDto} from "../../upload/dto/UploadImageDto";
 import {BoardDto} from "../dto/BoardDto";
 import {UserRepository} from "../../user/user.repository";
-import {MockUserRepository} from "../../__test__/base.repository.spec";
+import {mockUserRepository} from "../../__test__/base.repository.spec";
 import {userEntity} from "../../auth/__test__/auth.controller.spec";
 import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
 import {UserEntity} from "../../user/user.entity";
@@ -192,7 +192,7 @@ describe('BoardService', () => {
                 {provide: UploadImageRepository, useFactory: mockUploadImageRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
-                {provide: UserRepository, useFactory: MockUserRepository},
+                {provide: UserRepository, useFactory: mockUserRepository},
                 {provide: BoardUserOrgService, useFactory: mockBoardUserOrgService},
 
                 // { provide: BoardService, useFactory: mockBoardService },

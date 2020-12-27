@@ -13,7 +13,7 @@ import {
     mockBoardRepository,
     mockBoardUserOrgRepository,
     mockCategoryRepository,
-    mockUploadImageRepository, MockUserRepository,
+    mockUploadImageRepository, mockUserRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
 import {mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
@@ -52,7 +52,7 @@ describe('CategoryService', () => {
                 {provide: UploadImageRepository, useFactory: mockUploadImageRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
-                {provide: UserRepository, useFactory: MockUserRepository},
+                {provide: UserRepository, useFactory: mockUserRepository},
 
                 BoardService,CategoryService, BoardUserOrgService,
             ],

@@ -49,6 +49,18 @@ describe('OrganizationController', () => {
             let result = await organizationController.getOrganizationByUserIdOrgId(userEntity,"");
             expect(result).toEqual(mockOrganizationEntity)
         });
+
+        it('should throw not found exception if organization does not exist', async () => {
+            organizationService.getOrganizationByUserAndOrgId.mockResolvedValue(
+                null,
+            );
+            await expect(
+                organizationController.getOrganizationByUserIdOrgId(
+                    userEntity,
+                    'orgId',
+                ),
+            ).rejects.toThrow(NotFoundException);
+        });
     });
 
 
