@@ -73,6 +73,8 @@ export class MailService {
     ): Promise<any> {
         try {
             const clientUrl = this.configService.get('CLIENT_URL');
+
+            // TODO fix this url for specific type
             const url = `${clientUrl}/canvas/${typeId}/${type}`;
             return await this.getEmailClient().sendMultiple({
                 to: emails,

@@ -125,6 +125,16 @@ describe('Organization Service', () => {
             const result = uploadImageService.update(new CreateUploadImageDto(), "id", file)
             expect(result).not.toBeUndefined()
         });
+
+        it(' Image found, updated info not file ', async () => {
+            uploadImageRepository.findOne.mockReturnValue(new UploadImageEntity())
+            validatorService.isImage.mockReturnValue(true);
+
+            uploadImageRepository.save.mockImplementation(async (value) => value);
+            const result = uploadImageService.update(new CreateUploadImageDto(), "id", null)
+            expect(result).not.toBeUndefined()
+        });
+
         it(' Image not found, created ', async () => {
             uploadImageRepository.findOne.mockReturnValue()
             validatorService.isImage.mockReturnValue(true);

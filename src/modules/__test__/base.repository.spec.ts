@@ -1,4 +1,5 @@
 import {CanvasUserOrgRepository} from "../canvas-user-org/canvas-user-org.repository";
+import { mocked } from 'ts-jest';
 
 describe('Base test suit', () => {
     it('should run ', async () => {
@@ -25,7 +26,7 @@ export const mockCategoryRepository = () => ({
 export const mockBoardRepository = mockCategoryRepository
 
 export const mockUserToOrgRepository = mockCategoryRepository
-export const MockUserRepository = mockCategoryRepository
+export const mockUserRepository = mockCategoryRepository
 
 export const mockBoardUserOrgRepository = mockCategoryRepository
 
@@ -42,3 +43,6 @@ export const mockInvitationRepository = mockCategoryRepository
 
 export const mockOrganizationRepository = mockCategoryRepository
 
+export const mockInvitationTypeLinkRepository = mockCategoryRepository
+
+export const mockMessageRepository = mockCategoryRepository;

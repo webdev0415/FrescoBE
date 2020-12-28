@@ -24,7 +24,7 @@ export const mockAuthService = () => ({
 });
 export const mockMailService = () => ({
     sendInvitationEmail: jest.fn(),
-
+    sendNotificationPeople: jest.fn(),
 });
 
 export const mockDefaultTemplateService = () => ({
@@ -56,12 +56,14 @@ export const mockAwsS3Service = () => ({
 export const mockUserService = () => ({
 
     suggestEmail: jest.fn(),
+    searchUserByKeyWord: jest.fn(),
 });
 
 export const mockBoardService = () => ({
 
     getById: jest.fn(),
     getByOrgId: jest.fn(),
+    getByOrgIdAndUserId: jest.fn(),
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
@@ -73,6 +75,7 @@ export const mockCanvasService = () => ({
     create: jest.fn(),
     update: jest.fn(),
     delete: jest.fn(),
+    isAdminOrEditor: jest.fn(),
 });
 
 export const mockInvitationService = () => ({
@@ -81,6 +84,7 @@ export const mockInvitationService = () => ({
     checkValidToken: jest.fn(),
     verify: jest.fn(),
     updateToVerified: jest.fn(),
+    invitationTypeEmails: jest.fn(),
 });
 
 export const mockOrganizationService = () => ({
@@ -90,4 +94,19 @@ export const mockOrganizationService = () => ({
     create: jest.fn(),
     getOrganizationByUserId: jest.fn(),
     getOrganizationByUserAndOrgId: jest.fn(),
+});
+
+export const mockInvitationTypeLinkService = () => ({
+    create: jest.fn(),
+    handleRequest: jest.fn(),
+    getInvitationTypeLinkByTypeAndOrgId: jest.fn(),
+    delete: jest.fn(),
+    getUsersInType: jest.fn(),
+    update: jest.fn(),
+    getLinkByTypeId: jest.fn(),
+});
+
+export const mockInvitationTypeLinkUserService = () => ({
+    getInvitationTypeLinkUser: jest.fn(),
+    create: jest.fn(),
 });

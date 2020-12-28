@@ -12,6 +12,9 @@ import {Test} from "@nestjs/testing";
 import {VerifyTokenDto} from "../dto/VerifyTokenDto";
 import {LoginPayloadDto} from "../../auth/dto/LoginPayloadDto";
 import {mockInvitationService} from "../../__test__/base.service.specs";
+import { UserEntity } from '../../user/user.entity';
+import { InvitationType } from '../../../common/constants/invitation-type';
+import { InVitationTypeEmailDto } from '../dto/InvitationTypeEmailDto';
 
 let mockInvitationEntity: InvitationEntity = new InvitationEntity();
 
@@ -74,5 +77,21 @@ describe('InvitationController', () => {
         });
     });
 
+    describe('invitationEmail', () => {
+        it('should return invitation type emails', async () => {
+            const user = ({ id: 'userId' } as unknown) as UserEntity;
+            const list = ([
+                { toEmail: 'john@site.com', type: InvitationType.CANVAS },
+            ] as unknown) as InVitationTypeEmailDto;
 
+            await expect(
+                invitationController.invitationEmail(user, list),
+            ).resolves.toBeUndefined();
+
+            expect(invitationService.invitationTypeEmails).toBeCalledWith(
+                user,
+                list,
+            );
+        });
+    });
 });

@@ -27,14 +27,12 @@ export class UploadImageService {
         uploadImageModel.type = uploadImageDto.type;
         uploadImageModel.createdAt = new Date();
         uploadImageModel.updatedAt = new Date();
-        let path: string;
-        if (file && !this.validatorService.isImage(file.mimetype)) {
+
+        if (!file || !this.validatorService.isImage(file.mimetype)) {
             throw new FileNotImageException();
         }
 
-        if (file) {
-            path = await this.awsS3Service.uploadImage(file);
-        }
+        const path = await this.awsS3Service.uploadImage(file);
         return this.uploadImageRepository.save({
             ...uploadImageModel,
             path,

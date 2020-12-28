@@ -209,5 +209,31 @@ describe('AuthService', () => {
             expect(userService.findByUsernameOrEmail).toHaveBeenCalled();
             expect(result).toEqual(expectedResult);
         });
+
+        it('do nothing for already user already registered by google oauth', async () => {
+            const expectedResult = {
+                accessToken: 'JWT Token',
+                expiresIn: 12321123,
+            };
+            userService.findByUsernameOrEmail.mockResolvedValue({
+                id: '3731dc00-e5e9-4069-bc64-9e59a5e9795b',
+                googleId: 'aaaaa',
+            } as any);
+            configService.getNumber.mockReturnValue(expectedResult.expiresIn);
+            jwtService.signAsync.mockResolvedValue(expectedResult.accessToken);
+
+            expect(userService.findByUsernameOrEmail).not.toHaveBeenCalled();
+            expect(userService.createUserForGoogle).not.toHaveBeenCalled();
+
+            const result = await authService.validateOAuthLoginEmail(
+                mockUserGoogle.email,
+                mockUserGoogle,
+            );
+
+            expect(userService.createUserForGoogle).not.toHaveBeenCalled();
+            expect(userService.findByUsernameOrEmail).toHaveBeenCalled();
+            expect(userService.update).not.toHaveBeenCalled();
+            expect(result).toEqual(expectedResult);
+        });
     });
 });

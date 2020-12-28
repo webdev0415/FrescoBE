@@ -13,6 +13,9 @@ describe('UtilsService', () => {
     it('validateHash', () => {
         expect(UtilsService.validateHash('123', '123hash')).toBeTruthy();
     });
+    it('validateHash empty', () => {
+        expect(UtilsService.validateHash('123', null)).toBeTruthy();
+    });
     it('generateHash', () => {
         expect(UtilsService.generateHash('123')).toBeTruthy();
     });

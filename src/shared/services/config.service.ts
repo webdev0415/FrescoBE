@@ -1,10 +1,11 @@
-import {TypeOrmModuleOptions} from '@nestjs/typeorm';
+import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as dotenv from 'dotenv';
 
-import {IAwsConfig} from '../../interfaces/IAwsConfig';
-import {ISMTPConfig} from '../../interfaces/ISMTPConfig';
-import {SnakeNamingStrategy} from '../../snake-naming.strategy';
-import {UserSubscriber} from '../entity-subscribers/user-subscriber';
+import { IAwsConfig } from '../../interfaces/IAwsConfig';
+import { ISMTPConfig } from '../../interfaces/ISMTPConfig';
+import { SnakeNamingStrategy } from '../../snake-naming.strategy';
+import { UserSubscriber } from '../entity-subscribers/user-subscriber';
+import { isHotModule, requireContext } from '../shared.utils';
 
 export class ConfigService {
     constructor() {
@@ -44,8 +45,9 @@ export class ConfigService {
         let entities = [__dirname + '/../../modules/**/*.entity{.ts,.js}'];
         let migrations = [__dirname + '/../../migrations/*{.ts,.js}'];
 
-        if ((<any>module).hot) {
-            const entityContext = (<any>require).context(
+        if (isHotModule(module as any)) {
+            const entityContext = requireContext(
+                require as any,
                 './../../modules',
                 true,
                 /\.entity\.ts$/,
@@ -55,7 +57,8 @@ export class ConfigService {
                 const [entity] = Object.values(entityModule);
                 return entity;
             });
-            const migrationContext = (<any>require).context(
+            const migrationContext = requireContext(
+                require as any,
                 './../../migrations',
                 false,
                 /\.ts$/,

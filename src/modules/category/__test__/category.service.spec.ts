@@ -13,7 +13,7 @@ import {
     mockBoardRepository,
     mockBoardUserOrgRepository,
     mockCategoryRepository,
-    mockUploadImageRepository, MockUserRepository,
+    mockUploadImageRepository, mockUserRepository,
     mockUserToOrgRepository
 } from "../../__test__/base.repository.spec";
 import {mockCategoryEntity, mockImageEntity} from "../../board/__test__/board.service.spec";
@@ -24,6 +24,7 @@ import {UpdateCategoryDto} from "../dto/UpdateCategoryDto";
 import {DeleteCategoryDto} from "../dto/DeleteCategoryDto";
 import {globalMockExpectedResult, mockUploadImageService} from "../../__test__/base.service.specs";
 import {UserRepository} from "../../user/user.repository";
+import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
 
 
 export const mockCreateCategoryDto:CreateCategoryDto={
@@ -51,9 +52,9 @@ describe('CategoryService', () => {
                 {provide: UploadImageRepository, useFactory: mockUploadImageRepository},
                 {provide: CategoryRepository, useFactory: mockCategoryRepository},
                 {provide: UploadImageService, useFactory: mockUploadImageService},
-                {provide: UserRepository, useFactory: MockUserRepository},
+                {provide: UserRepository, useFactory: mockUserRepository},
 
-                BoardService,CategoryService
+                BoardService,CategoryService, BoardUserOrgService,
             ],
         }).compile();
 
@@ -80,6 +81,17 @@ describe('CategoryService', () => {
 
             expect(result.name).toEqual(mockCategoryEntity.name)
 
+        });
+
+        it(' return one object with empty path when image not found ', async () => {
+
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await categoryService.getById("id")
+            expect(result).not.toBeUndefined();
+            expect(result.name).toEqual(mockCategoryEntity.name)
+            expect(result.path).toBe('')
         });
 
         it(' throws NotFoundException', async () => {
@@ -112,6 +124,16 @@ describe('CategoryService', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it(' return [] with one object that path is empty string and not undefined', async () => {
+            categoryRepository.find.mockReturnValue([mockCategoryEntity]);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await categoryService.getAll()
+
+            expect(result).not.toBeUndefined();
         });
 
         it(' return [] with Zero object and not undefined', async () => {
@@ -147,6 +169,17 @@ describe('CategoryService', () => {
 
         });
 
+        it(' Create with defaults', async () => {
+            categoryRepository.save.mockImplementation(async (value)=>value);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageService.getImageById.mockReturnValue(null);
+
+            const result = await categoryService.create({} as any)
+
+            expect(result).not.toBeUndefined();
+
+        });
+
     });
 
     describe('Update', () => {
@@ -169,6 +202,15 @@ describe('CategoryService', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it('Update canvas entity, do not touch fields', async () => {
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            categoryRepository.save.mockImplementation(async (value)=>value);
+            uploadImageService.getImageById.mockReturnValue(null);
+            const result = await categoryService.update({} as any)
+
+            expect(result).not.toBeUndefined();
         });
 
         it('Update canvas entity, Throw NotFoundException', async () => {

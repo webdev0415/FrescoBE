@@ -51,7 +51,7 @@ export class AuthService {
         return await this.userService.findOne({
             email: email,
         });
-    } 
+    }
 
     static setAuthUser(user: UserEntity) {
         ContextService.set(AuthService._authUserKey, user);
@@ -72,7 +72,7 @@ export class AuthService {
             user = await this.userService.createUserForGoogle(userGoogle);
         }
 
-        if (!user.googleId || user.googleId === undefined) {
+        if (!user.googleId) {
             user.googleId = userGoogle.googleId;
             user.verified = true;
             await this.userService.update(user);

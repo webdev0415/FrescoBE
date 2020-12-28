@@ -19,6 +19,9 @@ import {CreateUserInvitationDto} from "../dto/CreateUserInvitationDto";
 import {InvitationEntity} from "../../invitation/invitation.entity";
 import {PermissionEnum} from "../../../common/constants/permission";
 import {ResendConfirmationEmail} from "../dto/ResendConfirmationEmail";
+import {BoardUserOrgService} from "../../board-user-org/board-user-org.service";
+import {mockBoardUserOrgRepository} from "../../__test__/base.repository.spec";
+import {BoardUserOrgRepository} from "../../board-user-org/board-user-org.repository";
 
 const mockUserService = () => ({
     checkIfExists: jest.fn(),
@@ -35,7 +38,12 @@ const mockAuthService = () => ({
 const mockMailService = () => ({
     sendConfirmationEmail: jest.fn(),
 });
-const mockCache = () => ({});
+const mockBoardUserOrgService = () => ({
+    AddCollaborator: jest.fn(),
+});
+const mockCache = () => ({
+    set: jest.fn(),
+});
 export const userEntity: UserEntity = {
     id: '1',
     name: 'example',
@@ -60,20 +68,22 @@ describe('AuthController', () => {
     let port: string;
     let cacheManager;
     let clientUrl: string;
-
+    let boardUserOrgService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
-            // controllers: [AuthController],
+            controllers: [AuthController],
             imports: [CacheModule.register({ ttl: 10000 })],
             providers: [
-                AuthController,
+                // AuthController,
                 ConfigService,
                 { provide: InvitationService, useFactory: mockInvitationService },
                 { provide: UserService, useFactory: mockUserService },
                 { provide: AuthService, useFactory: mockAuthService },
                 { provide: MailService, useFactory: mockMailService },
-               //  { provide: Cache, useFactory: mockCache },
+                { provide: BoardUserOrgRepository , useFactory: mockBoardUserOrgRepository },
+                { provide: BoardUserOrgService, useFactory: mockBoardUserOrgService },
+                // { provide: CACHE_MANAGER, useFactory: mockCache },
             ],
         }).compile();
 
@@ -82,7 +92,7 @@ describe('AuthController', () => {
         userService = module.get<UserService>(UserService);
         authService = module.get<AuthService>(AuthService);
         mailService = module.get<MailService>(MailService);
-        invitationService =await  module.resolve<InvitationService>(InvitationService);
+        invitationService = await module.resolve<InvitationService>(InvitationService);
         cacheManager = module.get<any>(CACHE_MANAGER);
         clientUrl = configService.get('CLIENT_URL');
     });
@@ -172,6 +182,31 @@ describe('AuthController', () => {
             invitation.toEmail="test@test.com";
             invitation.id="id";
             invitation.permission=PermissionEnum.ADMIN
+
+            invitation.orgId="id";
+
+            invitationService.checkValidToken.mockResolvedValue(invitation);
+            authService.createVerifyUser.mockResolvedValue(userEntity);
+            authService.createToken.mockResolvedValue(new TokenPayloadDto({accessToken:"",expiresIn:3}));
+
+            invitationService.updateToVerified.mockImplementation(async (value) => value);
+
+            await expect(
+                await authController.createUser("",createUserInvitationDto),
+            ).toEqual(new LoginPayloadDto(userEntity.toDto(), new TokenPayloadDto({accessToken:"",expiresIn:3})))
+        });
+        it('createUser success including board', async () => {
+            let createUserInvitationDto: CreateUserInvitationDto=new CreateUserInvitationDto()
+            createUserInvitationDto.email="test@test.com"
+            createUserInvitationDto.orgId="id";
+            createUserInvitationDto.password="password"
+            createUserInvitationDto.verified=true
+
+            let invitation=new InvitationEntity();
+            invitation.toEmail="test@test.com";
+            invitation.id="id";
+            invitation.permission=PermissionEnum.ADMIN
+            invitation.board = 'boardId';
 
             invitation.orgId="id";
 
@@ -296,13 +331,16 @@ describe('AuthController', () => {
             const result = await authController.confirmEmail(code);
             expect(result).toEqual(expectedResult);
         });
-        it('confirmEmail error', () => {
+        it('confirmEmail error', async () => {
             const code = '2321';
             cacheManager.get = jest.fn();
             cacheManager.get.mockResolvedValue('');
-            const error = new NotFoundException();
-            void expect(authController.confirmEmail(code)).rejects.toThrow(
-                error,
+            // eslint-disable-next-line @typescript-eslint/require-await
+            userService.confirmEmail.mockImplementation(async () => {
+                throw new NotFoundException();
+            });
+            await expect(authController.confirmEmail(code)).rejects.toThrow(
+                NotFoundException,
             );
         });
     });

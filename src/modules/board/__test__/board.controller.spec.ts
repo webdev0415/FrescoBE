@@ -9,6 +9,7 @@ import {userEntity} from "../../auth/__test__/auth.controller.spec";
 import {UpdateBoardDto} from "../dto/UpdateBoardDto";
 import {DeleteBoardDto} from "../dto/DeleteBoardDto";
 import {mockBoardService} from "../../__test__/base.service.specs";
+import { UserEntity } from '../../user/user.entity';
 
 const mockCache = () => ({});
 
@@ -42,8 +43,8 @@ describe('BoardController', () => {
 
     describe('get list board by orgId',  () => {
         it('should return board entity list', async() => {
-            boardService.getByOrgId.mockResolvedValue([mockBoardEntity]);
-            let result=await boardController.getByOrgId("id");
+            boardService.getByOrgIdAndUserId.mockResolvedValue([mockBoardEntity]);
+            let result=await boardController.getByOrgId(new UserEntity(), "orgId");
             expect(result).toHaveLength(1)
         });
     });

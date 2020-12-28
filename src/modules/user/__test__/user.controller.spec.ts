@@ -39,5 +39,19 @@ describe('UserController', () => {
         });
     });
 
+    describe('searchUserWithEmail', () => {
+        it('should find and return user with given keyword', async () => {
+            const users = [
+                ({ id: 'user1', email: 'joe1@site.com' } as unknown) as UserDto,
+                ({ id: 'user2', email: 'joe2@site.com' } as unknown) as UserDto,
+            ];
+            userService.searchUserByKeyWord.mockResolvedValue(users as any);
 
+            await expect(
+                userController.searchUserWithEmail({ keyword: 'joe' }, ({
+                    id: 'userId',
+                } as unknown) as UserEntity),
+            ).resolves.toEqual(users);
+        });
+    });
 });

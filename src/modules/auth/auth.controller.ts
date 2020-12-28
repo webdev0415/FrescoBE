@@ -49,7 +49,7 @@ export class AuthController {
         public readonly configService: ConfigService,
         public readonly invitationService: InvitationService,
         public readonly boardUserOrgService: BoardUserOrgService,
-        @Inject(CACHE_MANAGER) private _cacheManager: Cache,
+        @Inject(CACHE_MANAGER) private readonly _cacheManager: Cache,
     ) {
     }
 

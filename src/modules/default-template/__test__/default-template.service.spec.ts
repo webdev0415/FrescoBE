@@ -108,6 +108,20 @@ describe('Default-Template Service', () => {
             expect(result.length).toEqual(0)
 
         });
+
+        it(' return object without category and image', async () => {
+
+            defaultTemplateRepository.find.mockReturnValue([mockCategoryEntity])
+
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageRepository.findOne.mockReturnValue(null);
+            const result =await defaultTemplateService.get()
+
+            expect(result).not.toBeUndefined();
+
+            expect(result.length).toEqual(1)
+
+        });
     });
 
 
@@ -121,6 +135,19 @@ describe('Default-Template Service', () => {
             uploadImageService.getImageById.mockReturnValue(mockImageEntity);
 
             const result = await defaultTemplateService.create(mockCreateDefaultTemplateDto)
+
+            expect(result).not.toBeUndefined();
+
+        });
+
+        it(' Create with default data', async () => {
+
+            defaultTemplateRepository.save.mockReturnValue(mockDefaultTemplateEntity);
+
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageService.getImageById.mockReturnValue(null);
+
+            const result = await defaultTemplateService.create({} as any)
 
             expect(result).not.toBeUndefined();
 
@@ -145,6 +172,19 @@ describe('Default-Template Service', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it('Update entity, do not touch fields', async () => {
+
+            defaultTemplateRepository.save.mockReturnValue(mockDefaultTemplateEntity);
+            defaultTemplateRepository.findOne.mockReturnValue(mockDefaultTemplateEntity);
+
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageService.getImageById.mockReturnValue(null);
+
+            const result = await defaultTemplateService.update({} as any)
+
+            expect(result).not.toBeUndefined();
         });
 
         it('Update  entity, Throw NotFoundException', async () => {
