@@ -218,6 +218,32 @@ describe('Invitation Service', () => {
             );
             expect(result).toHaveProperty('token');
         });
+
+        it(' new invite for non-existing user', async () => {
+            const userToOrgEntity = new UserToOrgEntity();
+            userToOrgEntity.permission = PermissionEnum.ADMIN;
+            userToOrgRepository.findOne.mockReturnValue(userToOrgEntity);
+
+            const invitationEntity = new InvitationEntity();
+            invitationEntity.verified = false;
+            invitationEntity.organization = { name: 'org '} as any;
+            invitationRepository.findOne = jest
+                .fn(async () => invitationEntity)
+                .mockImplementationOnce(async () => undefined);
+
+            invitationRepository.save.mockImplementation(
+                async (value) => value,
+            );
+
+            mailService.sendInvitationEmail.mockReturnThis();
+            authService.getUserByEmail.mockReturnValue(null);
+
+            const result = await invitationService.create(
+                'id',
+                new SendInvitationDto(),
+            );
+            expect(result).toHaveProperty('token');
+        });
     });
     describe('resendInvitation', () => {
         it('successful', async () => {
@@ -226,6 +252,23 @@ describe('Invitation Service', () => {
 
             let invitationEntity = new InvitationEntity();
             invitationEntity.verified = true;
+            invitationRepository.findOne.mockReturnValue(invitationEntity);
+            invitationRepository.save.mockImplementation(
+                async (value) => value,
+            );
+
+            mailService.sendInvitationEmail.mockReturnThis();
+            const result = await invitationService.resendInvitation('id');
+            expect(result).toEqual(invitationEntity);
+        });
+
+        it('successful with org name', async () => {
+            let userToOrgEntity = new UserToOrgEntity();
+            userToOrgRepository.findOne.mockReturnValue(userToOrgEntity);
+
+            let invitationEntity = new InvitationEntity();
+            invitationEntity.verified = true;
+            invitationEntity.organization = { name: 'org' } as any;
             invitationRepository.findOne.mockReturnValue(invitationEntity);
             invitationRepository.save.mockImplementation(
                 async (value) => value,

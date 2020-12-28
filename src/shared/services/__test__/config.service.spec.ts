@@ -1,5 +1,6 @@
 import { ConfigService } from '../config.service';
 import { SnakeNamingStrategy } from '../../../snake-naming.strategy';
+import * as path from 'path';
 
 describe('ConfigService', () => {
     const configService = new ConfigService();
@@ -75,6 +76,44 @@ describe('ConfigService', () => {
         expect(configService.typeOrmConfig).not.toBeUndefined();
     });
 
+    it('typeOrmConfig not hot', async () => {
+        const migrations = [
+            path.join(__dirname, '..') + '/../../migrations/*{.ts,.js}',
+        ];
+        const entities = [
+            path.join(__dirname, '..') + '/../../modules/**/*.entity{.ts,.js}',
+        ];
+
+        jest.mock('../../shared.utils', () => ({
+            isHotModule: jest.fn().mockReturnValue(false),
+        }));
+
+        // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unused-vars,@typescript-eslint/tslint/config,no-shadow
+        const { ConfigService } = await import('../config.service');
+
+        // eslint-disable-next-line no-shadow
+        const configService = new ConfigService();
+
+        expect(configService.typeOrmConfig).toEqual(
+            expect.objectContaining({
+                entities,
+                migrations,
+                keepConnectionAlive: true,
+                type: 'mysql',
+                host: configService.get('DB_HOST'),
+                port: configService.getNumber('DB_PORT'),
+                username: configService.get('DB_USERNAME'),
+                password: configService.get('DB_PASSWORD'),
+                database: configService.get('DB_DATABASE'),
+                migrationsRun: true,
+                logging: configService.nodeEnv === 'development',
+                namingStrategy: new SnakeNamingStrategy(),
+            }),
+        );
+
+        expect(configService.typeOrmConfig).not.toBeUndefined();
+    });
+
     it('get', () => {
         expect(configService.get('DB_HOST')).toEqual(process.env.DB_HOST);
     });
@@ -87,6 +126,11 @@ describe('ConfigService', () => {
 
     it('nodeEnv', () => {
         expect(configService.nodeEnv).toBeTruthy();
+    });
+
+    it('nodeEnv default', () => {
+        jest.spyOn(configService, 'get').mockReturnValueOnce(null);
+        expect(configService.nodeEnv).toEqual('development');
     });
 
     it('baseLink', () => {

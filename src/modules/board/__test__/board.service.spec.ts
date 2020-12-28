@@ -259,6 +259,20 @@ describe('BoardService', () => {
 
         });
 
+        it(' return BoardInfoDto that does not have category and path ', async () => {
+
+            boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            userRepository.findOne.mockReturnValue(createMockUserEntity());
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await boardService.getById("id")
+            expect(result).not.toEqual(undefined)
+            expect(result.category).toBe(null)
+            expect(result.path).toBe('')
+
+        });
+
         it(' throws NotFoundException ', async () => {
 
             boardRepository.findOne.mockReturnValue(undefined);
@@ -345,6 +359,28 @@ describe('BoardService', () => {
             expect(result[0].categoryId).toEqual(mockCategoryEntity.id);
             expect(result[0].path).toEqual(mockImageEntity.path);
         });
+
+        it('return only boards with access for limited user (for boards without image and category)', async () => {
+            userToOrgRepository.findOne.mockReturnValue(
+                mockLimitedUserToOrgEntity,
+            );
+            boardUserOrgService.GetAllBoards.mockReturnValue([
+                { board: mockBoardEntity },
+            ]);
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageRepository.findOne.mockReturnValue(null);
+            userRepository.findOne.mockReturnValue(userEntity);
+
+            const result = await boardService.getByOrgIdAndUserId(
+                'userId2',
+                'orgId',
+            );
+
+            expect(result).not.toBeUndefined();
+            expect(result.length).toEqual(1);
+            expect(result[0].category).toEqual(null);
+            expect(result[0].path).toEqual('');
+        });
     });
 
     describe('create', () => {
@@ -369,6 +405,22 @@ describe('BoardService', () => {
 
         });
 
+        it(' Create with default values', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+            boardRepository.save.mockImplementation(async (value) => value);
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageService.getImageById.mockReturnValue(null);
+            boardUserOrgRepository.save.mockImplementation(async (value) => value)
+
+            const result = await boardService.create("id", {} as any)
+
+            expect(result).not.toBeUndefined();
+        });
+
     });
 
     describe('Update', () => {
@@ -381,7 +433,7 @@ describe('BoardService', () => {
                 getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
             }));
             boardRepository.save.mockImplementation(async (value) => value);
-            categoryRepository.findOne.mockReturnValue(undefined);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageService.getImageById.mockReturnValue(mockImageEntity);
             boardUserOrgRepository.save.mockImplementation(async (value) => value)
             boardRepository.findOne.mockReturnValue(mockBoardEntity);
@@ -391,6 +443,17 @@ describe('BoardService', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it('Update board entity, do not touch fields', async () => {
+            boardRepository.save.mockImplementation(async (value) => value);
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(null);
+            boardUserOrgRepository.save.mockImplementation(async (value) => value)
+            boardRepository.findOne.mockReturnValue(mockBoardEntity);
+            const result = await boardService.update("id", {} as any)
+
+            expect(result).not.toBeUndefined();
         });
 
         it('Update board entity, Throw NotFoundException', async () => {

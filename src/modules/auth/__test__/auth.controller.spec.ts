@@ -41,7 +41,9 @@ const mockMailService = () => ({
 const mockBoardUserOrgService = () => ({
     AddCollaborator: jest.fn(),
 });
-const mockCache = () => ({});
+const mockCache = () => ({
+    set: jest.fn(),
+});
 export const userEntity: UserEntity = {
     id: '1',
     name: 'example',
@@ -66,14 +68,14 @@ describe('AuthController', () => {
     let port: string;
     let cacheManager;
     let clientUrl: string;
-
+    let boardUserOrgService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
-            // controllers: [AuthController],
+            controllers: [AuthController],
             imports: [CacheModule.register({ ttl: 10000 })],
             providers: [
-                AuthController,
+                // AuthController,
                 ConfigService,
                 { provide: InvitationService, useFactory: mockInvitationService },
                 { provide: UserService, useFactory: mockUserService },
@@ -81,7 +83,7 @@ describe('AuthController', () => {
                 { provide: MailService, useFactory: mockMailService },
                 { provide: BoardUserOrgRepository , useFactory: mockBoardUserOrgRepository },
                 { provide: BoardUserOrgService, useFactory: mockBoardUserOrgService },
-               //  { provide: Cache, useFactory: mockCache },
+                // { provide: CACHE_MANAGER, useFactory: mockCache },
             ],
         }).compile();
 
@@ -90,7 +92,7 @@ describe('AuthController', () => {
         userService = module.get<UserService>(UserService);
         authService = module.get<AuthService>(AuthService);
         mailService = module.get<MailService>(MailService);
-        invitationService =await  module.resolve<InvitationService>(InvitationService);
+        invitationService = await module.resolve<InvitationService>(InvitationService);
         cacheManager = module.get<any>(CACHE_MANAGER);
         clientUrl = configService.get('CLIENT_URL');
     });

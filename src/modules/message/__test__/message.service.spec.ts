@@ -74,7 +74,7 @@ describe('MessageService', () => {
     });
 
     describe('find', () => {
-        it('should return paginated message DTOs', async () => {
+        beforeEach(() => {
             messageRepository.createQueryBuilder.mockReturnValue({
                 _limit: 0,
                 _offset: 0,
@@ -97,10 +97,18 @@ describe('MessageService', () => {
                     );
                 }),
             } as any);
+        });
 
+        it('should return paginated message DTOs', async () => {
             await expect(
                 messageService.find('boardId', { limit: 5, offset: 5 }),
             ).resolves.toEqual(messageDtos.slice(5, 10));
+        });
+
+        it('should return message DTOs paginated with default values', async () => {
+            await expect(
+                messageService.find('boardId', {} as any),
+            ).resolves.toEqual(messageDtos.slice(0, 10));
         });
     });
 
@@ -175,6 +183,27 @@ describe('MessageService', () => {
                     },
                 },
             );
+        });
+
+        it('should not update message if message not given', async () => {
+            messageRepository.findOne.mockResolvedValue({
+                ...messages[0],
+            } as any);
+            messageRepository.save.mockImplementation(
+                (e) => Promise.resolve(e) as any,
+            );
+
+            await expect(
+                messageService.update(messages[0].sender, 'id', {
+                    boardId: messages[0].boardId,
+                } as any),
+            ).resolves.toEqual({
+                ...messageDtos[0],
+            });
+
+            expect(messageRepository.save).toBeCalledWith({
+                ...messages[0],
+            });
         });
 
         it("should throw not found exception when message doesn'nt exist", async () => {
@@ -252,6 +281,16 @@ describe('MessageService', () => {
             await expect(
                 messageService.checkPermission('userId', 'boardId'),
             ).rejects.toThrow(NotFoundException);
+        });
+
+        it('should do nothing if message exist', async () => {
+            boardUserOrgRepository.find.mockResolvedValue([
+                { id: 'msgId' },
+            ] as any);
+
+            await expect(
+                messageService.checkPermission('userId', 'boardId'),
+            ).resolves.toBeUndefined();
         });
     });
 });

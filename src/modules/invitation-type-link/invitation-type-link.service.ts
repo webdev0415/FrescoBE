@@ -333,6 +333,6 @@ export class InvitationTypeLinkService {
         if (!invitationTypeLinkEntity) {
             throw new NotFoundException();
         }
-        return invitationTypeLinkEntity?.toDto() || null;
+        return invitationTypeLinkEntity.toDto();
     }
 }

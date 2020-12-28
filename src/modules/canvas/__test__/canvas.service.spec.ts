@@ -242,6 +242,20 @@ describe('CanvasService', () => {
             expect(result.name).toEqual(mockBoardEntity.toDto().name);
         });
 
+        it('return  one object that path is empty string and category is null', async () => {
+            boardRepository.findOne.mockReturnValue([mockBoardEntity]);
+            canvasRepository.findOne.mockReturnValue(mockCanvasEntity);
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await canvasService.getById('id');
+
+            expect(result).not.toBeUndefined();
+
+            expect(result.name).toEqual(mockBoardEntity.toDto().name);
+            expect(result.path).toBe('');
+        });
+
         it(' throws NotFoundException', async () => {
             canvasRepository.findOne.mockReturnValue(undefined);
 
@@ -255,6 +269,17 @@ describe('CanvasService', () => {
             canvasRepository.find.mockReturnValue([mockCanvasEntity]);
             categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
             uploadImageRepository.findOne.mockReturnValue(mockImageEntity);
+            userRepository.findOne.mockReturnValue(userEntity);
+
+            const result = await canvasService.getByOrgId('id');
+
+            expect(result).not.toBeUndefined();
+        });
+
+        it('return [] with one object that category and path is empty ', async () => {
+            canvasRepository.find.mockReturnValue([mockCanvasEntity]);
+            categoryRepository.findOne.mockReturnValue(null);
+            uploadImageRepository.findOne.mockReturnValue(null);
             userRepository.findOne.mockReturnValue(userEntity);
 
             const result = await canvasService.getByOrgId('id');
@@ -295,6 +320,30 @@ describe('CanvasService', () => {
 
             expect(result).not.toBeUndefined();
         });
+
+        it(' Create with default values', async () => {
+            userToOrgRepository.createQueryBuilder = jest.fn(() => ({
+                andWhere: jest.fn().mockReturnThis(),
+                where: jest.fn().mockReturnThis(),
+                getOne: jest.fn().mockReturnValue(globalMockExpectedResult),
+            }));
+
+            canvasRepository.save.mockImplementation((value) =>
+                Promise.resolve(value),
+            );
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageService.getImageById.mockReturnValue(null);
+            boardUserOrgRepository.save.mockImplementation((value) =>
+                Promise.resolve(value),
+            );
+
+            const result = await canvasService.create(
+                'id',
+                {} as any,
+            );
+
+            expect(result).not.toBeUndefined();
+        });
     });
 
     describe('Update', () => {
@@ -316,6 +365,24 @@ describe('CanvasService', () => {
             const result = await canvasService.update(
                 'id',
                 mockUpdateCanvasDto,
+            );
+
+            expect(result).not.toBeUndefined();
+        });
+
+        it('Update canvas entity, do not touch fields', async () => {
+            canvasRepository.save.mockImplementation((value) =>
+                Promise.resolve(value),
+            );
+            categoryRepository.findOne.mockReturnValue(undefined);
+            uploadImageService.getImageById.mockReturnValue(null);
+            boardUserOrgRepository.save.mockImplementation((value) =>
+                Promise.resolve(value),
+            );
+            canvasRepository.findOne.mockReturnValue(mockCanvasEntity);
+            const result = await canvasService.update(
+                'id',
+                {} as any,
             );
 
             expect(result).not.toBeUndefined();

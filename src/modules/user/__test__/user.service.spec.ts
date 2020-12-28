@@ -90,6 +90,29 @@ describe('UserService', () => {
         });
         expect(result).toEqual(expectedResult);
     });
+    it('findByUsernameOrEmail if email not requested', () => {
+        const expectedResult: Promise<UserEntity> = Promise.resolve({
+            id: '1',
+            name: 'example',
+            role: RoleType.USER,
+            email: 'example@fresco.com',
+            password: '123',
+            verified: false,
+            googleId: null,
+            createdAt: new Date(),
+            dtoClass: UserDto,
+            toDto: () => '',
+        });
+
+        userRepository.createQueryBuilder = jest.fn(() => ({
+            orWhere: jest.fn().mockReturnThis(),
+            getOne: jest.fn().mockReturnValue(expectedResult),
+        }));
+        const result = userService.findByUsernameOrEmail({
+            username: 'example',
+        });
+        expect(result).toEqual(expectedResult);
+    });
     it('createUser', () => {
         const expectedResult: Promise<UserEntity> = Promise.resolve({
             id: '1',
@@ -266,6 +289,32 @@ describe('UserService', () => {
             ({ userId: 'userId1' } as unknown) as UserToOrgEntity,
             ({ userId: 'userId2' } as unknown) as UserToOrgEntity,
         ]);
+        userRepository.createQueryBuilder.mockReturnValue({
+            where: jest.fn().mockReturnThis(),
+            andWhere: jest.fn().mockReturnThis(),
+            getMany: jest.fn(() => items),
+        });
+
+        await expect(
+            userService.suggestEmail('john@site.com', 'orgId'),
+        ).resolves.toEqual(items.map((item) => item.toDto()));
+    });
+
+    it("should suggest email when userToOrg doesn't have any value", async () => {
+        const items = Array(10)
+            .fill(0)
+            .map((_, idx) => ({
+                id: `id#${idx}`,
+                name: `user#${idx}`,
+                toDto() {
+                    return {
+                        id: this.id,
+                        name: this.name,
+                    };
+                },
+            }));
+
+        userToOrgRepository.find.mockResolvedValue([]);
         userRepository.createQueryBuilder.mockReturnValue({
             where: jest.fn().mockReturnThis(),
             andWhere: jest.fn().mockReturnThis(),

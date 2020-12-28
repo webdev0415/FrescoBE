@@ -26,6 +26,10 @@ describe('UserSubscriber', () => {
 
             expect(userSubscriber.beforeInsert({entity:<any>{password:"test"}}as any) as any).toBeUndefined()
         });
+
+        it("should do nothing if there's no password ", async () => {
+            expect(userSubscriber.beforeInsert({entity:<any>{}}as any) as any).toBeUndefined()
+        });
     });
 
 });

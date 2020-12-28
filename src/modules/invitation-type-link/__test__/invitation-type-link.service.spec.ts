@@ -46,7 +46,7 @@ import { omit } from 'lodash';
 import Mocked = jest.Mocked;
 import { InvitationLimitedException } from '../../../exceptions/invitation-limited';
 
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/unbound-method,no-invalid-this */
 
 const mockOrganizationEntity = mocked(({
     id: 'orgId',
@@ -716,6 +716,46 @@ describe('InvitationTypeLinkService', () => {
 
             expect(invitationTypeLinkRepository.save).toBeCalledWith({
                 ...invitationTypeLinkUpdateDto,
+                toDto,
+            });
+        });
+
+        it('should not touch invitation permission', async () => {
+            const invitationTypeLinkUpdateDto = {
+                id: 'id',
+                type: InvitationType.CANVAS,
+                createdUserId: 'userId',
+            };
+
+            function toDto() {
+                return {
+                    id: this.id,
+                    type: this.type,
+                    createdUserId: this.createdUserId,
+                    permission: this.permission,
+                };
+            }
+            invitationTypeLinkRepository.findOne.mockResolvedValueOnce({
+                toDto,
+                ...invitationTypeLinkUpdateDto,
+                permission: PermissionEnum.EDITOR,
+            } as any);
+            invitationTypeLinkRepository.save.mockImplementationOnce(
+                (e) => Promise.resolve(e) as any,
+            );
+
+            await expect(
+                invitationTypeLinkService.update(
+                    invitationTypeLinkUpdateDto as any,
+                ),
+            ).resolves.toEqual({
+                ...invitationTypeLinkUpdateDto,
+                permission: PermissionEnum.EDITOR,
+            });
+
+            expect(invitationTypeLinkRepository.save).toBeCalledWith({
+                ...invitationTypeLinkUpdateDto,
+                permission: PermissionEnum.EDITOR,
                 toDto,
             });
         });

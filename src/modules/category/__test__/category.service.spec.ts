@@ -83,6 +83,17 @@ describe('CategoryService', () => {
 
         });
 
+        it(' return one object with empty path when image not found ', async () => {
+
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await categoryService.getById("id")
+            expect(result).not.toBeUndefined();
+            expect(result.name).toEqual(mockCategoryEntity.name)
+            expect(result.path).toBe('')
+        });
+
         it(' throws NotFoundException', async () => {
 
             categoryRepository.findOne.mockReturnValue(undefined);
@@ -113,6 +124,16 @@ describe('CategoryService', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it(' return [] with one object that path is empty string and not undefined', async () => {
+            categoryRepository.find.mockReturnValue([mockCategoryEntity]);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageRepository.findOne.mockReturnValue(null);
+
+            const result = await categoryService.getAll()
+
+            expect(result).not.toBeUndefined();
         });
 
         it(' return [] with Zero object and not undefined', async () => {
@@ -148,6 +169,17 @@ describe('CategoryService', () => {
 
         });
 
+        it(' Create with defaults', async () => {
+            categoryRepository.save.mockImplementation(async (value)=>value);
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            uploadImageService.getImageById.mockReturnValue(null);
+
+            const result = await categoryService.create({} as any)
+
+            expect(result).not.toBeUndefined();
+
+        });
+
     });
 
     describe('Update', () => {
@@ -170,6 +202,15 @@ describe('CategoryService', () => {
             expect(result).not.toBeUndefined();
 
 
+        });
+
+        it('Update canvas entity, do not touch fields', async () => {
+            categoryRepository.findOne.mockReturnValue(mockCategoryEntity);
+            categoryRepository.save.mockImplementation(async (value)=>value);
+            uploadImageService.getImageById.mockReturnValue(null);
+            const result = await categoryService.update({} as any)
+
+            expect(result).not.toBeUndefined();
         });
 
         it('Update canvas entity, Throw NotFoundException', async () => {
