@@ -23,6 +23,7 @@ export class OrganizationService {
             name: createOrganizationDto.name,
             lName: createOrganizationDto.lName,
             fName: createOrganizationDto.fName,
+            slug: createOrganizationDto.slug,
         });
 
         const organizationSave = await this.organizationRepository.save(
