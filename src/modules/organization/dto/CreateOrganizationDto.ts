@@ -8,12 +8,16 @@ export class CreateOrganizationDto {
     name: string;
 
     @IsString()
-    @IsNotEmpty()
     @ApiPropertyOptional()
     fName: string;
 
     @IsString()
-    @IsNotEmpty()
     @ApiPropertyOptional()
     lName: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiPropertyOptional()
+    slug: string;
+
 }

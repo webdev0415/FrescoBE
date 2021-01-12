@@ -16,11 +16,14 @@ export class OrganizationEntity extends AbstractEntity<OrganizationDto> {
     @Column({ nullable: false })
     name: string;
 
-    @Column({ nullable: false, name: 'fName' })
+    @Column({ nullable: true, name: 'fName' })
     fName: string;
 
-    @Column({ nullable: false, name: 'lName' })
+    @Column({ nullable: true, name: 'lName' })
     lName: string;
+
+    @Column({ nullable: false, name: 'slug' })
+    slug: string;
 
     // @Column({ nullable: true })
     // planId: string;
