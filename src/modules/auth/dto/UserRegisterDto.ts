@@ -19,6 +19,18 @@ export class UserRegisterDto {
     readonly email: string;
 
     @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
+    @Column()
+    readonly firstName: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
+    @Column()
+    readonly lastName: string;
+
+    @IsString()
     @MinLength(6)
     @ApiProperty({ minLength: 6 })
     @Column()

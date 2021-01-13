@@ -87,6 +87,8 @@ export class AuthService {
         const createdUser = await this.userService.createUser({
             email: createUserInvitationDto.email,
             password: createUserInvitationDto.password,
+            firstName: createUserInvitationDto.firstName,
+            lastName: createUserInvitationDto.lastName,
             // name: createUserInvitationDto.name,
             verified: true,
         });

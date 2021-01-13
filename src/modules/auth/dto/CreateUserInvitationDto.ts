@@ -13,6 +13,14 @@ export class CreateUserInvitationDto {
     @ApiProperty()
     password: string;
 
+    @IsString()
+    @ApiProperty()
+    firstName: string;
+
+    @IsString()
+    @ApiProperty()
+    lastName: string;
+
     // @IsString()
     // @ApiProperty()
     // readonly name: string;
