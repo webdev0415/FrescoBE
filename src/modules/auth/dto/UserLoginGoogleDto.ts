@@ -12,6 +12,18 @@ export class UserLoginGoogleDto {
     readonly name: string;
 
     @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
+    @Column()
+    readonly firstName: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
+    @Column()
+    readonly lastName: string;
+
+    @IsString()
     @IsEmail()
     @IsNotEmpty()
     @ApiProperty()

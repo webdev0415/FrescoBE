@@ -36,6 +36,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
             const userLoginGoogleDto: UserLoginGoogleDto = {
                 email: emails[0].value,
+                firstName: profile.name.givenName,
+                lastName: profile.name.familyName,
                 name: displayName,
                 verified: true,
                 googleId: id,

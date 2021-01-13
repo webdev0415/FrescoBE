@@ -7,6 +7,7 @@ import {
     HttpCode,
     HttpStatus,
     Post,
+    Put,
     Query,
     UseGuards,
     UseInterceptors,
@@ -58,5 +59,18 @@ export class UserController {
             user.id
         );
         return emails;
+    }
+
+    @Put('me')
+    @HttpCode(HttpStatus.OK)
+    @ApiOkResponse({
+        description: 'update user',
+    })
+    async updateUser(
+        @AuthUser() user: UserEntity,
+        @Body() userData: any,
+    ): Promise<any> {
+
+        return this.userService.updateUser(user.id, userData);
     }
 }

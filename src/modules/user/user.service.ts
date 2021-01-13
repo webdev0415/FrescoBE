@@ -65,6 +65,16 @@ export class UserService {
         return this.userRepository.save(user);
     }
 
+    async updateUser(userId: string, data: any): Promise<UserDto> {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { password, email, ...userData } = data;
+
+        await this.userRepository.update({ id: userId }, userData);
+        const user = await this.userRepository.findOne({ id: userId });
+
+        return new UserDto(user);
+    }
+
     async confirmEmail(userId: string): Promise<UserDto> {
         if (!userId) {
             throw new NotFoundException();
